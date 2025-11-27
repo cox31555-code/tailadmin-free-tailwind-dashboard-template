@@ -525,6 +525,89 @@
             <!-- Dropdown Menu End -->
           </li>
           <!-- Menu Item Active Policies -->
+
+          <!-- Menu Item Claims -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Claims' ? '':'Claims')"
+              class="menu-item group"
+              :class="(selected === 'Claims') || (page === 'pendingClaims' || page === 'completedClaims') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Claims') || (page === 'pendingClaims' || page === 'completedClaims') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M7.5 3.25C6.25736 3.25 5.25 4.25736 5.25 5.5V18.5C5.25 19.7426 6.25736 20.75 7.5 20.75H16.5C17.7426 20.75 18.75 19.7426 18.75 18.5V8.31066L13.6893 3.25H7.5ZM13.25 4.81066V7.75C13.25 8.16421 13.5858 8.5 14 8.5H16.9393L13.25 4.81066ZM6.75 5.5C6.75 5.08579 7.08579 4.75 7.5 4.75H11.75V7.75C11.75 8.99264 12.7574 10 14 10H17.25V18.5C17.25 18.9142 16.9142 19.25 16.5 19.25H7.5C7.08579 19.25 6.75 18.9142 6.75 18.5V5.5ZM9.25 12C9.25 11.5858 9.58579 11.25 10 11.25H14C14.4142 11.25 14.75 11.5858 14.75 12C14.75 12.4142 14.4142 12.75 14 12.75H10C9.58579 12.75 9.25 12.4142 9.25 12ZM10 14.25C9.58579 14.25 9.25 14.5858 9.25 15C9.25 15.4142 9.58579 15.75 10 15.75H14C14.4142 15.75 14.75 15.4142 14.75 15C14.75 14.5858 14.4142 14.25 14 14.25H10Z"
+                  fill=""
+                />
+              </svg>
+
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'lg:hidden' : ''"
+              >
+                Claims
+              </span>
+
+              <svg
+                class="menu-item-arrow absolute right-2.5 top-1/2 -translate-y-1/2 stroke-current"
+                :class="[(selected === 'Claims') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'lg:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke=""
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="overflow-hidden transform translate"
+              :class="(selected === 'Claims') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'lg:hidden' : 'flex'"
+                class="flex flex-col gap-1 mt-2 menu-dropdown pl-9"
+              >
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'pendingClaims' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Pending Claims
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'completedClaims' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Completed
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Claims -->
         </ul>
       </div>
 
