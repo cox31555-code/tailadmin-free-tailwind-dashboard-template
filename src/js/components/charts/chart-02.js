@@ -2,19 +2,36 @@ import ApexCharts from "apexcharts";
 
 // ===== chartTwo - Bar Chart for Product Types
 const chart02 = () => {
+  // Generate last 7 days labels
+  const getLast7Days = () => {
+    const days = [];
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const today = new Date();
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const dayName = dayNames[date.getDay()];
+      const monthDay = (date.getMonth() + 1) + '/' + date.getDate();
+      days.push(dayName + ' ' + monthDay);
+    }
+
+    return days;
+  };
+
   const chartTwoOptions = {
     series: [
       {
         name: "Annual",
-        data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
+        data: [168, 185, 201, 198, 187, 195, 210],
       },
       {
         name: "Temporary",
-        data: [95, 142, 178, 156, 201, 187, 165, 203, 189, 225, 198, 167],
+        data: [95, 112, 98, 106, 101, 97, 115],
       },
       {
         name: "Impound",
-        data: [78, 95, 112, 89, 134, 145, 121, 158, 143, 167, 154, 129],
+        data: [78, 85, 82, 89, 84, 85, 92],
       },
     ],
     colors: ["#465fff", "#10B981", "#F59E0B"],
@@ -43,20 +60,7 @@ const chart02 = () => {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories: getLast7Days(),
       axisBorder: {
         show: false,
       },
