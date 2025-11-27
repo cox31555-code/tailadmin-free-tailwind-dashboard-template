@@ -1,64 +1,111 @@
 import ApexCharts from "apexcharts";
 
-// ===== chartTwo
+// ===== chartTwo - Bar Chart for Product Types
 const chart02 = () => {
   const chartTwoOptions = {
-    series: [75.55],
-    colors: ["#465FFF"],
+    series: [
+      {
+        name: "Annual",
+        data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
+      },
+      {
+        name: "Temporary",
+        data: [95, 142, 178, 156, 201, 187, 165, 203, 189, 225, 198, 167],
+      },
+      {
+        name: "Impound",
+        data: [78, 95, 112, 89, 134, 145, 121, 158, 143, 167, 154, 129],
+      },
+    ],
+    colors: ["#465fff", "#10B981", "#F59E0B"],
     chart: {
       fontFamily: "Outfit, sans-serif",
-      type: "radialBar",
-      height: 330,
-      sparkline: {
-        enabled: true,
+      type: "bar",
+      height: 335,
+      toolbar: {
+        show: false,
       },
     },
     plotOptions: {
-      radialBar: {
-        startAngle: -90,
-        endAngle: 90,
-        hollow: {
-          size: "80%",
-        },
-        track: {
-          background: "#E4E7EC",
-          strokeWidth: "100%",
-          margin: 5, // margin is in pixels
-        },
-        dataLabels: {
-          name: {
-            show: false,
-          },
-          value: {
-            fontSize: "36px",
-            fontWeight: "600",
-            offsetY: 60,
-            color: "#1D2939",
-            formatter: function (val) {
-              return val + "%";
-            },
-          },
+      bar: {
+        horizontal: false,
+        columnWidth: "55%",
+        borderRadius: 5,
+        borderRadiusApplication: "end",
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      show: true,
+      width: 4,
+      colors: ["transparent"],
+    },
+    xaxis: {
+      categories: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+      axisBorder: {
+        show: false,
+      },
+      axisTicks: {
+        show: false,
+      },
+    },
+    legend: {
+      show: true,
+      position: "top",
+      horizontalAlign: "left",
+      fontFamily: "Outfit",
+      markers: {
+        radius: 99,
+      },
+    },
+    yaxis: {
+      title: false,
+    },
+    grid: {
+      yaxis: {
+        lines: {
+          show: true,
         },
       },
     },
     fill: {
-      type: "solid",
-      colors: ["#465FFF"],
+      opacity: 1,
     },
-    stroke: {
-      lineCap: "round",
+    tooltip: {
+      x: {
+        show: false,
+      },
+      y: {
+        formatter: function (val) {
+          return "$" + val + "K";
+        },
+      },
     },
-    labels: ["Progress"],
   };
 
   const chartSelector = document.querySelectorAll("#chartTwo");
 
   if (chartSelector.length) {
-    const chartFour = new ApexCharts(
+    const chartTwo = new ApexCharts(
       document.querySelector("#chartTwo"),
       chartTwoOptions,
     );
-    chartFour.render();
+    chartTwo.render();
   }
 };
 
