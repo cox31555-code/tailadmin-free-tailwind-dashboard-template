@@ -608,6 +608,89 @@
             <!-- Dropdown Menu End -->
           </li>
           <!-- Menu Item Claims -->
+
+          <!-- Menu Item Payments -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Payments' ? '':'Payments')"
+              class="menu-item group"
+              :class="(selected === 'Payments') || (page === 'processor' || page === 'basePricing') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Payments') || (page === 'processor' || page === 'basePricing') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M4.5 3.25C3.25736 3.25 2.25 4.25736 2.25 5.5V9.5C2.25 10.7426 3.25736 11.75 4.5 11.75H19.5C20.7426 11.75 21.75 10.7426 21.75 9.5V5.5C21.75 4.25736 20.7426 3.25 19.5 3.25H4.5ZM3.75 5.5C3.75 5.08579 4.08579 4.75 4.5 4.75H19.5C19.9142 4.75 20.25 5.08579 20.25 5.5V6.25H3.75V5.5ZM3.75 7.75V9.5C3.75 9.91421 4.08579 10.25 4.5 10.25H19.5C19.9142 10.25 20.25 9.91421 20.25 9.5V7.75H3.75ZM4.5 12.25C3.25736 12.25 2.25 13.2574 2.25 14.5V18.5C2.25 19.7426 3.25736 20.75 4.5 20.75H19.5C20.7426 20.75 21.75 19.7426 21.75 18.5V14.5C21.75 13.2574 20.7426 12.25 19.5 12.25H4.5ZM3.75 14.5C3.75 14.0858 4.08579 13.75 4.5 13.75H19.5C19.9142 13.75 20.25 14.0858 20.25 14.5V15.25H3.75V14.5ZM3.75 16.75V18.5C3.75 18.9142 4.08579 19.25 4.5 19.25H19.5C19.9142 19.25 20.25 18.9142 20.25 18.5V16.75H3.75Z"
+                  fill=""
+                />
+              </svg>
+
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'lg:hidden' : ''"
+              >
+                Payments
+              </span>
+
+              <svg
+                class="menu-item-arrow absolute right-2.5 top-1/2 -translate-y-1/2 stroke-current"
+                :class="[(selected === 'Payments') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'lg:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke=""
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="overflow-hidden transform translate"
+              :class="(selected === 'Payments') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'lg:hidden' : 'flex'"
+                class="flex flex-col gap-1 mt-2 menu-dropdown pl-9"
+              >
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'processor' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Processor
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'basePricing' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Base Pricing
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Payments -->
         </ul>
       </div>
 
