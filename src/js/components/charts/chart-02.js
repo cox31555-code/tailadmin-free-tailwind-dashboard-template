@@ -21,15 +21,15 @@ const chart02 = () => {
     series: [
       {
         name: "Annual",
-        data: [168, 185, 201, 198, 187, 195, 210],
+        data: [32, 38, 41, 39, 37, 35, 42],
       },
       {
         name: "Temporary",
-        data: [95, 112, 98, 106, 101, 97, 115],
+        data: [18, 22, 19, 25, 21, 19, 28],
       },
       {
         name: "Impound",
-        data: [78, 85, 82, 89, 84, 85, 92],
+        data: [12, 15, 14, 17, 16, 14, 19],
       },
     ],
     colors: ["#465fff", "#10B981", "#F59E0B"],
@@ -100,7 +100,7 @@ const chart02 = () => {
       },
       y: {
         formatter: function (val) {
-          return "$" + val + "K";
+          return val + " orders";
         },
       },
     },
