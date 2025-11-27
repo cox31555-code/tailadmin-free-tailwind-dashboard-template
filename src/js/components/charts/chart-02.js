@@ -2,7 +2,7 @@ import ApexCharts from "apexcharts";
 
 // ===== chartTwo - Bar Chart for Product Types
 const chart02 = () => {
-  // Generate last 7 days labels
+  // Generate last 7 days labels (simple day names only)
   const getLast7Days = () => {
     const days = [];
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -11,9 +11,7 @@ const chart02 = () => {
     for (let i = 6; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
-      const dayName = dayNames[date.getDay()];
-      const monthDay = (date.getMonth() + 1) + '/' + date.getDate();
-      days.push(dayName + ' ' + monthDay);
+      days.push(dayNames[date.getDay()]);
     }
 
     return days;
@@ -66,6 +64,12 @@ const chart02 = () => {
       },
       axisTicks: {
         show: false,
+      },
+      labels: {
+        style: {
+          fontSize: '12px',
+          fontWeight: 500,
+        },
       },
     },
     legend: {
