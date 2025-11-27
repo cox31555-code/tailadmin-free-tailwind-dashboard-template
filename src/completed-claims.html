@@ -30,7 +30,7 @@
 
       <!-- ===== Content Area Start ===== -->
       <div
-        class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
+        class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto"
       >
         <!-- Small Device Overlay Start -->
         <include src="./partials/overlay.html" />
@@ -42,28 +42,31 @@
 
         <!-- ===== Main Content Start ===== -->
         <main>
-          <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6">
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
             <!-- Breadcrumb Start -->
             <div x-data="{ pageName: `Completed Claims`}">
               <include src="./partials/breadcrumb.html" />
             </div>
             <!-- Breadcrumb End -->
 
-            <div
-              class="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12"
-            >
-              <div class="mx-auto w-full max-w-[630px] text-center">
-                <h3
-                  class="mb-4 text-theme-xl font-semibold text-gray-800 dark:text-white/90 sm:text-2xl"
+            <div class="space-y-5 sm:space-y-6">
+              <div
+                class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
+              >
+                <div class="px-5 py-4 sm:px-6 sm:py-5">
+                  <h3
+                    class="text-base font-medium text-gray-800 dark:text-white/90"
+                  >
+                    Completed Claims
+                  </h3>
+                </div>
+                <div
+                  class="p-5 border-t border-gray-100 dark:border-gray-800 sm:p-6"
                 >
-                  Completed Claims
-                </h3>
-
-                <p
-                  class="text-sm text-gray-500 dark:text-gray-400 sm:text-base"
-                >
-                  Completed claims content will be displayed here.
-                </p>
+                  <!-- ====== Table Six Start -->
+                  <include src="./partials/table/table-06.html" />
+                  <!-- ====== Table Six End -->
+                </div>
               </div>
             </div>
           </div>
