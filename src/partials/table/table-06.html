@@ -1,6 +1,24 @@
 <div
   class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
 >
+  <div class="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <div class="flex items-center gap-3">
+      <label class="text-theme-xs font-medium text-gray-500 dark:text-gray-400">Show</label>
+      <select class="rounded border border-gray-200 bg-white px-2 py-1 text-theme-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+        <option>10</option>
+        <option>25</option>
+        <option>50</option>
+      </select>
+      <label class="text-theme-xs font-medium text-gray-500 dark:text-gray-400">entries</label>
+    </div>
+
+    <input
+      type="text"
+      placeholder="Search..."
+      class="rounded border border-gray-200 px-3 py-1.5 text-theme-sm placeholder-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:placeholder-gray-500"
+    />
+  </div>
+
   <div class="max-w-full overflow-x-auto">
     <table class="min-w-full">
       <!-- table header start -->
@@ -20,7 +38,7 @@
               <p
                 class="font-medium text-gray-500 text-theme-xs dark:text-gray-400"
               >
-                Project Name
+                Position
               </p>
             </div>
           </th>
@@ -29,7 +47,7 @@
               <p
                 class="font-medium text-gray-500 text-theme-xs dark:text-gray-400"
               >
-                Team
+                Office
               </p>
             </div>
           </th>
@@ -38,7 +56,7 @@
               <p
                 class="font-medium text-gray-500 text-theme-xs dark:text-gray-400"
               >
-                Status
+                Age
               </p>
             </div>
           </th>
@@ -47,7 +65,16 @@
               <p
                 class="font-medium text-gray-500 text-theme-xs dark:text-gray-400"
               >
-                Budget
+                Start date
+              </p>
+            </div>
+          </th>
+          <th class="px-5 py-3 sm:px-6">
+            <div class="flex items-center">
+              <p
+                class="font-medium text-gray-500 text-theme-xs dark:text-gray-400"
+              >
+                Salary
               </p>
             </div>
           </th>
@@ -60,319 +87,429 @@
           <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 overflow-hidden rounded-full">
-                  <img src="./images/user/user-17.jpg" alt="brand" />
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-01.jpg" alt="Abram Schaefer" class="h-full w-full object-cover" />
                 </div>
 
-                <div>
-                  <span
-                    class="block font-medium text-gray-800 text-theme-sm dark:text-white/90"
-                  >
-                    Lindsey Curtis
-                  </span>
-                  <span
-                    class="block text-gray-500 text-theme-xs dark:text-gray-400"
-                  >
-                    Web Designer
-                  </span>
-                </div>
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
+                >
+                  Abram Schaefer
+                </span>
               </div>
             </div>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                Agency Website
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Sales Assistant
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <div class="flex -space-x-2">
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-22.jpg" alt="user" />
-                </div>
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-23.jpg" alt="user" />
-                </div>
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-24.jpg" alt="user" />
-                </div>
-              </div>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Edinburgh
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p
-                class="rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-700 dark:bg-success-500/15 dark:text-success-500"
-              >
-                Active
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              57
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">3.9K</p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              25 Apr, 2027
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $89,500
+            </p>
           </td>
         </tr>
+
         <tr>
           <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 overflow-hidden rounded-full">
-                  <img src="./images/user/user-18.jpg" alt="brand" />
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-02.jpg" alt="Abram Schaefer" class="h-full w-full object-cover" />
                 </div>
 
-                <div>
-                  <span
-                    class="block font-medium text-gray-800 text-theme-sm dark:text-white/90"
-                  >
-                    Kaiya George
-                  </span>
-                  <span
-                    class="block text-gray-500 text-theme-xs dark:text-gray-400"
-                  >
-                    Project Manager
-                  </span>
-                </div>
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
+                >
+                  Abram Schaefer
+                </span>
               </div>
             </div>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                Technology
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Sales Assistant
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <div class="flex -space-x-2">
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-25.jpg" alt="user" />
-                </div>
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-26.jpg" alt="user" />
-                </div>
-              </div>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Edinburgh
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p
-                class="rounded-full bg-warning-50 px-2 py-0.5 text-theme-xs font-medium text-warning-700 dark:bg-warning-500/15 dark:text-warning-400"
-              >
-                Pending
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              57
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                24.9K
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              25 Apr, 2027
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $89,500
+            </p>
           </td>
         </tr>
+
         <tr>
           <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 overflow-hidden rounded-full">
-                  <img src="./images/user/user-19.jpg" alt="brand" />
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-03.jpg" alt="Abram Schaefer" class="h-full w-full object-cover" />
                 </div>
 
-                <div>
-                  <span
-                    class="block font-medium text-gray-800 text-theme-sm dark:text-white/90"
-                  >
-                    Zain Geidt
-                  </span>
-                  <span
-                    class="block text-gray-500 text-theme-xs dark:text-gray-400"
-                  >
-                    Content Writer
-                  </span>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                Blog Writing
-              </p>
-            </div>
-          </td>
-          <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <div class="flex -space-x-2">
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
                 >
-                  <img src="./images/user/user-27.jpg" alt="user" />
-                </div>
+                  Abram Schaefer
+                </span>
               </div>
             </div>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p
-                class="rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-700 dark:bg-success-500/15 dark:text-success-500"
-              >
-                Active
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Sales Assistant
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                12.7K
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Edinburgh
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              57
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              25 Apr, 2027
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $89,500
+            </p>
           </td>
         </tr>
+
         <tr>
           <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 overflow-hidden rounded-full">
-                  <img src="./images/user/user-20.jpg" alt="brand" />
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-04.jpg" alt="Carla George" class="h-full w-full object-cover" />
                 </div>
 
-                <div>
-                  <span
-                    class="block font-medium text-gray-800 text-theme-sm dark:text-white/90"
-                  >
-                    Abram Schleifer
-                  </span>
-                  <span
-                    class="block text-gray-500 text-theme-xs dark:text-gray-400"
-                  >
-                    Digital Marketer
-                  </span>
-                </div>
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
+                >
+                  Carla George
+                </span>
               </div>
             </div>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                Social Media
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Sales Assistant
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <div class="flex -space-x-2">
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-28.jpg" alt="user" />
-                </div>
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-29.jpg" alt="user" />
-                </div>
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-30.jpg" alt="user" />
-                </div>
-              </div>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              London
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p
-                class="rounded-full bg-error-50 px-2 py-0.5 text-theme-xs font-medium text-error-700 dark:bg-error-500/15 dark:text-error-500"
-              >
-                Cancel
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              45
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">2.8K</p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              11 May, 2027
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $75,500
+            </p>
           </td>
         </tr>
+
         <tr>
           <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 overflow-hidden rounded-full">
-                  <img src="./images/user/user-21.jpg" alt="brand" />
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-05.jpg" alt="Carla George" class="h-full w-full object-cover" />
                 </div>
 
-                <div>
-                  <span
-                    class="block font-medium text-gray-800 text-theme-sm dark:text-white/90"
-                  >
-                    Carla George
-                  </span>
-                  <span
-                    class="block text-gray-500 text-theme-xs dark:text-gray-400"
-                  >
-                    Front-end Developer
-                  </span>
-                </div>
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
+                >
+                  Carla George
+                </span>
               </div>
             </div>
           </td>
           <td class="px-5 py-4 sm:px-6">
-            <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                Website
-              </p>
-            </div>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Sales Assistant
+            </p>
           </td>
           <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              London
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              45
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              11 May, 2027
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $75,500
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
-              <div class="flex -space-x-2">
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-31.jpg" alt="user" />
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-06.jpg" alt="Garrison Sanchez" class="h-full w-full object-cover" />
                 </div>
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
+
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
                 >
-                  <img src="./images/user/user-32.jpg" alt="user" />
-                </div>
-                <div
-                  class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                >
-                  <img src="./images/user/user-33.jpg" alt="user" />
-                </div>
+                  Garrison Sanchez
+                </span>
               </div>
             </div>
           </td>
           <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Senior Developer
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Tokyo
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              38
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              03 Mar, 2027
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $105,000
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
-              <p
-                class="rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-700 dark:bg-success-500/15 dark:text-success-500"
-              >
-                Active
-              </p>
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-07.jpg" alt="Janelle Howell" class="h-full w-full object-cover" />
+                </div>
+
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
+                >
+                  Janelle Howell
+                </span>
+              </div>
             </div>
           </td>
           <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Manager
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              New York
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              52
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              17 Feb, 2027
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $112,000
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">4,5K</p>
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-08.jpg" alt="Nicole Bridges" class="h-full w-full object-cover" />
+                </div>
+
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
+                >
+                  Nicole Bridges
+                </span>
+              </div>
             </div>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Designer
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Paris
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              31
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              08 Jan, 2027
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $92,000
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-09.jpg" alt="Landon Farmer" class="h-full w-full object-cover" />
+                </div>
+
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
+                >
+                  Landon Farmer
+                </span>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Product Manager
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Berlin
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              42
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              20 Dec, 2026
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $98,000
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 overflow-hidden rounded-full flex-shrink-0">
+                  <img src="./images/user/user-10.jpg" alt="Sarah Cooper" class="h-full w-full object-cover" />
+                </div>
+
+                <span
+                  class="font-medium text-gray-800 text-theme-sm dark:text-white/90"
+                >
+                  Sarah Cooper
+                </span>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Developer
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              San Francisco
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              29
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              15 Nov, 2026
+            </p>
+          </td>
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $95,000
+            </p>
           </td>
         </tr>
       </tbody>
