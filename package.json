@@ -7,7 +7,7 @@
     "start": "webpack serve --open --config webpack.config.js",
     "server": "node server.js",
     "dev": "concurrently \"npm start\" \"npm run server\"",
-    "build": "webpack --config webpack.config.js && npm run server &",
+    "build": "webpack --config webpack.config.js",
     "sort": "npx prettier --write src"
   },
   "keywords": [],
