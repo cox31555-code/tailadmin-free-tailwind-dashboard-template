@@ -100,35 +100,91 @@ app.post('/api/crisp/create-ticket', (req, res) => {
   }
 });
 
-// Webhook endpoint for Zapier Chat Zap
+// Webhook endpoint for Zapier Chat Zap - Receives actions from dashboard
 app.post('/api/webhook/crisp', (req, res) => {
   try {
     const data = req.body;
-    console.log('Webhook received from Zapier Chat Zap');
+    console.log('Webhook action received:', data.action, 'Session:', data.session_id);
 
-    // Handle different types of webhook payloads
-    if (data.conversations) {
-      // If the Zap sends an array of conversations
-      const conversations = Array.isArray(data.conversations) ? data.conversations : [data.conversations];
-      saveConversations(conversations);
-      console.log(`Saved ${conversations.length} conversations from webhook`);
-      res.json({ success: true, message: 'Conversations updated', count: conversations.length });
-    } else if (data.conversation) {
-      // If the Zap sends a single conversation
+    // Handle action-based requests from dashboard
+    if (data.action === 'send_message') {
       const conversations = loadConversations();
-      const existing = conversations.findIndex(c => c.id === data.conversation.id || c.session_id === data.conversation.session_id);
+      const conversation = conversations.find(c => c.session_id === data.session_id);
 
-      if (existing >= 0) {
-        conversations[existing] = data.conversation;
+      if (conversation) {
+        const newMessage = {
+          id: `msg_${Date.now()}`,
+          from: 'operator',
+          content: data.message,
+          timestamp: new Date().toISOString(),
+          author: data.operator || 'Support Agent'
+        };
+        conversation.messages.push(newMessage);
+        conversation.updated_at = new Date().toISOString();
+        saveConversations(conversations);
+        console.log(`Message sent to conversation ${data.session_id}`);
+        res.json({ success: true, message: 'Message sent' });
       } else {
-        conversations.push(data.conversation);
+        res.status(404).json({ success: false, error: 'Conversation not found' });
       }
+    } else if (data.action === 'update_status') {
+      const conversations = loadConversations();
+      const conversation = conversations.find(c => c.session_id === data.session_id);
 
-      saveConversations(conversations);
-      console.log(`Updated conversation: ${data.conversation.id || data.conversation.session_id}`);
-      res.json({ success: true, message: 'Conversation updated' });
+      if (conversation) {
+        conversation.state = data.status;
+        conversation.updated_at = new Date().toISOString();
+        saveConversations(conversations);
+        console.log(`Status updated to ${data.status} for conversation ${data.session_id}`);
+        res.json({ success: true, message: 'Status updated' });
+      } else {
+        res.status(404).json({ success: false, error: 'Conversation not found' });
+      }
+    } else if (data.action === 'add_note') {
+      const conversations = loadConversations();
+      const conversation = conversations.find(c => c.session_id === data.session_id);
+
+      if (conversation) {
+        if (!conversation.notes) conversation.notes = [];
+        conversation.notes.push({
+          id: `note_${Date.now()}`,
+          content: data.note,
+          timestamp: new Date().toISOString(),
+          author: data.operator || 'Support Agent'
+        });
+        conversation.updated_at = new Date().toISOString();
+        saveConversations(conversations);
+        console.log(`Note added to conversation ${data.session_id}`);
+        res.json({ success: true, message: 'Note added' });
+      } else {
+        res.status(404).json({ success: false, error: 'Conversation not found' });
+      }
+    } else if (data.action === 'create_contact') {
+      // Store contact data for Crisp
+      res.json({ success: true, message: 'Contact action received' });
+    } else if (data.conversations || data.conversation) {
+      // Handle incoming conversation data from Crisp (via Zapier trigger)
+      if (data.conversations) {
+        const conversations = Array.isArray(data.conversations) ? data.conversations : [data.conversations];
+        saveConversations(conversations);
+        console.log(`Saved ${conversations.length} conversations from Crisp`);
+        res.json({ success: true, message: 'Conversations updated', count: conversations.length });
+      } else if (data.conversation) {
+        const conversations = loadConversations();
+        const existing = conversations.findIndex(c => c.id === data.conversation.id || c.session_id === data.conversation.session_id);
+
+        if (existing >= 0) {
+          conversations[existing] = data.conversation;
+        } else {
+          conversations.push(data.conversation);
+        }
+
+        saveConversations(conversations);
+        console.log(`Updated conversation: ${data.conversation.id || data.conversation.session_id}`);
+        res.json({ success: true, message: 'Conversation updated' });
+      }
     } else {
-      // If sending raw conversation data
+      // Unknown payload structure - try to process as conversation data
       const conversations = loadConversations();
       const conversation = {
         id: data.id || data.session_id || `session_${Date.now()}`,
