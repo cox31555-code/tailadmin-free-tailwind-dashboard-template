@@ -100,6 +100,65 @@ app.post('/api/crisp/create-ticket', (req, res) => {
   }
 });
 
+// Webhook endpoint for Zapier Chat Zap
+app.post('/api/webhook/crisp', (req, res) => {
+  try {
+    const data = req.body;
+    console.log('Webhook received from Zapier Chat Zap');
+
+    // Handle different types of webhook payloads
+    if (data.conversations) {
+      // If the Zap sends an array of conversations
+      const conversations = Array.isArray(data.conversations) ? data.conversations : [data.conversations];
+      saveConversations(conversations);
+      console.log(`Saved ${conversations.length} conversations from webhook`);
+      res.json({ success: true, message: 'Conversations updated', count: conversations.length });
+    } else if (data.conversation) {
+      // If the Zap sends a single conversation
+      const conversations = loadConversations();
+      const existing = conversations.findIndex(c => c.id === data.conversation.id || c.session_id === data.conversation.session_id);
+
+      if (existing >= 0) {
+        conversations[existing] = data.conversation;
+      } else {
+        conversations.push(data.conversation);
+      }
+
+      saveConversations(conversations);
+      console.log(`Updated conversation: ${data.conversation.id || data.conversation.session_id}`);
+      res.json({ success: true, message: 'Conversation updated' });
+    } else {
+      // If sending raw conversation data
+      const conversations = loadConversations();
+      const conversation = {
+        id: data.id || data.session_id || `session_${Date.now()}`,
+        session_id: data.session_id || data.id || `session_${Date.now()}`,
+        visitor: data.visitor || { name: 'Unknown', email: data.email || '' },
+        state: data.state || 'unresolved',
+        created_at: data.created_at || new Date().toISOString(),
+        updated_at: data.updated_at || new Date().toISOString(),
+        messages: data.messages || [],
+        unread: data.unread || { operator: 0, visitor: 0 },
+        assigned_user_id: data.assigned_user_id || null
+      };
+
+      const existing = conversations.findIndex(c => c.id === conversation.id || c.session_id === conversation.session_id);
+      if (existing >= 0) {
+        conversations[existing] = conversation;
+      } else {
+        conversations.push(conversation);
+      }
+
+      saveConversations(conversations);
+      console.log(`Processed conversation: ${conversation.id}`);
+      res.json({ success: true, message: 'Conversation processed' });
+    }
+  } catch (error) {
+    console.error('Error processing webhook:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Refresh conversations endpoint (for manual sync with Zapier)
 app.post('/api/crisp/refresh', (req, res) => {
   console.log('Refresh requested - conversations in storage:', loadConversations().length);
