@@ -45,60 +45,6 @@ app.get('/api/crisp/conversations', (req, res) => {
   });
 });
 
-app.post('/api/crisp/send-message', (req, res) => {
-  try {
-    const { session_id, content } = req.body;
-
-    if (!session_id || !content) {
-      return res.status(400).json({ success: false, error: 'Missing session_id or content' });
-    }
-
-    const conversations = loadConversations();
-    const conversation = conversations.find(c => c.session_id === session_id);
-
-    if (conversation) {
-      const newMessage = {
-        id: `msg_${Date.now()}`,
-        from: 'operator',
-        content: content,
-        timestamp: new Date().toISOString(),
-        author: 'Support Agent'
-      };
-      conversation.messages.push(newMessage);
-      conversation.updated_at = new Date().toISOString();
-      saveConversations(conversations);
-    }
-
-    res.json({ success: true, message: 'Message sent successfully' });
-  } catch (error) {
-    console.error('Error sending message:', error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/crisp/create-ticket', (req, res) => {
-  try {
-    const { session_id } = req.body;
-
-    if (!session_id) {
-      return res.status(400).json({ success: false, error: 'Missing session_id' });
-    }
-
-    const conversations = loadConversations();
-    const conversation = conversations.find(c => c.session_id === session_id);
-
-    if (conversation) {
-      conversation.state = 'resolved';
-      conversation.updated_at = new Date().toISOString();
-      saveConversations(conversations);
-    }
-
-    res.json({ success: true, ticket_id: `ticket_${Date.now()}` });
-  } catch (error) {
-    console.error('Error creating ticket:', error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
 
 // Webhook endpoint for Zapier Chat Zap - Receives actions from dashboard
 app.post('/api/webhook/crisp', (req, res) => {
