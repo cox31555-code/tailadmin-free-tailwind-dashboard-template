@@ -218,29 +218,40 @@
             });
           },
 
-          sendMessage() {
+          async sendMessage() {
             if (!this.replyMessage.trim() || !this.selectedConversation) return;
 
-            const newMessage = {
-              id: `msg_${Date.now()}`,
-              from: 'operator',
-              content: this.replyMessage,
-              timestamp: new Date()
-            };
+            const message = this.replyMessage;
+            const sessionId = this.selectedConversation.session_id || this.selectedConversation.id;
 
-            this.selectedConversation.messages.push(newMessage);
-            
-            const conversationIndex = this.conversations.findIndex(c => c.id === this.selectedConversation.id);
-            if (conversationIndex >= 0) {
-              this.conversations[conversationIndex].messages.push(newMessage);
+            try {
+              const response = await fetch('/api/crisp/send-message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  session_id: sessionId,
+                  content: message
+                })
+              });
+
+              const data = await response.json();
+              if (data.success) {
+                this.replyMessage = '';
+                await this.initializeConversations();
+                const updated = this.conversations.find(c => (c.id || c.session_id) === (this.selectedConversation.session_id || this.selectedConversation.id));
+                if (updated) this.selectedConversation = JSON.parse(JSON.stringify(updated));
+
+                this.$nextTick(() => {
+                  const container = document.getElementById('messagesContainer');
+                  if (container) container.scrollTop = container.scrollHeight;
+                });
+              } else {
+                alert('Failed to send message');
+              }
+            } catch (error) {
+              console.error('Error sending message:', error);
+              alert('Error sending message');
             }
-
-            this.replyMessage = '';
-            
-            this.$nextTick(() => {
-              const container = document.getElementById('messagesContainer');
-              if (container) container.scrollTop = container.scrollHeight;
-            });
           },
 
           createTicket() {
