@@ -384,6 +384,89 @@
                 </div>
               </div>
             </div>
+
+            <div
+              class="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6"
+            >
+              <h4
+                class="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6 mb-6"
+              >
+                Create User
+              </h4>
+
+              <form class="flex flex-col gap-6">
+                <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7">
+                  <!-- Name Field -->
+                  <div>
+                    <label
+                      class="mb-2 block text-sm font-medium text-gray-800 dark:text-white/90"
+                    >
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter full name"
+                      class="w-full rounded border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 placeholder-gray-400 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500"
+                    />
+                  </div>
+
+                  <!-- Email Field -->
+                  <div>
+                    <label
+                      class="mb-2 block text-sm font-medium text-gray-800 dark:text-white/90"
+                    >
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="Enter email address"
+                      class="w-full rounded border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 placeholder-gray-400 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500"
+                    />
+                  </div>
+
+                  <!-- Password Field -->
+                  <div>
+                    <label
+                      class="mb-2 block text-sm font-medium text-gray-800 dark:text-white/90"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="Enter password"
+                      class="w-full rounded border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 placeholder-gray-400 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500"
+                    />
+                  </div>
+
+                  <!-- Role Dropdown -->
+                  <div>
+                    <label
+                      class="mb-2 block text-sm font-medium text-gray-800 dark:text-white/90"
+                    >
+                      Role
+                    </label>
+                    <select
+                      class="w-full rounded border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    >
+                      <option value="">Select a role</option>
+                      <option value="admin">Admin</option>
+                      <option value="support">Support</option>
+                      <option value="basic">Basic</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex items-center justify-end gap-2">
+                  <button
+                    type="submit"
+                    class="flex items-center justify-center gap-2 rounded-full border border-blue-500 bg-blue-500 px-6 py-3 text-sm font-medium text-white shadow-theme-xs hover:bg-blue-600 hover:border-blue-600 dark:hover:bg-blue-600"
+                  >
+                    Create User
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </main>
         <!-- ===== Main Content End ===== -->
