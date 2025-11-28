@@ -139,8 +139,21 @@
       };
 
       window.openCrispChat = function() {
-        if (typeof $crisp !== "undefined") {
+        // Check if Crisp is loaded
+        if (typeof $crisp !== "undefined" && $crisp) {
           $crisp.push(["do", "chat:open"]);
+          console.log("Crisp chat opened");
+        } else {
+          // If Crisp not loaded yet, try again in 1 second
+          console.warn("Crisp not ready, retrying...");
+          setTimeout(() => {
+            if (typeof $crisp !== "undefined" && $crisp) {
+              $crisp.push(["do", "chat:open"]);
+              console.log("Crisp chat opened (retry)");
+            } else {
+              console.error("Crisp failed to load");
+            }
+          }, 1000);
         }
       };
 
