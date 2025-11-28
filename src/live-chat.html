@@ -59,18 +59,26 @@
         // Helper function to send data to Zapier
         function sendToZapier(webhookUrl, data) {
           if (!webhookUrl.includes("YOUR_WEBHOOK_ID")) {
+            const payload = {
+              ...data,
+              timestamp: new Date().toISOString(),
+              domain: "limitlesscover.co.uk",
+              page: "live-chat"
+            };
+            console.log("Sending to webhook:", webhookUrl, payload);
             fetch(webhookUrl, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
               },
-              body: JSON.stringify({
-                ...data,
-                timestamp: new Date().toISOString(),
-                domain: "limitlesscover.co.uk",
-                page: "live-chat"
-              })
-            }).catch(error => console.log("Zapier notification sent"));
+              body: JSON.stringify(payload)
+            })
+            .then(response => {
+              console.log("Webhook response status:", response.status);
+              return response.json();
+            })
+            .then(data => console.log("Webhook success:", data))
+            .catch(error => console.error("Webhook error:", error));
           }
         }
 
