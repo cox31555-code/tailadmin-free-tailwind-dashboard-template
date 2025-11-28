@@ -180,7 +180,7 @@
                 </svg>
               </button>
               <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-40">
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
+                <button @click="openPromoEdit('WINTER15', '15', '50', 'Jan 31, 2025', 'Inactive', '0')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
                   Edit
                 </button>
                 <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
@@ -221,7 +221,7 @@
                 </svg>
               </button>
               <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-40">
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
+                <button @click="openPromoEdit('NEWUSER30', '30', '50', 'Mar 15, 2025', 'Active', '0')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
                   Edit
                 </button>
                 <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
@@ -262,7 +262,7 @@
                 </svg>
               </button>
               <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-40">
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
+                <button @click="openPromoEdit('SPRING10', '10', '50', 'Apr 30, 2025', 'Active', '0')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
                   Edit
                 </button>
                 <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
@@ -277,7 +277,7 @@
     </table>
   </div>
 
-  <div class="flex items-center justify-center gap-1 border-t border-gray-200 px-5 py-4 dark:border-gray-700 sm:px-6 mt-48">
+  <div class="flex items-center justify-center gap-1 border-t border-gray-200 px-5 py-4 dark:border-gray-700 sm:px-6">
     <button class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
       Previous
     </button>
