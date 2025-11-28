@@ -171,6 +171,88 @@ app.post('/api/crisp/refresh', (req, res) => {
   });
 });
 
+// Test endpoint to verify webhook is working
+app.get('/api/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Webhook endpoint is working',
+    webhook_url: '/api/webhook/crisp',
+    test_instructions: 'POST JSON data to /api/webhook/crisp with action field'
+  });
+});
+
+// Test webhook with sample data
+app.post('/api/test/webhook', (req, res) => {
+  try {
+    const testPayload = {
+      action: 'send_message',
+      session_id: 'session_test_12345',
+      message: 'Test message from Builder.io dashboard',
+      operator: 'Dashboard Agent',
+      status: 'resolved',
+      note: 'Test internal note',
+      email: 'test@example.com',
+      name: 'Test Customer',
+      phone: '+1234567890',
+      company: 'Test Company',
+      segments: 'vip-customer',
+      notepad: 'Test notepad content'
+    };
+
+    // Forward to webhook handler
+    console.log('Testing webhook with payload:', testPayload);
+
+    // Manually call webhook logic
+    const data = testPayload;
+
+    if (data.action === 'send_message') {
+      const conversations = loadConversations();
+      const conversation = conversations.find(c => c.session_id === data.session_id);
+
+      if (!conversation) {
+        // Create test conversation if it doesn't exist
+        const newConversation = {
+          id: data.session_id,
+          session_id: data.session_id,
+          visitor: {
+            name: data.name || 'Test Customer',
+            email: data.email || 'test@example.com'
+          },
+          state: data.status || 'unresolved',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          messages: [],
+          unread: { operator: 0, visitor: 0 }
+        };
+        conversations.push(newConversation);
+      }
+
+      const updatedConversation = conversations.find(c => c.session_id === data.session_id);
+      if (updatedConversation) {
+        const newMessage = {
+          id: `msg_${Date.now()}`,
+          from: 'operator',
+          content: data.message,
+          timestamp: new Date().toISOString(),
+          author: data.operator || 'Support Agent'
+        };
+        updatedConversation.messages.push(newMessage);
+        updatedConversation.updated_at = new Date().toISOString();
+        saveConversations(conversations);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Test webhook executed successfully',
+      conversations_loaded: loadConversations().length
+    });
+  } catch (error) {
+    console.error('Test webhook error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Fallback to index.html for single-page app
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
