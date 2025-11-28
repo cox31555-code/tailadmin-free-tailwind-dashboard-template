@@ -16,7 +16,7 @@
     x-init="
       darkMode = JSON.parse(localStorage.getItem('darkMode'));
       $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
-      loadConversations();
+      initializeConversations();
       startRealTimePolling();
     "
     :class="{'dark bg-gray-900': darkMode === true}"
@@ -64,14 +64,7 @@
 
                 <!-- Conversations List -->
                 <div class="flex-1 overflow-y-auto">
-                  <template x-if="loading">
-                    <div class="px-5 py-8 text-center">
-                      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
-                      <p class="mt-3 text-sm text-gray-500">Loading conversations...</p>
-                    </div>
-                  </template>
-
-                  <template x-if="!loading && conversations.length === 0">
+                  <template x-if="conversations.length === 0">
                     <div class="px-5 py-8 text-center">
                       <svg class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -80,15 +73,15 @@
                     </div>
                   </template>
 
-                  <template x-for="conversation in conversations" :key="conversation.session_id">
+                  <template x-for="conversation in conversations" :key="conversation.id">
                     <button
                       @click="selectConversation(conversation)"
-                      :class="selectedConversation?.session_id === conversation.session_id ? 'bg-blue-50 dark:bg-blue-500/10 border-l-4 border-l-blue-500' : 'hover:bg-gray-50 dark:hover:bg-gray-800/30'"
+                      :class="selectedConversation?.id === conversation.id ? 'bg-blue-50 dark:bg-blue-500/10 border-l-4 border-l-blue-500' : 'hover:bg-gray-50 dark:hover:bg-gray-800/30'"
                       class="w-full border-b border-gray-200 px-4 py-3 text-left dark:border-gray-800 transition-colors"
                     >
-                      <p class="font-medium text-gray-800 dark:text-gray-200 text-sm" x-text="conversation.visitor?.name || 'Anonymous Visitor'"></p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-text="conversation.visitor?.email || 'No email'"></p>
-                      <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" x-text="conversation.state || 'Active'"></p>
+                      <p class="font-medium text-gray-800 dark:text-gray-200 text-sm" x-text="conversation.visitor.name"></p>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-text="conversation.visitor.email"></p>
+                      <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" x-text="conversation.state"></p>
                     </button>
                   </template>
                 </div>
@@ -96,9 +89,8 @@
                 <!-- Refresh Button -->
                 <div class="border-t border-gray-200 p-3 dark:border-gray-800">
                   <button
-                    @click="loadConversations()"
-                    :disabled="loading"
-                    class="w-full rounded-lg bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 disabled:opacity-50"
+                    @click="initializeConversations()"
+                    class="w-full rounded-lg bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                   >
                     Refresh
                   </button>
@@ -123,17 +115,15 @@
                   <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
                     <div class="flex items-center justify-between">
                       <div>
-                        <h3 class="font-semibold text-gray-800 dark:text-white/90" x-text="selectedConversation.visitor?.name || 'Unknown Visitor'"></h3>
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" x-text="selectedConversation.visitor?.email || 'No email'"></p>
+                        <h3 class="font-semibold text-gray-800 dark:text-white/90" x-text="selectedConversation.visitor.name"></h3>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" x-text="selectedConversation.visitor.email"></p>
                       </div>
                       <div class="flex gap-2">
                         <button
                           @click="createTicket()"
-                          :disabled="creatingTicket"
-                          class="rounded-lg border border-amber-500 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-600 hover:bg-amber-100 dark:border-amber-400 dark:bg-amber-500/10 dark:text-amber-400 dark:hover:bg-amber-500/20 disabled:opacity-50"
+                          class="rounded-lg border border-amber-500 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-600 hover:bg-amber-100 dark:border-amber-400 dark:bg-amber-500/10 dark:text-amber-400 dark:hover:bg-amber-500/20"
                         >
-                          <span x-show="!creatingTicket">Create Ticket</span>
-                          <span x-show="creatingTicket">Creating...</span>
+                          Create Ticket
                         </button>
                         <button
                           @click="selectedConversation = null"
@@ -152,7 +142,7 @@
                         <div :class="message.from === 'visitor' ? 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200' : 'bg-blue-500 text-white'" class="max-w-xs rounded-lg px-4 py-2">
                           <p class="text-sm" x-text="message.content"></p>
                           <p :class="message.from === 'visitor' ? 'text-gray-600 dark:text-gray-400' : 'text-blue-100'" class="mt-1 text-xs">
-                            <span x-text="new Date(message.timestamp || Date.now()).toLocaleTimeString()"></span>
+                            <span x-text="new Date(message.timestamp).toLocaleTimeString()"></span>
                           </p>
                         </div>
                       </div>
@@ -170,11 +160,10 @@
                       />
                       <button
                         type="submit"
-                        :disabled="!replyMessage.trim() || sendingMessage"
+                        :disabled="!replyMessage.trim()"
                         class="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white hover:bg-blue-600 dark:hover:bg-blue-600 disabled:bg-gray-400"
                       >
-                        <span x-show="!sendingMessage">Send</span>
-                        <span x-show="sendingMessage">Sending...</span>
+                        Send
                       </button>
                     </form>
                   </div>
@@ -201,30 +190,84 @@
           conversations: [],
           selectedConversation: null,
           replyMessage: '',
-          loading: false,
-          sendingMessage: false,
-          creatingTicket: false,
           pollInterval: null,
 
-          async loadConversations() {
-            this.loading = true;
-            try {
-              const result = await fetch('/api/crisp/conversations', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-              }).then(r => r.json());
-              
-              this.conversations = result.conversations || [];
-              console.log('Loaded conversations:', this.conversations);
-            } catch (error) {
-              console.error('Failed to load conversations:', error);
-            } finally {
-              this.loading = false;
-            }
+          initializeConversations() {
+            this.conversations = [
+              {
+                id: 'conv_001',
+                visitor: {
+                  name: 'John Doe',
+                  email: 'john@example.com'
+                },
+                state: 'active',
+                createdAt: new Date(Date.now() - 3600000),
+                messages: [
+                  {
+                    id: 'msg_001',
+                    from: 'visitor',
+                    content: 'Hello, I need help with my insurance claim',
+                    timestamp: new Date(Date.now() - 600000)
+                  },
+                  {
+                    id: 'msg_002',
+                    from: 'operator',
+                    content: 'Hi John! I\'d be happy to help. Can you provide your policy number?',
+                    timestamp: new Date(Date.now() - 300000)
+                  },
+                  {
+                    id: 'msg_003',
+                    from: 'visitor',
+                    content: 'Sure, it\'s LP-2024-001234',
+                    timestamp: new Date(Date.now() - 60000)
+                  }
+                ]
+              },
+              {
+                id: 'conv_002',
+                visitor: {
+                  name: 'Sarah Smith',
+                  email: 'sarah@example.com'
+                },
+                state: 'active',
+                createdAt: new Date(Date.now() - 7200000),
+                messages: [
+                  {
+                    id: 'msg_101',
+                    from: 'visitor',
+                    content: 'When will my claim be processed?',
+                    timestamp: new Date(Date.now() - 1800000)
+                  },
+                  {
+                    id: 'msg_102',
+                    from: 'operator',
+                    content: 'Claims typically take 5-7 business days. I\'ll check your status.',
+                    timestamp: new Date(Date.now() - 900000)
+                  }
+                ]
+              },
+              {
+                id: 'conv_003',
+                visitor: {
+                  name: 'Michael Johnson',
+                  email: 'michael@example.com'
+                },
+                state: 'active',
+                createdAt: new Date(Date.now() - 1800000),
+                messages: [
+                  {
+                    id: 'msg_201',
+                    from: 'visitor',
+                    content: 'How do I renew my policy?',
+                    timestamp: new Date(Date.now() - 300000)
+                  }
+                ]
+              }
+            ];
           },
 
           selectConversation(conversation) {
-            this.selectedConversation = conversation;
+            this.selectedConversation = JSON.parse(JSON.stringify(conversation));
             this.replyMessage = '';
             this.$nextTick(() => {
               const container = document.getElementById('messagesContainer');
@@ -232,75 +275,50 @@
             });
           },
 
-          async sendMessage() {
+          sendMessage() {
             if (!this.replyMessage.trim() || !this.selectedConversation) return;
 
-            this.sendingMessage = true;
-            const sessionId = this.selectedConversation.session_id;
-            const message = this.replyMessage;
+            const newMessage = {
+              id: `msg_${Date.now()}`,
+              from: 'operator',
+              content: this.replyMessage,
+              timestamp: new Date()
+            };
 
-            try {
-              const result = await fetch('/api/crisp/send-message', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  session_id: sessionId,
-                  content: message
-                })
-              }).then(r => r.json());
-
-              if (result.success) {
-                this.replyMessage = '';
-                await this.loadConversations();
-                if (this.selectedConversation) {
-                  const updated = this.conversations.find(c => c.session_id === sessionId);
-                  if (updated) this.selectedConversation = updated;
-                }
-              } else {
-                alert('Failed to send message');
-              }
-            } catch (error) {
-              console.error('Failed to send message:', error);
-              alert('Error sending message');
-            } finally {
-              this.sendingMessage = false;
+            this.selectedConversation.messages.push(newMessage);
+            
+            const conversationIndex = this.conversations.findIndex(c => c.id === this.selectedConversation.id);
+            if (conversationIndex >= 0) {
+              this.conversations[conversationIndex].messages.push(newMessage);
             }
+
+            this.replyMessage = '';
+            
+            this.$nextTick(() => {
+              const container = document.getElementById('messagesContainer');
+              if (container) container.scrollTop = container.scrollHeight;
+            });
           },
 
-          async createTicket() {
+          createTicket() {
             if (!this.selectedConversation) return;
-
-            this.creatingTicket = true;
-            const sessionId = this.selectedConversation.session_id;
-
-            try {
-              const result = await fetch('/api/crisp/create-ticket', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ session_id: sessionId })
-              }).then(r => r.json());
-
-              if (result.success) {
-                alert('Ticket created successfully');
-                await this.loadConversations();
-              } else {
-                alert('Failed to create ticket');
-              }
-            } catch (error) {
-              console.error('Failed to create ticket:', error);
-              alert('Error creating ticket');
-            } finally {
-              this.creatingTicket = false;
+            
+            this.selectedConversation.state = 'ticket_created';
+            
+            const conversationIndex = this.conversations.findIndex(c => c.id === this.selectedConversation.id);
+            if (conversationIndex >= 0) {
+              this.conversations[conversationIndex].state = 'ticket_created';
             }
+            
+            alert(`Ticket created for ${this.selectedConversation.visitor.name}`);
           },
 
           startRealTimePolling() {
             this.pollInterval = setInterval(() => {
-              this.loadConversations();
               if (this.selectedConversation) {
-                const updated = this.conversations.find(c => c.session_id === this.selectedConversation.session_id);
+                const updated = this.conversations.find(c => c.id === this.selectedConversation.id);
                 if (updated) {
-                  this.selectedConversation = updated;
+                  this.selectedConversation = JSON.parse(JSON.stringify(updated));
                   this.$nextTick(() => {
                     const container = document.getElementById('messagesContainer');
                     if (container) container.scrollTop = container.scrollHeight;
