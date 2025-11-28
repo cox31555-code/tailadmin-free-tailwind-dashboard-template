@@ -44,7 +44,7 @@ const chart02 = () => {
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "55%",
+        columnWidth: "80%",
         borderRadius: 5,
         borderRadiusApplication: "end",
       },
