@@ -144,8 +144,8 @@
       };
 
       window.closeCrispChat = function() {
-        if (typeof $crisp !== "undefined") {
-          $crisp.push(["do", "chat:close"]);
+        if (typeof window.$crisp !== "undefined") {
+          window.$crisp.push(["do", "chat:close"]);
         }
       };
     </script>
