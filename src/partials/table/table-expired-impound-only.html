@@ -1,0 +1,162 @@
+<div
+  class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
+  x-data="{
+    policies: [
+      { name: 'Emily Brown', price: '$150.00', email: 'emily.brown@example.com', phone: '07967890123', vehicle: 'Honda Civic', policyStart: 'Dec 15, 2024', policyEnd: 'Jan 15, 2024 11:59 PM' },
+      { name: 'Robert Lee', price: '$175.00', email: 'robert.lee@example.com', phone: '07978901234', vehicle: 'Toyota Corolla', policyStart: 'Dec 10, 2024', policyEnd: 'Jan 10, 2024 11:59 PM' }
+    ],
+    isExpired(dateStr) {
+      const policyEndDate = new Date(dateStr);
+      const currentDate = new Date();
+      return policyEndDate < currentDate;
+    },
+    getExpiredPolicies() {
+      return this.policies.filter(policy => this.isExpired(policy.policyEnd));
+    }
+  }"
+>
+  <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <div>
+      <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
+        Expired Impound Policies
+      </h3>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+      >
+        <svg
+          class="stroke-current fill-white dark:fill-gray-800"
+          width="16"
+          height="16"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M2.29004 5.90393H17.7067"
+            stroke=""
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M17.7075 14.0961H2.29085"
+            stroke=""
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M12.0826 3.33331C13.5024 3.33331 14.6534 4.48431 14.6534 5.90414C14.6534 7.32398 13.5024 8.47498 12.0826 8.47498C10.6627 8.47498 9.51172 7.32398 9.51172 5.90415C9.51172 4.48432 10.6627 3.33331 12.0826 3.33331Z"
+            fill=""
+            stroke=""
+            stroke-width="1.5"
+          />
+          <path
+            d="M7.91745 11.525C6.49762 11.525 5.34662 12.676 5.34662 14.0959C5.34661 15.5157 6.49762 16.6667 7.91745 16.6667C9.33728 16.6667 10.4883 15.5157 10.4883 14.0959C10.4883 12.676 9.33728 11.525 7.91745 11.525Z"
+            fill=""
+            stroke=""
+            stroke-width="1.5"
+          />
+        </svg>
+        Filter
+      </button>
+
+      <div class="flex items-center gap-2">
+        <span class="text-theme-sm text-gray-600 dark:text-gray-400">Show</span>
+        <select class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-gray-600 dark:focus:border-brand-600">
+          <option value="10">10</option>
+          <option value="25" selected>25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span class="text-theme-sm text-gray-600 dark:text-gray-400">entries</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-full overflow-x-auto">
+    <table class="min-w-full table-auto">
+      <thead class="bg-gray-50 dark:bg-gray-800/50">
+        <tr class="border-b-2 border-gray-200 dark:border-gray-700">
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Customer Name</p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Price</p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Email</p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Phone</p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Vehicle</p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Policy Start</p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Policy End</p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Actions</p>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-white/[0.03]">
+        <template x-for="policy in getExpiredPolicies()" :key="policy.name + policy.policyEnd">
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+            <td class="px-5 py-4 sm:px-6">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90" x-text="policy.name"></p>
+            </td>
+            <td class="px-5 py-3 sm:px-6">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90" x-text="policy.price"></p>
+            </td>
+            <td class="px-5 py-3 sm:px-6">
+              <p class="text-gray-500 text-theme-sm dark:text-gray-400" x-text="policy.email"></p>
+            </td>
+            <td class="px-5 py-3 sm:px-6">
+              <p class="text-gray-500 text-theme-sm dark:text-gray-400" x-text="policy.phone"></p>
+            </td>
+            <td class="px-5 py-3 sm:px-6">
+              <p class="text-gray-500 text-theme-sm dark:text-gray-400" x-text="policy.vehicle"></p>
+            </td>
+            <td class="px-5 py-3 sm:px-6">
+              <p class="text-gray-500 text-theme-sm dark:text-gray-400" x-text="policy.policyStart"></p>
+            </td>
+            <td class="px-5 py-3 sm:px-6">
+              <p class="text-gray-500 text-theme-sm dark:text-gray-400" x-text="policy.policyEnd"></p>
+            </td>
+            <td class="px-5 py-3 sm:px-6">
+              <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+                <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                  Actions
+                  <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                </button>
+                <div x-show="actionsOpen" x-transition class="absolute right-0 mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-10">
+                  <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">View</button>
+                  <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03]">Edit</button>
+                  <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Delete</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex items-center justify-center gap-1 border-t border-gray-200 px-5 py-4 dark:border-gray-700 sm:px-6">
+    <button class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">Previous</button>
+    <div class="flex items-center gap-1">
+      <button class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500 text-theme-sm font-medium text-white">1</button>
+    </div>
+    <button class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">Next</button>
+  </div>
+</div>
