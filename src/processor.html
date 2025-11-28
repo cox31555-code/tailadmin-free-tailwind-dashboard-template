@@ -332,15 +332,25 @@
                                 />
                               </svg>
                             </div>
-                            <div>
+                            <div class="flex-1">
                               <h5
                                 class="font-semibold text-gray-800 dark:text-white/90"
                               >
                                 Mollie 1
                               </h5>
-                              <p class="text-sm text-gray-500 dark:text-gray-400">
-                                European payment processing
-                              </p>
+                              <div x-show="!editingMollie1" @click="editingMollie1 = true" class="text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:text-brand-600 dark:hover:text-brand-400 transition-colors" title="Click to edit">
+                                <span x-text="mollie1Desc"></span>
+                              </div>
+                              <input
+                                x-show="editingMollie1"
+                                x-model="mollie1Desc"
+                                type="text"
+                                @blur="editingMollie1 = false"
+                                @keydown.escape="editingMollie1 = false"
+                                @keydown.enter="editingMollie1 = false"
+                                class="w-full text-sm border border-brand-500 rounded px-2 py-1 text-gray-800 dark:text-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+                                autofocus
+                              />
                             </div>
                           </div>
                           <span
