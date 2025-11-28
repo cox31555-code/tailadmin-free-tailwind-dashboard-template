@@ -225,12 +225,14 @@
             const sessionId = this.selectedConversation.session_id || this.selectedConversation.id;
 
             try {
-              const response = await fetch('/api/crisp/send-message', {
+              const response = await fetch('/api/webhook/crisp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                  action: 'send_message',
                   session_id: sessionId,
-                  content: message
+                  message: message,
+                  operator: 'Dashboard Admin'
                 })
               });
 
