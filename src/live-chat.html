@@ -12,11 +12,23 @@
     </title>
   </head>
   <body
-    x-data="{ page: 'liveChat', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-data="{
+      page: 'liveChat',
+      loaded: true,
+      darkMode: false,
+      stickyMenu: false,
+      sidebarToggle: false,
+      scrollTop: false,
+      openChatClick() {
+        if (typeof window.openCrispChat === 'function') {
+          window.openCrispChat();
+        }
+      }
+    }"
     x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
-         initializeCrispAndZapier();"
+         window.initializeCrispAndZapier();"
     :class="{'dark bg-gray-900': darkMode === true}"
   >
     <!-- ===== Preloader Start ===== -->
