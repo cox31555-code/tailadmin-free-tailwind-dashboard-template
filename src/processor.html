@@ -69,17 +69,23 @@
                   </div>
                 </div>
 
-                <div class="p-5 sm:p-6">
-                  <!-- Payment Provider Section -->
-                  <div class="mb-6" x-data="{
-                    provider: 'stripe',
-                    editingStripe: false,
-                    editingStripe2: false,
-                    editingStripe3: false,
-                    stripeDesc: 'Industry-leading payment processing',
-                    stripe2Desc: 'Advanced payment processing features',
-                    stripe3Desc: 'Enterprise-grade payment solutions'
-                  }">
+                <div class="p-5 sm:p-6" x-data="{
+                  activeProcessor: 'stripe',
+                  editingStripe: false,
+                  editingStripe2: false,
+                  editingStripe3: false,
+                  editingMollie1: false,
+                  editingMollie2: false,
+                  editingMollie3: false,
+                  stripeDesc: 'Industry-leading payment processing',
+                  stripe2Desc: 'Advanced payment processing features',
+                  stripe3Desc: 'Enterprise-grade payment solutions',
+                  mollie1Desc: 'European payment processing',
+                  mollie2Desc: 'Multi-currency payment support',
+                  mollie3Desc: 'Premium payment solutions'
+                }">
+                  <!-- Stripe Processors Section -->
+                  <div class="mb-6">
                     <div class="flex items-center gap-2 mb-4">
                       <svg
                         class="fill-gray-600 dark:fill-gray-400"
@@ -107,8 +113,8 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <!-- Stripe Option -->
                       <button
-                        @click="provider = 'stripe'"
-                        :class="provider === 'stripe' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        @click="activeProcessor = 'stripe'"
+                        :class="activeProcessor === 'stripe' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
                         class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
                       >
                         <div class="flex items-start justify-between">
@@ -152,7 +158,7 @@
                             </div>
                           </div>
                           <span
-                            x-show="provider === 'stripe'"
+                            x-show="activeProcessor === 'stripe'"
                             class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
                           >
                             Active
@@ -162,8 +168,8 @@
 
                       <!-- Stripe 2 Option -->
                       <button
-                        @click="provider = 'stripe2'"
-                        :class="provider === 'stripe2' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        @click="activeProcessor = 'stripe2'"
+                        :class="activeProcessor === 'stripe2' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
                         class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
                       >
                         <div class="flex items-start justify-between">
@@ -207,7 +213,7 @@
                             </div>
                           </div>
                           <span
-                            x-show="provider === 'stripe2'"
+                            x-show="activeProcessor === 'stripe2'"
                             class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
                           >
                             Active
@@ -217,8 +223,8 @@
 
                       <!-- Stripe 3 Option -->
                       <button
-                        @click="provider = 'stripe3'"
-                        :class="provider === 'stripe3' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        @click="activeProcessor = 'stripe3'"
+                        :class="activeProcessor === 'stripe3' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
                         class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
                       >
                         <div class="flex items-start justify-between">
@@ -262,7 +268,7 @@
                             </div>
                           </div>
                           <span
-                            x-show="provider === 'stripe3'"
+                            x-show="activeProcessor === 'stripe3'"
                             class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
                           >
                             Active
@@ -273,15 +279,7 @@
                   </div>
 
                   <!-- Mollie Processors Section -->
-                  <div class="mb-6" x-data="{
-                    mollieProvider: 'mollie1',
-                    editingMollie1: false,
-                    editingMollie2: false,
-                    editingMollie3: false,
-                    mollie1Desc: 'European payment processing',
-                    mollie2Desc: 'Multi-currency payment support',
-                    mollie3Desc: 'Premium payment solutions'
-                  }">
+                  <div class="mb-6">
                     <div class="flex items-center gap-2 mb-4">
                       <svg
                         class="fill-gray-600 dark:fill-gray-400"
@@ -309,8 +307,8 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <!-- Mollie 1 Option -->
                       <button
-                        @click="mollieProvider = 'mollie1'"
-                        :class="mollieProvider === 'mollie1' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        @click="activeProcessor = 'mollie1'"
+                        :class="activeProcessor === 'mollie1' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
                         class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
                       >
                         <div class="flex items-start justify-between">
@@ -354,7 +352,7 @@
                             </div>
                           </div>
                           <span
-                            x-show="mollieProvider === 'mollie1'"
+                            x-show="activeProcessor === 'mollie1'"
                             class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
                           >
                             Active
@@ -364,8 +362,8 @@
 
                       <!-- Mollie 2 Option -->
                       <button
-                        @click="mollieProvider = 'mollie2'"
-                        :class="mollieProvider === 'mollie2' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        @click="activeProcessor = 'mollie2'"
+                        :class="activeProcessor === 'mollie2' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
                         class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
                       >
                         <div class="flex items-start justify-between">
@@ -409,7 +407,7 @@
                             </div>
                           </div>
                           <span
-                            x-show="mollieProvider === 'mollie2'"
+                            x-show="activeProcessor === 'mollie2'"
                             class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
                           >
                             Active
@@ -419,8 +417,8 @@
 
                       <!-- Mollie 3 Option -->
                       <button
-                        @click="mollieProvider = 'mollie3'"
-                        :class="mollieProvider === 'mollie3' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        @click="activeProcessor = 'mollie3'"
+                        :class="activeProcessor === 'mollie3' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
                         class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
                       >
                         <div class="flex items-start justify-between">
@@ -464,7 +462,7 @@
                             </div>
                           </div>
                           <span
-                            x-show="mollieProvider === 'mollie3'"
+                            x-show="activeProcessor === 'mollie3'"
                             class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
                           >
                             Active
