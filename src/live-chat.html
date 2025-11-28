@@ -17,6 +17,8 @@
         window.$crisp = [];
         window.CRISP_TOKEN_ID = "80335e6a-e33e-478a-8ce3-1b88c05b4ad4";
 
+        console.log("Crisp initialization starting...");
+
         var d = document;
         var w = window;
 
@@ -27,6 +29,7 @@
             s.src = "https://client.crisp.chat/l.js";
             s.async = 1;
             s.defer = 1;
+            console.log("Loading Crisp script from client.crisp.chat/l.js");
             d.getElementsByTagName("head")[0].appendChild(s);
           }
         }
