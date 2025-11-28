@@ -273,7 +273,15 @@
                   </div>
 
                   <!-- Mollie Processors Section -->
-                  <div class="mb-6" x-data="{ mollieProvider: 'mollie1' }">
+                  <div class="mb-6" x-data="{
+                    mollieProvider: 'mollie1',
+                    editingMollie1: false,
+                    editingMollie2: false,
+                    editingMollie3: false,
+                    mollie1Desc: 'European payment processing',
+                    mollie2Desc: 'Multi-currency payment support',
+                    mollie3Desc: 'Premium payment solutions'
+                  }">
                     <div class="flex items-center gap-2 mb-4">
                       <svg
                         class="fill-gray-600 dark:fill-gray-400"
