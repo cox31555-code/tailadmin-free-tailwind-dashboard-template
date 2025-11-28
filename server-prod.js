@@ -35,7 +35,7 @@ app.post('/api/crisp/create-ticket', (req, res) => {
 });
 
 // Fallback to index.html for single-page app
-app.get('*', (req, res) => {
+app.get('/:path*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
