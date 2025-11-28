@@ -243,7 +243,7 @@
                 </svg>
               </button>
               <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-40">
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
+                <button @click="openMessage('frank.thomas@example.com', 'What are your rates for business liability insurance?', 'Received on April 1, 2024 at 3:15 PM')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
                   View
                 </button>
                 <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
@@ -289,7 +289,7 @@
                 </svg>
               </button>
               <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-40">
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
+                <button @click="openMessage('sarah.johnson@example.com', 'Could you please send me a quote for auto insurance?', 'Received on March 28, 2024 at 9:30 AM')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
                   View
                 </button>
                 <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
