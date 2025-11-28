@@ -12,7 +12,20 @@
     </title>
   </head>
   <body
-    x-data="{ page: 'promoCodes', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-data="{
+      page: 'promoCodes',
+      'loaded': true,
+      'darkMode': false,
+      'stickyMenu': false,
+      'sidebarToggle': false,
+      'scrollTop': false,
+      'promoCodeEditModal': false,
+      'selectedPromo': null,
+      openPromoEdit(code, savings, minSpend, expiryDate, status, uses) {
+        this.selectedPromo = { code, savings, minSpend, expiryDate, status, uses };
+        this.promoCodeEditModal = true;
+      }
+    }"
     x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
@@ -76,5 +89,8 @@
       <!-- ===== Content Area End ===== -->
     </div>
     <!-- ===== Page Wrapper End ===== -->
+
+    <!-- Promo Code Edit Modal -->
+    <include src="./partials/promo-code-edit-modal.html" />
   </body>
 </html>
