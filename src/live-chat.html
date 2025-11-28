@@ -11,12 +11,20 @@
       Live Chat | TailAdmin - Tailwind CSS Admin Dashboard Template
     </title>
 
-    <!-- Crisp Chat Integration Script -->
-    <script>
+    <!-- Crisp Chat Widget -->
+    <script type="text/javascript">
       window.$crisp = [];
       window.CRISP_TOKEN_ID = "80335e6a-e33e-478a-8ce3-1b88c05b4ad4";
+
+      // Load Crisp script
+      (function() {
+        var d = document;
+        var s = d.createElement("script");
+        s.src = "https://client.crisp.chat/l.js";
+        s.async = 1;
+        d.body.appendChild(s);
+      })();
     </script>
-    <script src="https://client.crisp.chat/l.js" async defer></script>
 
     <!-- Zapier Integration Script (Load Early) -->
     <script type="text/javascript">
