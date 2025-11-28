@@ -10,7 +10,7 @@
 
     <div class="flex items-center gap-2">
       <button
-        @click="selectedPromo = { code: '', savings: '', minSpend: '', expiryDate: '', status: 'Active', uses: '0', skipPayment: false }; promoCodeEditModal = true"
+        @click="openPromoAdd()"
         class="inline-flex items-center gap-2 rounded-lg border border-brand-500 bg-brand-500 px-4 py-2 text-theme-sm font-medium text-white shadow-theme-xs hover:bg-brand-600 hover:border-brand-600 dark:border-brand-600 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-600 dark:hover:border-brand-600"
       >
         <svg
