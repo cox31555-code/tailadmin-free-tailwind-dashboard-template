@@ -50,31 +50,28 @@
             >
               Promo Code
             </label>
-            <div class="flex items-center">
-              <span class="text-gray-700 dark:text-gray-400">£</span>
-              <input
-                type="text"
-                x-model="selectedPromo?.code"
-                placeholder="SAVE20"
-                class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ml-2"
-              />
-            </div>
+            <input
+              type="text"
+              x-model="selectedPromo?.code"
+              placeholder="SAVE20"
+              class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+            />
           </div>
 
           <div class="col-span-2 lg:col-span-1">
             <label
               class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
             >
-              Savings
+              % Saving
             </label>
             <div class="flex items-center">
-              <span class="text-gray-700 dark:text-gray-400">£</span>
               <input
                 type="text"
                 x-model="selectedPromo?.savings"
-                placeholder="10"
-                class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ml-2"
+                placeholder="20"
+                class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
               />
+              <span class="ml-2 text-gray-700 dark:text-gray-400">%</span>
             </div>
           </div>
 
@@ -101,15 +98,12 @@
             >
               Expiry Date
             </label>
-            <div class="flex items-center">
-              <span class="text-gray-700 dark:text-gray-400">£</span>
-              <input
-                type="text"
-                x-model="selectedPromo?.expiryDate"
-                placeholder="dd/mm/yyyy"
-                class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ml-2"
-              />
-            </div>
+            <input
+              type="text"
+              x-model="selectedPromo?.expiryDate"
+              placeholder="dd/mm/yyyy"
+              class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+            />
           </div>
 
           <div class="col-span-2 lg:col-span-1">
@@ -164,15 +158,12 @@
             >
               Number of Uses
             </label>
-            <div class="flex items-center">
-              <span class="text-gray-700 dark:text-gray-400">£</span>
-              <input
-                type="text"
-                x-model="selectedPromo?.uses"
-                placeholder="0"
-                class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ml-2"
-              />
-            </div>
+            <input
+              type="number"
+              x-model="selectedPromo?.uses"
+              placeholder="0"
+              class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+            />
           </div>
         </div>
       </div>
