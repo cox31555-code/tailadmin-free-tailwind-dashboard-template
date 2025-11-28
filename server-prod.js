@@ -16,7 +16,9 @@ app.use(express.static(path.join(__dirname, 'build')));
 const loadConversations = () => {
   try {
     const data = fs.readFileSync(path.join(__dirname, 'conversations.json'), 'utf8');
-    return JSON.parse(data).conversations || [];
+    const conversations = JSON.parse(data).conversations || [];
+    console.log(`Loaded ${conversations.length} conversations from storage`);
+    return conversations;
   } catch (error) {
     console.error('Error loading conversations:', error);
     return [];
