@@ -126,8 +126,8 @@
 
       // Also expose Crisp object methods for manual interactions (global)
       window.getCrispStatus = function() {
-        if (typeof $crisp !== "undefined") {
-          $crisp.push(["get", "session:data", function(data) {
+        if (typeof window.$crisp !== "undefined") {
+          window.$crisp.push(["get", "session:data", function(data) {
             console.log("Current chat session data:", data);
           }]);
         }
