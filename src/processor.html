@@ -71,7 +71,15 @@
 
                 <div class="p-5 sm:p-6">
                   <!-- Payment Provider Section -->
-                  <div class="mb-6" x-data="{ provider: 'stripe' }">
+                  <div class="mb-6" x-data="{
+                    provider: 'stripe',
+                    editingStripe: false,
+                    editingStripe2: false,
+                    editingStripe3: false,
+                    stripeDesc: 'Industry-leading payment processing',
+                    stripe2Desc: 'Advanced payment processing features',
+                    stripe3Desc: 'Enterprise-grade payment solutions'
+                  }">
                     <div class="flex items-center gap-2 mb-4">
                       <svg
                         class="fill-gray-600 dark:fill-gray-400"
