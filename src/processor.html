@@ -142,16 +142,16 @@
                         </div>
                       </button>
 
-                      <!-- Sumly Option -->
+                      <!-- Stripe 2 Option -->
                       <button
-                        @click="provider = 'sumly'"
-                        :class="provider === 'sumly' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        @click="provider = 'stripe2'"
+                        :class="provider === 'stripe2' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
                         class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
                       >
                         <div class="flex items-start justify-between">
                           <div class="flex items-center gap-3">
                             <div
-                              class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500"
+                              class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-600"
                             >
                               <svg
                                 class="fill-white"
@@ -162,11 +162,7 @@
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
-                                  d="M12 2L2 7L12 12L22 7L12 2Z"
-                                  fill=""
-                                />
-                                <path
-                                  d="M2 17L12 22L22 17V12L12 17L2 12V17Z"
+                                  d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"
                                   fill=""
                                 />
                               </svg>
@@ -175,15 +171,224 @@
                               <h5
                                 class="font-semibold text-gray-800 dark:text-white/90"
                               >
-                                Sumly
+                                Stripe 2
                               </h5>
                               <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Simple and affordable payment solutions
+                                Advanced payment processing features
                               </p>
                             </div>
                           </div>
                           <span
-                            x-show="provider === 'sumly'"
+                            x-show="provider === 'stripe2'"
+                            class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
+                          >
+                            Active
+                          </span>
+                        </div>
+                      </button>
+
+                      <!-- Stripe 3 Option -->
+                      <button
+                        @click="provider = 'stripe3'"
+                        :class="provider === 'stripe3' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
+                      >
+                        <div class="flex items-start justify-between">
+                          <div class="flex items-center gap-3">
+                            <div
+                              class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-600"
+                            >
+                              <svg
+                                class="fill-white"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"
+                                  fill=""
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <h5
+                                class="font-semibold text-gray-800 dark:text-white/90"
+                              >
+                                Stripe 3
+                              </h5>
+                              <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Enterprise-grade payment solutions
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            x-show="provider === 'stripe3'"
+                            class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
+                          >
+                            Active
+                          </span>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Mollie Processors Section -->
+                  <div class="mb-6" x-data="{ mollieProvider: 'mollie1' }">
+                    <div class="flex items-center gap-2 mb-4">
+                      <svg
+                        class="fill-gray-600 dark:fill-gray-400"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M4.5 3.25C3.25736 3.25 2.25 4.25736 2.25 5.5V9.5C2.25 10.7426 3.25736 11.75 4.5 11.75H19.5C20.7426 11.75 21.75 10.7426 21.75 9.5V5.5C21.75 4.25736 20.7426 3.25 19.5 3.25H4.5ZM3.75 5.5C3.75 5.08579 4.08579 4.75 4.5 4.75H19.5C19.9142 4.75 20.25 5.08579 20.25 5.5V6.25H3.75V5.5ZM3.75 7.75V9.5C3.75 9.91421 4.08579 10.25 4.5 10.25H19.5C19.9142 10.25 20.25 9.91421 20.25 9.5V7.75H3.75ZM4.5 12.25C3.25736 12.25 2.25 13.2574 2.25 14.5V18.5C2.25 19.7426 3.25736 20.75 4.5 20.75H19.5C20.7426 20.75 21.75 19.7426 21.75 18.5V14.5C21.75 13.2574 20.7426 12.25 19.5 12.25H4.5ZM3.75 14.5C3.75 14.0858 4.08579 13.75 4.5 13.75H19.5C19.9142 13.75 20.25 14.0858 20.25 14.5V15.25H3.75V14.5ZM3.75 16.75V18.5C3.75 18.9142 4.08579 19.25 4.5 19.25H19.5C19.9142 19.25 20.25 18.9142 20.25 18.5V16.75H3.75Z"
+                          fill=""
+                        />
+                      </svg>
+                      <h4 class="text-base font-semibold text-gray-800 dark:text-white/90">
+                        Mollie Processors
+                      </h4>
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      Select the Mollie payment provider for processing transactions
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <!-- Mollie 1 Option -->
+                      <button
+                        @click="mollieProvider = 'mollie1'"
+                        :class="mollieProvider === 'mollie1' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
+                      >
+                        <div class="flex items-start justify-between">
+                          <div class="flex items-center gap-3">
+                            <div
+                              class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-600"
+                            >
+                              <svg
+                                class="fill-white"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                                  fill=""
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <h5
+                                class="font-semibold text-gray-800 dark:text-white/90"
+                              >
+                                Mollie 1
+                              </h5>
+                              <p class="text-sm text-gray-500 dark:text-gray-400">
+                                European payment processing
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            x-show="mollieProvider === 'mollie1'"
+                            class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
+                          >
+                            Active
+                          </span>
+                        </div>
+                      </button>
+
+                      <!-- Mollie 2 Option -->
+                      <button
+                        @click="mollieProvider = 'mollie2'"
+                        :class="mollieProvider === 'mollie2' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
+                      >
+                        <div class="flex items-start justify-between">
+                          <div class="flex items-center gap-3">
+                            <div
+                              class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-600"
+                            >
+                              <svg
+                                class="fill-white"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                                  fill=""
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <h5
+                                class="font-semibold text-gray-800 dark:text-white/90"
+                              >
+                                Mollie 2
+                              </h5>
+                              <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Multi-currency payment support
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            x-show="mollieProvider === 'mollie2'"
+                            class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
+                          >
+                            Active
+                          </span>
+                        </div>
+                      </button>
+
+                      <!-- Mollie 3 Option -->
+                      <button
+                        @click="mollieProvider = 'mollie3'"
+                        :class="mollieProvider === 'mollie3' ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-gray-200 dark:border-gray-700'"
+                        class="relative rounded-xl border-2 p-5 text-left transition-all hover:border-brand-300"
+                      >
+                        <div class="flex items-start justify-between">
+                          <div class="flex items-center gap-3">
+                            <div
+                              class="flex h-10 w-10 items-center justify-center rounded-lg bg-green-600"
+                            >
+                              <svg
+                                class="fill-white"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                                  fill=""
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <h5
+                                class="font-semibold text-gray-800 dark:text-white/90"
+                              >
+                                Mollie 3
+                              </h5>
+                              <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Premium payment solutions
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            x-show="mollieProvider === 'mollie3'"
                             class="inline-flex items-center rounded-full bg-success-50 px-2.5 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
                           >
                             Active
