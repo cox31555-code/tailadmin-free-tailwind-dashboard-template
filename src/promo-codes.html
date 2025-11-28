@@ -19,8 +19,14 @@
       'stickyMenu': false,
       'sidebarToggle': false,
       'scrollTop': false,
+      'promoCodeAddModal': false,
       'promoCodeEditModal': false,
       'selectedPromo': null,
+      'newPromo': { code: '', savings: '', minSpend: '', expiryDate: '', status: 'Active', uses: '0', skipPayment: false },
+      openPromoAdd() {
+        this.newPromo = { code: '', savings: '', minSpend: '', expiryDate: '', status: 'Active', uses: '0', skipPayment: false };
+        this.promoCodeAddModal = true;
+      },
       openPromoEdit(code, savings, minSpend, expiryDate, status, uses, skipPayment = false) {
         this.selectedPromo = { code, savings, minSpend, expiryDate, status, uses, skipPayment };
         this.promoCodeEditModal = true;
@@ -89,6 +95,9 @@
       <!-- ===== Content Area End ===== -->
     </div>
     <!-- ===== Page Wrapper End ===== -->
+
+    <!-- Promo Code Add Modal -->
+    <include src="./partials/promo-code-add-modal.html" />
 
     <!-- Promo Code Edit Modal -->
     <include src="./partials/promo-code-edit-modal.html" />
