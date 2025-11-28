@@ -280,18 +280,37 @@
           },
 
           startRealTimePolling() {
-            this.pollInterval = setInterval(() => {
-              if (this.selectedConversation) {
-                const updated = this.conversations.find(c => c.id === this.selectedConversation.id);
-                if (updated) {
-                  this.selectedConversation = JSON.parse(JSON.stringify(updated));
-                  this.$nextTick(() => {
-                    const container = document.getElementById('messagesContainer');
-                    if (container) container.scrollTop = container.scrollHeight;
-                  });
+            this.pollInterval = setInterval(async () => {
+              try {
+                const response = await fetch('/api/crisp/conversations');
+                const data = await response.json();
+                if (data.success && data.conversations) {
+                  const updated = data.conversations.map(conv => ({
+                    ...conv,
+                    id: conv.id || conv.session_id
+                  }));
+
+                  // Update selected conversation if it has new messages
+                  if (this.selectedConversation) {
+                    const updatedConversation = updated.find(c =>
+                      (c.id || c.session_id) === (this.selectedConversation.id || this.selectedConversation.session_id)
+                    );
+                    if (updatedConversation && JSON.stringify(updatedConversation) !== JSON.stringify(this.selectedConversation)) {
+                      this.selectedConversation = JSON.parse(JSON.stringify(updatedConversation));
+                      this.$nextTick(() => {
+                        const container = document.getElementById('messagesContainer');
+                        if (container) container.scrollTop = container.scrollHeight;
+                      });
+                    }
+                  }
+
+                  // Update conversations list
+                  this.conversations = updated;
                 }
+              } catch (error) {
+                console.error('Error polling conversations:', error);
               }
-            }, 3000);
+            }, 2000);
           }
         };
       }
