@@ -21,8 +21,8 @@
       'scrollTop': false,
       'promoCodeEditModal': false,
       'selectedPromo': null,
-      openPromoEdit(code, savings, minSpend, expiryDate, status, uses) {
-        this.selectedPromo = { code, savings, minSpend, expiryDate, status, uses };
+      openPromoEdit(code, savings, minSpend, expiryDate, status, uses, skipPayment = false) {
+        this.selectedPromo = { code, savings, minSpend, expiryDate, status, uses, skipPayment };
         this.promoCodeEditModal = true;
       }
     }"
