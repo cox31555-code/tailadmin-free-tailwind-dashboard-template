@@ -262,10 +262,15 @@
             const sessionId = this.selectedConversation.session_id || this.selectedConversation.id;
 
             try {
-              const response = await fetch('/api/crisp/create-ticket', {
+              const response = await fetch('/api/webhook/crisp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ session_id: sessionId })
+                body: JSON.stringify({
+                  action: 'update_status',
+                  session_id: sessionId,
+                  status: 'resolved',
+                  operator: 'Dashboard Admin'
+                })
               });
 
               const data = await response.json();
