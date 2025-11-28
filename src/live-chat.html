@@ -202,7 +202,8 @@
 
     <!-- Zapier Integration & Chat Event Listeners -->
     <script type="text/javascript">
-      function initializeCrispAndZapier() {
+      // Make functions globally available
+      window.initializeCrispAndZapier = function initializeCrispAndZapier() {
         // Zapier webhook URLs (replace with your actual webhook URLs)
         const zapierWebhooks = {
           messageReceived: "https://hooks.zapier.com/hooks/catch/YOUR_WEBHOOK_ID/message-received/",
