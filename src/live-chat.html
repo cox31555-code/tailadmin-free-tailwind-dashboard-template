@@ -11,18 +11,31 @@
       Live Chat | TailAdmin - Tailwind CSS Admin Dashboard Template
     </title>
 
-    <!-- Crisp Chat Widget -->
+    <!-- Crisp Chat Widget - Direct Embed -->
     <script type="text/javascript">
-      window.$crisp = [];
-      window.CRISP_TOKEN_ID = "80335e6a-e33e-478a-8ce3-1b88c05b4ad4";
-
-      // Load Crisp script
       (function() {
+        window.$crisp = [];
+        window.CRISP_TOKEN_ID = "80335e6a-e33e-478a-8ce3-1b88c05b4ad4";
+
         var d = document;
-        var s = d.createElement("script");
-        s.src = "https://client.crisp.chat/l.js";
-        s.async = 1;
-        d.body.appendChild(s);
+        var w = window;
+
+        function load() {
+          if (w.CRISP_LOADED_AT === undefined) {
+            w.CRISP_LOADED_AT = new Date().getTime();
+            var s = d.createElement("script");
+            s.src = "https://client.crisp.chat/l.js";
+            s.async = 1;
+            s.defer = 1;
+            d.getElementsByTagName("head")[0].appendChild(s);
+          }
+        }
+
+        if (d.readyState === "loading") {
+          d.addEventListener("DOMContentLoaded", load);
+        } else {
+          load();
+        }
       })();
     </script>
 
