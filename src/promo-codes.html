@@ -23,9 +23,30 @@
       'promoCodeEditModal': false,
       'selectedPromo': null,
       'newPromo': { code: '', savings: '', minSpend: '', expiryDate: '', status: 'Active', uses: '0', skipPayment: false },
+      'promoList': [
+        { code: 'SAVE20', savings: '20%', expiryDate: 'Feb 28, 2025', status: 'Active' },
+        { code: 'WINTER15', savings: '15%', expiryDate: 'Jan 31, 2025', status: 'Inactive' },
+        { code: 'NEWUSER30', savings: '30%', expiryDate: 'Mar 15, 2025', status: 'Active' },
+        { code: 'SPRING10', savings: '10%', expiryDate: 'Apr 30, 2025', status: 'Active' }
+      ],
       openPromoAdd() {
         this.newPromo = { code: '', savings: '', minSpend: '', expiryDate: '', status: 'Active', uses: '0', skipPayment: false };
         this.promoCodeAddModal = true;
+      },
+      createPromo() {
+        if (!this.newPromo.code || !this.newPromo.savings || !this.newPromo.expiryDate) {
+          alert('Please fill in all required fields');
+          return;
+        }
+        const newPromoItem = {
+          code: this.newPromo.code,
+          savings: this.newPromo.savings + '%',
+          expiryDate: this.newPromo.expiryDate,
+          status: this.newPromo.status
+        };
+        this.promoList.unshift(newPromoItem);
+        this.promoCodeAddModal = false;
+        this.newPromo = { code: '', savings: '', minSpend: '', expiryDate: '', status: 'Active', uses: '0', skipPayment: false };
       },
       openPromoEdit(code, savings, minSpend, expiryDate, status, uses, skipPayment = false) {
         this.selectedPromo = { code, savings, minSpend, expiryDate, status, uses, skipPayment };
