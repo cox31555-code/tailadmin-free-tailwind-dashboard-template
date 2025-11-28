@@ -8,166 +8,17 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-      Live Chat | TailAdmin - Tailwind CSS Admin Dashboard Template
+      Live Chat Admin | TailAdmin - Tailwind CSS Admin Dashboard Template
     </title>
-
-    <!-- Crisp Chat Widget -->
-    <script type="text/javascript">
-      window.CRISP_WEBSITE_ID = "80335e6a-e33e-478a-8ce3-1b88c05b4ad4";
-      (function() {
-        var d = document;
-        var s = d.createElement("script");
-        s.src = "https://client.crisp.chat/l.js";
-        s.async = 1;
-        d.getElementsByTagName("head")[0].appendChild(s);
-      })();
-    </script>
-
-    <!-- Zapier Integration Script (Load Early) -->
-    <script type="text/javascript">
-      // Make functions globally available before Alpine.js initializes
-      window.initializeCrispAndZapier = function() {
-        console.log("Initializing Crisp and Zapier webhooks...");
-
-        // Zapier webhook URLs (replace with your actual webhook URLs)
-        const zapierWebhooks = {
-          messageReceived: "https://hooks.zapier.com/hooks/catch/25527294/uk133kq/",
-          userJoined: "https://hooks.zapier.com/hooks/catch/YOUR_WEBHOOK_ID/user-joined/",
-          conversationStarted: "https://hooks.zapier.com/hooks/catch/YOUR_WEBHOOK_ID/conversation-started/",
-          conversationEnded: "https://hooks.zapier.com/hooks/catch/YOUR_WEBHOOK_ID/conversation-ended/"
-        };
-
-        // Helper function to send data to Zapier
-        function sendToZapier(webhookUrl, data) {
-          if (!webhookUrl.includes("YOUR_WEBHOOK_ID")) {
-            const payload = {
-              ...data,
-              timestamp: new Date().toISOString(),
-              domain: "limitlesscover.co.uk",
-              page: "live-chat"
-            };
-            console.log("Sending to webhook:", webhookUrl, payload);
-            fetch(webhookUrl, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(payload)
-            })
-            .then(response => {
-              console.log("Webhook response status:", response.status);
-              return response.json();
-            })
-            .then(data => console.log("Webhook success:", data))
-            .catch(error => console.error("Webhook error:", error));
-          }
-        }
-
-        // Wait for Crisp to be available and set up event listeners
-        var waitForCrisp = setInterval(function() {
-          if (typeof window.$crisp !== "undefined") {
-            clearInterval(waitForCrisp);
-            console.log("Crisp is available, setting up webhooks...");
-
-            // Listen for incoming messages from visitors
-            window.$crisp.push(["on", "message:received", function(message) {
-              const messageData = {
-                messageId: message?.id || "unknown",
-                senderEmail: message?.from || "visitor",
-                senderName: message?.author || "Anonymous Visitor",
-                messageContent: message?.content || "",
-                messageType: message?.type || "text"
-              };
-
-              console.log("Message received from visitor:", messageData);
-              sendToZapier(zapierWebhooks.messageReceived, messageData);
-            }]);
-
-            // Listen for outgoing messages from agents
-            window.$crisp.push(["on", "message:sent", function(message) {
-              const messageData = {
-                messageId: message?.id || "unknown",
-                senderEmail: message?.from || "agent",
-                senderName: message?.author || "Support Agent",
-                messageContent: message?.content || "",
-                messageType: message?.type || "text",
-                isAgentMessage: true
-              };
-
-              console.log("Message sent by agent:", messageData);
-              sendToZapier(zapierWebhooks.messageReceived, messageData);
-            }]);
-
-            // Listen for conversation opened
-            window.$crisp.push(["on", "session:loaded", function() {
-              const sessionData = {
-                event: "conversation_started",
-                sessionStartTime: new Date().toISOString()
-              };
-
-              console.log("Conversation started:", sessionData);
-              sendToZapier(zapierWebhooks.conversationStarted, sessionData);
-            }]);
-
-            // Listen for user email change
-            window.$crisp.push(["on", "user:email-changed", function(email) {
-              const userData = {
-                event: "user_joined",
-                userEmail: email,
-                joinTime: new Date().toISOString()
-              };
-
-              console.log("User joined:", userData);
-              sendToZapier(zapierWebhooks.userJoined, userData);
-            }]);
-          }
-        }, 100);
-      };
-
-      // Also expose Crisp object methods for manual interactions (global)
-      window.getCrispStatus = function() {
-        if (typeof window.$crisp !== "undefined") {
-          window.$crisp.push(["get", "session:data", function(data) {
-            console.log("Current chat session data:", data);
-          }]);
-        }
-      };
-
-      window.openCrispChat = function() {
-        if (typeof window.$crisp !== "undefined") {
-          window.$crisp.push(["do", "chat:open"]);
-          console.log("Crisp chat opened");
-        } else {
-          console.warn("Crisp not available yet, retrying...");
-          setTimeout(window.openCrispChat, 500);
-        }
-      };
-
-      window.closeCrispChat = function() {
-        if (typeof window.$crisp !== "undefined") {
-          window.$crisp.push(["do", "chat:close"]);
-        }
-      };
-    </script>
   </head>
   <body
-    x-data="{
-      page: 'liveChat',
-      loaded: true,
-      darkMode: false,
-      stickyMenu: false,
-      sidebarToggle: false,
-      scrollTop: false,
-      openChatClick() {
-        if (typeof window.openCrispChat === 'function') {
-          window.openCrispChat();
-        }
-      }
-    }"
+    x-data="adminChatApp()"
     x-init="
-         darkMode = JSON.parse(localStorage.getItem('darkMode'));
-         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
-         setTimeout(() => { if (window.initializeCrispAndZapier) window.initializeCrispAndZapier(); }, 500);"
+      darkMode = JSON.parse(localStorage.getItem('darkMode'));
+      $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
+      loadConversations();
+      startRealTimePolling();
+    "
     :class="{'dark bg-gray-900': darkMode === true}"
   >
     <!-- ===== Preloader Start ===== -->
@@ -181,9 +32,7 @@
       <!-- ===== Sidebar End ===== -->
 
       <!-- ===== Content Area Start ===== -->
-      <div
-        class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
-      >
+      <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
         <!-- Small Device Overlay Start -->
         <include src="./partials/overlay.html" />
         <!-- Small Device Overlay End -->
@@ -196,148 +45,140 @@
         <main>
           <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6">
             <!-- Breadcrumb Start -->
-            <div x-data="{ pageName: `Live Chat`}">
+            <div x-data="{ pageName: `Live Chat Admin`}">
               <include src="./partials/breadcrumb.html" />
             </div>
             <!-- Breadcrumb End -->
 
-            <div
-              class="grid grid-cols-1 gap-6 lg:grid-cols-3"
-            >
-              <!-- Chat Interface -->
-              <div
-                class="lg:col-span-2 rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
-              >
-                <div class="border-b border-gray-200 px-5 py-6 dark:border-gray-800 sm:px-7">
-                  <h3
-                    class="text-theme-lg font-semibold text-gray-800 dark:text-white/90"
-                  >
-                    Live Chat Support
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
+              <!-- Inbox List -->
+              <div class="lg:col-span-1 rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] flex flex-col h-[600px]">
+                <div class="border-b border-gray-200 px-5 py-4 dark:border-gray-800">
+                  <h3 class="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
+                    Inbox
                   </h3>
-                  <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Get instant support from our team
+                  <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <span x-text="conversations.length"></span> conversations
                   </p>
                 </div>
 
-                <div class="flex h-[500px] flex-col bg-gray-50 dark:bg-gray-800/50 px-5 py-10 sm:px-7">
-                  <!-- Embedded Crisp Chat Container -->
-                  <div id="crisp-chat-container" class="flex-1 flex flex-col">
-                    <div class="flex-1 flex items-center justify-center mb-4">
-                      <svg
-                        class="h-16 w-16 text-gray-300 dark:text-gray-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                        />
+                <!-- Conversations List -->
+                <div class="flex-1 overflow-y-auto">
+                  <template x-if="loading">
+                    <div class="px-5 py-8 text-center">
+                      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
+                      <p class="mt-3 text-sm text-gray-500">Loading conversations...</p>
+                    </div>
+                  </template>
+
+                  <template x-if="!loading && conversations.length === 0">
+                    <div class="px-5 py-8 text-center">
+                      <svg class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                       </svg>
+                      <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">No conversations yet</p>
                     </div>
+                  </template>
 
-                    <div class="text-center mb-6">
-                      <p class="text-gray-500 dark:text-gray-400 mb-2">
-                        Crisp chat widget is loading...
-                      </p>
-                      <p class="text-xs text-gray-400 dark:text-gray-500">
-                        Website ID: 80335e6a-e33e-478a-8ce3-1b88c05b4ad4
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- Action Buttons -->
-                  <div class="flex gap-3 justify-center pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <template x-for="conversation in conversations" :key="conversation.session_id">
                     <button
-                      @click="openChatClick()"
-                      class="rounded-lg border border-blue-500 bg-blue-50 px-6 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100 dark:border-blue-400 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20"
+                      @click="selectConversation(conversation)"
+                      :class="selectedConversation?.session_id === conversation.session_id ? 'bg-blue-50 dark:bg-blue-500/10 border-l-4 border-l-blue-500' : 'hover:bg-gray-50 dark:hover:bg-gray-800/30'"
+                      class="w-full border-b border-gray-200 px-4 py-3 text-left dark:border-gray-800 transition-colors"
                     >
-                      Open Crisp Chat
+                      <p class="font-medium text-gray-800 dark:text-gray-200 text-sm" x-text="conversation.visitor?.name || 'Anonymous Visitor'"></p>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-text="conversation.visitor?.email || 'No email'"></p>
+                      <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" x-text="conversation.state || 'Active'"></p>
                     </button>
-                    <a
-                      href="https://crisp.chat/en/"
-                      target="_blank"
-                      class="rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 inline-block"
-                    >
-                      Open Crisp Dashboard
-                    </a>
-                  </div>
+                  </template>
+                </div>
+
+                <!-- Refresh Button -->
+                <div class="border-t border-gray-200 p-3 dark:border-gray-800">
+                  <button
+                    @click="loadConversations()"
+                    :disabled="loading"
+                    class="w-full rounded-lg bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 disabled:opacity-50"
+                  >
+                    Refresh
+                  </button>
                 </div>
               </div>
 
-              <!-- Chat Info & Zapier Integration Status -->
-              <div class="flex flex-col gap-6">
-                <!-- Chat Status -->
-                <div
-                  class="rounded-2xl border border-gray-200 bg-white px-5 py-6 dark:border-gray-800 dark:bg-white/[0.03]"
-                >
-                  <h4 class="mb-4 text-theme-sm font-semibold text-gray-800 dark:text-white/90">
-                    Chat Status
-                  </h4>
-                  <div class="space-y-3">
-                    <div class="flex items-center gap-3">
-                      <div class="h-3 w-3 rounded-full bg-green-500"></div>
-                      <span class="text-sm text-gray-600 dark:text-gray-400">Chat Widget Active</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <div class="h-3 w-3 rounded-full bg-green-500"></div>
-                      <span class="text-sm text-gray-600 dark:text-gray-400">Crisp Connected</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                      <div class="h-3 w-3 rounded-full bg-blue-500"></div>
-                      <span class="text-sm text-gray-600 dark:text-gray-400">Zapier Ready</span>
+              <!-- Chat Area -->
+              <div class="lg:col-span-3 rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] flex flex-col h-[600px]">
+                <template x-if="!selectedConversation">
+                  <div class="flex flex-1 items-center justify-center">
+                    <div class="text-center">
+                      <svg class="mx-auto h-16 w-16 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      <p class="mt-4 text-gray-500 dark:text-gray-400">Select a conversation to start chatting</p>
                     </div>
                   </div>
-                </div>
+                </template>
 
-                <!-- Features -->
-                <div
-                  class="rounded-2xl border border-gray-200 bg-white px-5 py-6 dark:border-gray-800 dark:bg-white/[0.03]"
-                >
-                  <h4 class="mb-4 text-theme-sm font-semibold text-gray-800 dark:text-white/90">
-                    Integrations
-                  </h4>
-                  <div class="space-y-3">
-                    <div class="flex items-start gap-3">
-                      <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                      </svg>
+                <template x-if="selectedConversation">
+                  <!-- Chat Header -->
+                  <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+                    <div class="flex items-center justify-between">
                       <div>
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Message Logging</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-500">Zapier logs all messages</p>
+                        <h3 class="font-semibold text-gray-800 dark:text-white/90" x-text="selectedConversation.visitor?.name || 'Unknown Visitor'"></h3>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400" x-text="selectedConversation.visitor?.email || 'No email'"></p>
                       </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                      </svg>
-                      <div>
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Email Notifications</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-500">Notify team on messages</p>
-                      </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                      </svg>
-                      <div>
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Ticket Creation</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-500">Create support tickets</p>
-                      </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                      </svg>
-                      <div>
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">User Tracking</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-500">Track visitor interactions</p>
+                      <div class="flex gap-2">
+                        <button
+                          @click="createTicket()"
+                          :disabled="creatingTicket"
+                          class="rounded-lg border border-amber-500 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-600 hover:bg-amber-100 dark:border-amber-400 dark:bg-amber-500/10 dark:text-amber-400 dark:hover:bg-amber-500/20 disabled:opacity-50"
+                        >
+                          <span x-show="!creatingTicket">Create Ticket</span>
+                          <span x-show="creatingTicket">Creating...</span>
+                        </button>
+                        <button
+                          @click="selectedConversation = null"
+                          class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                        >
+                          Close
+                        </button>
                       </div>
                     </div>
                   </div>
-                </div>
+
+                  <!-- Messages Area -->
+                  <div class="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800/30 p-6 space-y-4" id="messagesContainer">
+                    <template x-for="message in selectedConversation.messages || []" :key="message.id">
+                      <div :class="message.from === 'visitor' ? 'justify-start' : 'justify-end'" class="flex">
+                        <div :class="message.from === 'visitor' ? 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200' : 'bg-blue-500 text-white'" class="max-w-xs rounded-lg px-4 py-2">
+                          <p class="text-sm" x-text="message.content"></p>
+                          <p :class="message.from === 'visitor' ? 'text-gray-600 dark:text-gray-400' : 'text-blue-100'" class="mt-1 text-xs">
+                            <span x-text="new Date(message.timestamp || Date.now()).toLocaleTimeString()"></span>
+                          </p>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+
+                  <!-- Message Input -->
+                  <div class="border-t border-gray-200 px-6 py-4 dark:border-gray-800">
+                    <form @submit.prevent="sendMessage()" class="flex gap-3">
+                      <input
+                        x-model="replyMessage"
+                        type="text"
+                        placeholder="Type your reply..."
+                        class="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 placeholder-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+                      />
+                      <button
+                        type="submit"
+                        :disabled="!replyMessage.trim() || sendingMessage"
+                        class="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white hover:bg-blue-600 dark:hover:bg-blue-600 disabled:bg-gray-400"
+                      >
+                        <span x-show="!sendingMessage">Send</span>
+                        <span x-show="sendingMessage">Sending...</span>
+                      </button>
+                    </form>
+                  </div>
+                </template>
               </div>
             </div>
           </div>
@@ -347,5 +188,129 @@
       <!-- ===== Content Area End ===== -->
     </div>
     <!-- ===== Page Wrapper End ===== -->
+
+    <script type="text/javascript">
+      function adminChatApp() {
+        return {
+          page: 'liveChat',
+          loaded: true,
+          darkMode: false,
+          stickyMenu: false,
+          sidebarToggle: false,
+          scrollTop: false,
+          conversations: [],
+          selectedConversation: null,
+          replyMessage: '',
+          loading: false,
+          sendingMessage: false,
+          creatingTicket: false,
+          pollInterval: null,
+
+          async loadConversations() {
+            this.loading = true;
+            try {
+              const result = await fetch('/api/crisp/conversations', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+              }).then(r => r.json());
+              
+              this.conversations = result.conversations || [];
+              console.log('Loaded conversations:', this.conversations);
+            } catch (error) {
+              console.error('Failed to load conversations:', error);
+            } finally {
+              this.loading = false;
+            }
+          },
+
+          selectConversation(conversation) {
+            this.selectedConversation = conversation;
+            this.replyMessage = '';
+            this.$nextTick(() => {
+              const container = document.getElementById('messagesContainer');
+              if (container) container.scrollTop = container.scrollHeight;
+            });
+          },
+
+          async sendMessage() {
+            if (!this.replyMessage.trim() || !this.selectedConversation) return;
+
+            this.sendingMessage = true;
+            const sessionId = this.selectedConversation.session_id;
+            const message = this.replyMessage;
+
+            try {
+              const result = await fetch('/api/crisp/send-message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  session_id: sessionId,
+                  content: message
+                })
+              }).then(r => r.json());
+
+              if (result.success) {
+                this.replyMessage = '';
+                await this.loadConversations();
+                if (this.selectedConversation) {
+                  const updated = this.conversations.find(c => c.session_id === sessionId);
+                  if (updated) this.selectedConversation = updated;
+                }
+              } else {
+                alert('Failed to send message');
+              }
+            } catch (error) {
+              console.error('Failed to send message:', error);
+              alert('Error sending message');
+            } finally {
+              this.sendingMessage = false;
+            }
+          },
+
+          async createTicket() {
+            if (!this.selectedConversation) return;
+
+            this.creatingTicket = true;
+            const sessionId = this.selectedConversation.session_id;
+
+            try {
+              const result = await fetch('/api/crisp/create-ticket', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId })
+              }).then(r => r.json());
+
+              if (result.success) {
+                alert('Ticket created successfully');
+                await this.loadConversations();
+              } else {
+                alert('Failed to create ticket');
+              }
+            } catch (error) {
+              console.error('Failed to create ticket:', error);
+              alert('Error creating ticket');
+            } finally {
+              this.creatingTicket = false;
+            }
+          },
+
+          startRealTimePolling() {
+            this.pollInterval = setInterval(() => {
+              this.loadConversations();
+              if (this.selectedConversation) {
+                const updated = this.conversations.find(c => c.session_id === this.selectedConversation.session_id);
+                if (updated) {
+                  this.selectedConversation = updated;
+                  this.$nextTick(() => {
+                    const container = document.getElementById('messagesContainer');
+                    if (container) container.scrollTop = container.scrollHeight;
+                  });
+                }
+              }
+            }, 3000);
+          }
+        };
+      }
+    </script>
   </body>
 </html>
