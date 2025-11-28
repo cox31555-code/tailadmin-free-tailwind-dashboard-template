@@ -63,64 +63,65 @@
           }
         }
 
-        // Wait for Crisp to load
-        if (typeof $crisp !== "undefined") {
-          // Listen for incoming messages from visitors
-          $crisp.push(["on", "message:received", function(message) {
-            const messageData = {
-              messageId: message?.id || "unknown",
-              senderEmail: message?.from || "visitor",
-              senderName: message?.author || "Anonymous Visitor",
-              messageContent: message?.content || "",
-              messageType: message?.type || "text",
-              conversationId: window.CRISP_TOKEN_ID
-            };
+        // Wait for Crisp to be available and set up event listeners
+        var waitForCrisp = setInterval(function() {
+          if (typeof window.$crisp !== "undefined") {
+            clearInterval(waitForCrisp);
+            console.log("Crisp is available, setting up webhooks...");
 
-            console.log("Message received from visitor:", messageData);
-            sendToZapier(zapierWebhooks.messageReceived, messageData);
-          }]);
+            // Listen for incoming messages from visitors
+            window.$crisp.push(["on", "message:received", function(message) {
+              const messageData = {
+                messageId: message?.id || "unknown",
+                senderEmail: message?.from || "visitor",
+                senderName: message?.author || "Anonymous Visitor",
+                messageContent: message?.content || "",
+                messageType: message?.type || "text"
+              };
 
-          // Listen for outgoing messages from agents
-          $crisp.push(["on", "message:sent", function(message) {
-            const messageData = {
-              messageId: message?.id || "unknown",
-              senderEmail: message?.from || "agent",
-              senderName: message?.author || "Support Agent",
-              messageContent: message?.content || "",
-              messageType: message?.type || "text",
-              conversationId: window.CRISP_TOKEN_ID,
-              isAgentMessage: true
-            };
+              console.log("Message received from visitor:", messageData);
+              sendToZapier(zapierWebhooks.messageReceived, messageData);
+            }]);
 
-            console.log("Message sent by agent:", messageData);
-            sendToZapier(zapierWebhooks.messageReceived, messageData);
-          }]);
+            // Listen for outgoing messages from agents
+            window.$crisp.push(["on", "message:sent", function(message) {
+              const messageData = {
+                messageId: message?.id || "unknown",
+                senderEmail: message?.from || "agent",
+                senderName: message?.author || "Support Agent",
+                messageContent: message?.content || "",
+                messageType: message?.type || "text",
+                isAgentMessage: true
+              };
 
-          // Listen for conversation opened
-          $crisp.push(["on", "session:loaded", function() {
-            const sessionData = {
-              event: "conversation_started",
-              visitorId: window.CRISP_TOKEN_ID,
-              sessionStartTime: new Date().toISOString()
-            };
+              console.log("Message sent by agent:", messageData);
+              sendToZapier(zapierWebhooks.messageReceived, messageData);
+            }]);
 
-            console.log("Conversation started:", sessionData);
-            sendToZapier(zapierWebhooks.conversationStarted, sessionData);
-          }]);
+            // Listen for conversation opened
+            window.$crisp.push(["on", "session:loaded", function() {
+              const sessionData = {
+                event: "conversation_started",
+                sessionStartTime: new Date().toISOString()
+              };
 
-          // Listen for user joining
-          $crisp.push(["on", "user:email-changed", function(email) {
-            const userData = {
-              event: "user_joined",
-              userEmail: email,
-              joinTime: new Date().toISOString(),
-              conversationId: window.CRISP_TOKEN_ID
-            };
+              console.log("Conversation started:", sessionData);
+              sendToZapier(zapierWebhooks.conversationStarted, sessionData);
+            }]);
 
-            console.log("User joined:", userData);
-            sendToZapier(zapierWebhooks.userJoined, userData);
-          }]);
-        }
+            // Listen for user email change
+            window.$crisp.push(["on", "user:email-changed", function(email) {
+              const userData = {
+                event: "user_joined",
+                userEmail: email,
+                joinTime: new Date().toISOString()
+              };
+
+              console.log("User joined:", userData);
+              sendToZapier(zapierWebhooks.userJoined, userData);
+            }]);
+          }
+        }, 100);
       };
 
       // Also expose Crisp object methods for manual interactions (global)
