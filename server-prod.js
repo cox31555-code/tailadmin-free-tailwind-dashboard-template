@@ -100,6 +100,16 @@ app.post('/api/crisp/create-ticket', (req, res) => {
   }
 });
 
+// Refresh conversations endpoint (for manual sync with Zapier)
+app.post('/api/crisp/refresh', (req, res) => {
+  console.log('Refresh requested - conversations in storage:', loadConversations().length);
+  res.json({
+    success: true,
+    message: 'Refresh completed',
+    count: loadConversations().length
+  });
+});
+
 // Fallback to index.html for single-page app
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
