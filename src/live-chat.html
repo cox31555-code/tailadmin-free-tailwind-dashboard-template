@@ -254,17 +254,29 @@
             }
           },
 
-          createTicket() {
+          async createTicket() {
             if (!this.selectedConversation) return;
-            
-            this.selectedConversation.state = 'ticket_created';
-            
-            const conversationIndex = this.conversations.findIndex(c => c.id === this.selectedConversation.id);
-            if (conversationIndex >= 0) {
-              this.conversations[conversationIndex].state = 'ticket_created';
+
+            const sessionId = this.selectedConversation.session_id || this.selectedConversation.id;
+
+            try {
+              const response = await fetch('/api/crisp/create-ticket', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId })
+              });
+
+              const data = await response.json();
+              if (data.success) {
+                alert(`Ticket created for ${this.selectedConversation.visitor.name}`);
+                await this.initializeConversations();
+              } else {
+                alert('Failed to create ticket');
+              }
+            } catch (error) {
+              console.error('Error creating ticket:', error);
+              alert('Error creating ticket');
             }
-            
-            alert(`Ticket created for ${this.selectedConversation.visitor.name}`);
           },
 
           startRealTimePolling() {
