@@ -12,7 +12,20 @@
     </title>
   </head>
   <body
-    x-data="{ page: 'contactForm', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-data="{
+      page: 'contactForm',
+      'loaded': true,
+      'darkMode': false,
+      'stickyMenu': false,
+      'sidebarToggle': false,
+      'scrollTop': false,
+      'contactFormViewModal': false,
+      'selectedMessage': null,
+      openMessage(email, message, received) {
+        this.selectedMessage = { email, message, received };
+        this.contactFormViewModal = true;
+      }
+    }"
     x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
@@ -76,5 +89,8 @@
       <!-- ===== Content Area End ===== -->
     </div>
     <!-- ===== Page Wrapper End ===== -->
+
+    <!-- Contact Form View Modal -->
+    <include src="./partials/contact-form-view-modal.html" />
   </body>
 </html>
