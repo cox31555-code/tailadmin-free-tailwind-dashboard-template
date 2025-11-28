@@ -290,26 +290,28 @@
         }
       }
 
-      // Also expose Crisp object methods for manual interactions
-      function getCrispStatus() {
+      };
+
+      // Also expose Crisp object methods for manual interactions (global)
+      window.getCrispStatus = function() {
         if (typeof $crisp !== "undefined") {
           $crisp.push(["get", "session:data", function(data) {
             console.log("Current chat session data:", data);
           }]);
         }
-      }
+      };
 
-      function openCrispChat() {
+      window.openCrispChat = function() {
         if (typeof $crisp !== "undefined") {
           $crisp.push(["do", "chat:open"]);
         }
-      }
+      };
 
-      function closeCrispChat() {
+      window.closeCrispChat = function() {
         if (typeof $crisp !== "undefined") {
           $crisp.push(["do", "chat:close"]);
         }
-      }
+      };
 
       // Auto-open chat when page loads (optional)
       window.addEventListener("load", function() {
