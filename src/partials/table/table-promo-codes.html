@@ -10,6 +10,26 @@
 
     <div class="flex items-center gap-2">
       <button
+        @click="selectedPromo = { code: '', savings: '', minSpend: '', expiryDate: '', status: 'Active', uses: '0', skipPayment: false }; promoCodeEditModal = true"
+        class="inline-flex items-center gap-2 rounded-lg border border-brand-500 bg-brand-500 px-4 py-2 text-theme-sm font-medium text-white shadow-theme-xs hover:bg-brand-600 hover:border-brand-600 dark:border-brand-600 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-600 dark:hover:border-brand-600"
+      >
+        <svg
+          class="fill-current"
+          width="16"
+          height="16"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 3C10.5523 3 11 3.44772 11 4V9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11H4C3.44772 11 3 10.5523 3 10C3 9.44772 3.44772 9 4 9H9V4C9 3.44772 9.44772 3 10 3Z"
+            fill=""
+          />
+        </svg>
+        Create Promo
+      </button>
+
+      <button
         class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
       >
         <svg
