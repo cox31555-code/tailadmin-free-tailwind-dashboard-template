@@ -132,7 +132,6 @@ module.exports = {
               { name: "sessions" },
               { name: "screenPageViews" },
               { name: "engagementRate" },
-              { name: "bounceRate" },
             ],
             dimensions: [
               { name: "date" },
