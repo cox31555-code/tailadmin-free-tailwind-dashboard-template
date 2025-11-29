@@ -54,7 +54,7 @@ module.exports = {
       writeToDisk: true,
     },
     setupMiddlewares: (middlewares, devServer) => {
-      // Proxy for Crisp with comprehensive routing
+      // Proxy for Crisp with comprehensive routing and session support
       devServer.app.use(
         "/app/crisp",
         createProxyMiddleware({
@@ -64,12 +64,18 @@ module.exports = {
             "^/app/crisp": "",
           },
           onProxyReq: (proxyReq, req, res) => {
-            proxyReq.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-            proxyReq.setHeader("Accept-Language", "en-US,en;q=0.5");
+            // Set proper browser headers
+            proxyReq.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+            proxyReq.setHeader("Accept-Language", "en-US,en;q=0.9");
             proxyReq.setHeader("Accept-Encoding", "identity");
             proxyReq.setHeader("Connection", "keep-alive");
             proxyReq.setHeader("Upgrade-Insecure-Requests", "1");
-            proxyReq.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+            proxyReq.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+
+            // Forward cookies for session persistence
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
           },
           selfHandleResponse: true,
           onProxyRes: (proxyRes, req, res) => {
@@ -80,7 +86,7 @@ module.exports = {
             });
 
             proxyRes.on("end", () => {
-              // Remove restrictive headers
+              // Remove restrictive security headers
               delete proxyRes.headers["x-frame-options"];
               delete proxyRes.headers["content-security-policy"];
               delete proxyRes.headers["x-content-security-policy"];
@@ -88,12 +94,18 @@ module.exports = {
               delete proxyRes.headers["content-encoding"];
               delete proxyRes.headers["transfer-encoding"];
 
-              // Set permissive headers
-              proxyRes.headers["content-security-policy"] = "frame-ancestors 'self' http://localhost:* https://*.fly.dev";
+              // Set permissive headers for iframe embedding
+              proxyRes.headers["content-security-policy"] = "frame-ancestors 'self' http://localhost:* https://*.fly.dev; default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'";
               proxyRes.headers["x-frame-options"] = "SAMEORIGIN";
               proxyRes.headers["access-control-allow-origin"] = "*";
+              proxyRes.headers["access-control-allow-credentials"] = "true";
 
-              // Inject base tag for HTML content so relative URLs work through proxy
+              // Preserve Set-Cookie for session management
+              if (proxyRes.headers["set-cookie"]) {
+                res.setHeader("Set-Cookie", proxyRes.headers["set-cookie"]);
+              }
+
+              // Inject base tag for HTML content for proper relative URL resolution
               if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/html")) {
                 body = body.replace(
                   /<head[^>]*>/i,
@@ -106,6 +118,7 @@ module.exports = {
             });
           },
           ws: true,
+          logLevel: "warn",
         })
       );
 
