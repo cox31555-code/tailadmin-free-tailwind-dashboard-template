@@ -161,17 +161,31 @@ module.exports = {
                 proxyRes.headers.location = '/app/crisp?url=' + encodeURIComponent(location);
               }
 
-              // Rewrite cookies
+              // Rewrite cookies to allow cross-site usage
               if (proxyRes.headers["set-cookie"]) {
                 const cookies = Array.isArray(proxyRes.headers["set-cookie"])
                   ? proxyRes.headers["set-cookie"]
                   : [proxyRes.headers["set-cookie"]];
 
                 proxyRes.headers["set-cookie"] = cookies.map(cookie => {
-                  return cookie.replace(/Domain=[^;]*/i, '').replace(/SameSite=Strict/i, 'SameSite=None;Secure');
+                  // Remove Domain restrictions
+                  cookie = cookie.replace(/Domain=[^;]*/i, '');
+                  // Remove SameSite or set to None
+                  cookie = cookie.replace(/SameSite=[^;]*/i, '');
+                  // Add SameSite=None;Secure for cross-site cookies
+                  if (!cookie.includes('SameSite')) {
+                    cookie = cookie + '; SameSite=None; Secure';
+                  }
+                  return cookie;
                 });
 
                 res.setHeader("Set-Cookie", proxyRes.headers["set-cookie"]);
+              }
+
+              // Also add headers to allow credentials in cross-site requests
+              proxyRes.headers["access-control-allow-credentials"] = "true";
+              if (req.headers.origin) {
+                proxyRes.headers["access-control-allow-origin"] = req.headers.origin;
               }
 
               // Rewrite HTML with base tag
