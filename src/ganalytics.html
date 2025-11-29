@@ -212,7 +212,6 @@
           let totalUsers = 0;
           let totalSessions = 0;
           let totalPageViews = 0;
-          let totalEngagedSessions = 0;
 
           data.monthlyData.forEach((row) => {
             const metrics = row.metricValues || [];
@@ -221,13 +220,10 @@
             totalPageViews += parseInt(metrics[2]?.value || 0);
           });
 
-          // Calculate engagement rate
-          data.topPages.forEach((row) => {
-            const metrics = row.metricValues || [];
-            totalEngagedSessions += parseInt(metrics[1]?.value || 0);
-          });
-
-          const engagementRate = totalSessions > 0 ? ((totalEngagedSessions / totalSessions) * 100).toFixed(2) : "0";
+          // Calculate engagement rate from overall engagement data
+          const engagementMetrics = data.engagement?.metricValues || [];
+          const engagedSessions = parseInt(engagementMetrics[1]?.value || 0);
+          const engagementRate = totalSessions > 0 ? ((engagedSessions / totalSessions) * 100).toFixed(2) : "0";
 
           document.getElementById("totalUsers").textContent = totalUsers.toLocaleString();
           document.getElementById("totalSessions").textContent = totalSessions.toLocaleString();
