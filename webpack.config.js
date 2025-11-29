@@ -54,6 +54,33 @@ module.exports = {
       writeToDisk: true,
     },
     setupMiddlewares: (middlewares, devServer) => {
+      // Helper function to rewrite URLs in HTML/CSS/JS
+      const rewriteUrls = (content, baseUrl) => {
+        // Rewrite href, src, action, and url() attributes
+        content = content.replace(/(href|src|action|url\()\s*=?\s*["']?([^"'\)]+)["']?\)?/gi, (match, attr, url) => {
+          // Skip data URIs, mailto, javascript, etc.
+          if (url.startsWith('data:') || url.startsWith('mailto:') || url.startsWith('javascript:') || url.startsWith('#')) {
+            return match;
+          }
+
+          // Convert relative URLs to absolute
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = new URL(url, baseUrl).href;
+          }
+
+          // Route through proxy
+          const proxiedUrl = '/app/crisp?url=' + encodeURIComponent(url);
+
+          if (attr.toLowerCase() === 'url(') {
+            return `url(${proxiedUrl})`;
+          } else {
+            return `${attr}="${proxiedUrl}"`;
+          }
+        });
+
+        return content;
+      };
+
       // Proxy for Crisp with comprehensive routing and session support
       devServer.app.use(
         "/app/crisp",
@@ -61,9 +88,20 @@ module.exports = {
           target: "https://app.crisp.chat",
           changeOrigin: true,
           pathRewrite: {
+            "^/app/crisp\\?url=": "",
             "^/app/crisp": "",
           },
           onProxyReq: (proxyReq, req, res) => {
+            // Handle URL parameter if present
+            if (req.url.includes('?url=')) {
+              const urlMatch = req.url.match(/\?url=([^&]+)/);
+              if (urlMatch) {
+                const targetUrl = decodeURIComponent(urlMatch[1]);
+                proxyReq.path = new URL(targetUrl).pathname + (new URL(targetUrl).search || '');
+                proxyReq.setHeader('Host', new URL(targetUrl).hostname);
+              }
+            }
+
             // Set proper browser headers
             proxyReq.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
             proxyReq.setHeader("Accept-Language", "en-US,en;q=0.9");
@@ -82,7 +120,7 @@ module.exports = {
             let body = "";
 
             proxyRes.on("data", (chunk) => {
-              body += chunk;
+              body += chunk.toString();
             });
 
             proxyRes.on("end", () => {
@@ -105,12 +143,23 @@ module.exports = {
                 res.setHeader("Set-Cookie", proxyRes.headers["set-cookie"]);
               }
 
-              // Inject base tag for HTML content for proper relative URL resolution
+              // Rewrite URLs in HTML content
               if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/html")) {
+                body = rewriteUrls(body, "https://app.crisp.chat");
                 body = body.replace(
                   /<head[^>]*>/i,
                   `<head><base href="/app/crisp/">`
                 );
+              }
+
+              // Rewrite URLs in CSS
+              if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/css")) {
+                body = rewriteUrls(body, "https://app.crisp.chat");
+              }
+
+              // Rewrite URLs in JavaScript
+              if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("javascript")) {
+                body = rewriteUrls(body, "https://app.crisp.chat");
               }
 
               res.writeHead(proxyRes.statusCode, proxyRes.headers);
