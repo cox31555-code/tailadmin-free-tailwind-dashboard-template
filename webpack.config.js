@@ -196,10 +196,11 @@ module.exports = {
 
           res.json({
             realtimeUsers: realtimeResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
-            monthlyData: monthlyResponse[0]?.rows || [],
+            totalUsers: monthlyResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
+            totalSessions: sessionsResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
+            totalPageViews: pageViewsResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
             topPages: topPagesResponse[0]?.rows || [],
             trafficSources: trafficResponse[0]?.rows || [],
-            overall: overallResponse[0]?.rows?.[0] || {},
           });
         } catch (error) {
           console.error("GA API Error:", error);
