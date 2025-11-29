@@ -151,19 +151,32 @@ module.exports = {
   // Helper to check if URL should be proxied
   function shouldProxy(url) {
     if (!url || typeof url !== 'string') return false;
+    if (url.startsWith('/app/crisp')) return false; // Already proxied
     if (url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('javascript:')) return false;
-    return url.includes('app.crisp.chat') || url.includes('crisp');
+    // Proxy any Crisp URL or relative path that looks like it's from Crisp
+    return url.includes('app.crisp.chat') ||
+           url.includes('.crisp') ||
+           url.match(/^\\/(api|fonts|ws|static|website|inbox|mailbox)/) ||
+           url.match(/\\.(?:woff2?|ttf|eot|svg)$/);
   }
 
   // Helper to normalize and proxy URL
   function proxyUrl(url) {
-    if (!url) return url;
+    if (!url || typeof url !== 'string') return url;
+    if (url.startsWith('/app/crisp')) return url; // Already proxied
+
     try {
+      let absoluteUrl = url;
+
+      // Convert relative URLs to absolute
       if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = new URL(url, baseUrl).href;
+        absoluteUrl = new URL(url, baseUrl).href;
       }
-      if (shouldProxy(url)) {
-        return proxyPath + encodeURIComponent(url);
+
+      if (shouldProxy(absoluteUrl)) {
+        const proxied = proxyPath + encodeURIComponent(absoluteUrl);
+        console.log('[Proxy] Routing', url, '->', proxied);
+        return proxied;
       }
     } catch (e) {
       console.warn('[Proxy] Failed to parse URL:', url, e);
@@ -175,7 +188,11 @@ module.exports = {
   const originalFetch = window.fetch;
   window.fetch = function(...args) {
     if (args[0]) {
+      const originalUrl = args[0];
       args[0] = proxyUrl(args[0]);
+      if (originalUrl !== args[0]) {
+        console.log('[Proxy] fetch() intercepted:', originalUrl);
+      }
     }
     return originalFetch.apply(this, args);
   };
@@ -183,8 +200,11 @@ module.exports = {
   // Intercept XMLHttpRequest
   const originalOpen = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function(method, url, ...rest) {
-    url = proxyUrl(url);
-    return originalOpen.call(this, method, url, ...rest);
+    const proxiedUrl = proxyUrl(url);
+    if (url !== proxiedUrl) {
+      console.log('[Proxy] XHR open() intercepted:', method, url);
+    }
+    return originalOpen.call(this, method, proxiedUrl, ...rest);
   };
 
   // Block service worker registration
@@ -198,7 +218,11 @@ module.exports = {
   // Intercept form submissions
   document.addEventListener('submit', function(e) {
     if (e.target && e.target.action) {
+      const original = e.target.action;
       e.target.action = proxyUrl(e.target.action);
+      if (original !== e.target.action) {
+        console.log('[Proxy] Form action rewritten:', original);
+      }
     }
   }, true);
 
@@ -206,24 +230,28 @@ module.exports = {
   const originalImage = Image;
   window.Image = class ProxiedImage extends originalImage {
     set src(value) {
-      super.src = proxyUrl(value);
+      const proxied = proxyUrl(value);
+      super.src = proxied;
     }
     get src() {
       return super.src;
     }
   };
 
-  // Intercept dynamic style/link injection
+  // Intercept dynamic style/link/script injection
   const originalInsertBefore = Element.prototype.insertBefore;
   Element.prototype.insertBefore = function(newNode, refNode) {
     if (newNode && newNode.nodeType === Node.ELEMENT_NODE) {
-      if (newNode.tagName === 'LINK' && newNode.href) {
+      if ((newNode.tagName === 'LINK' || newNode.tagName === 'STYLE') && newNode.href) {
         newNode.href = proxyUrl(newNode.href);
       }
       if (newNode.tagName === 'SCRIPT' && newNode.src) {
         newNode.src = proxyUrl(newNode.src);
       }
       if (newNode.tagName === 'IMG' && newNode.src) {
+        newNode.src = proxyUrl(newNode.src);
+      }
+      if (newNode.tagName === 'IFRAME' && newNode.src) {
         newNode.src = proxyUrl(newNode.src);
       }
     }
@@ -234,7 +262,7 @@ module.exports = {
   const originalAppendChild = Element.prototype.appendChild;
   Element.prototype.appendChild = function(node) {
     if (node && node.nodeType === Node.ELEMENT_NODE) {
-      if (node.tagName === 'LINK' && node.href) {
+      if ((node.tagName === 'LINK' || node.tagName === 'STYLE') && node.href) {
         node.href = proxyUrl(node.href);
       }
       if (node.tagName === 'SCRIPT' && node.src) {
@@ -243,8 +271,20 @@ module.exports = {
       if (node.tagName === 'IMG' && node.src) {
         node.src = proxyUrl(node.src);
       }
+      if (node.tagName === 'IFRAME' && node.src) {
+        node.src = proxyUrl(node.src);
+      }
     }
     return originalAppendChild.call(this, node);
+  };
+
+  // Intercept setAttribute for dynamic attribute changes
+  const originalSetAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(name, value) {
+    if ((name === 'src' || name === 'href') && value && typeof value === 'string') {
+      value = proxyUrl(value);
+    }
+    return originalSetAttribute.call(this, name, value);
   };
 
   // Log proxy activity for debugging
@@ -257,6 +297,8 @@ module.exports = {
     },
     proxyUrl: proxyUrl
   };
+
+  console.log('[Proxy] Initialization complete - proxy is active');
 })();
 </script>
         `;
