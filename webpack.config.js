@@ -86,46 +86,46 @@ module.exports = {
         createProxyMiddleware({
           target: "https://app.crisp.chat",
           changeOrigin: true,
-          // Don't use pathRewrite - handle it in onProxyReq instead
           onProxyReq: (proxyReq, req, res) => {
             let targetUrl = "https://app.crisp.chat";
             let targetPath = req.url.replace(/^\/app\/crisp/, "");
+            let baseHref = crispContext;
 
-            // Handle URL parameter if present (e.g., /app/crisp?url=https%3A%2F%2Fapp.crisp.chat%2Fapi%2Fv1...)
+            // Handle URL parameter if present
             if (req.url.includes('?url=')) {
               const urlMatch = req.url.match(/\?url=([^&]+)/);
               if (urlMatch) {
                 targetUrl = decodeURIComponent(urlMatch[1]);
                 const parsedUrl = new URL(targetUrl);
                 targetPath = parsedUrl.pathname + (parsedUrl.search || '');
+                baseHref = targetUrl.replace(/[?#].*$/, '').replace(/([^/])$/, '$1/');
                 proxyReq.setHeader('Host', parsedUrl.hostname);
               }
             } else {
-              // For requests without ?url= parameter, assume they're for app.crisp.chat
-              // This handles relative requests from the iframe
-              targetUrl = "https://app.crisp.chat";
+              // For requests without ?url= parameter, route to app.crisp.chat
               targetPath = req.url.replace(/^\/app\/crisp/, "");
+              baseHref = "https://app.crisp.chat" + (targetPath.startsWith('/') ? '' : '/') + targetPath;
+              baseHref = baseHref.replace(/([^/])$/, '$1/');
               proxyReq.setHeader('Host', 'app.crisp.chat');
             }
 
-            // Set the correct path for the upstream request
             proxyReq.path = targetPath;
 
-            // Set proper browser headers
+            // Set browser headers
             proxyReq.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
             proxyReq.setHeader("Accept-Language", "en-US,en;q=0.9");
             proxyReq.setHeader("Accept-Encoding", "identity");
             proxyReq.setHeader("Connection", "keep-alive");
-            proxyReq.setHeader("Upgrade-Insecure-Requests", "1");
             proxyReq.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
             proxyReq.setHeader("Referer", "https://app.crisp.chat/");
 
-            // Forward cookies for session persistence
             if (req.headers.cookie) {
               proxyReq.setHeader("Cookie", req.headers.cookie);
             }
 
-            console.log(`[Proxy] Routing ${req.url} -> ${targetUrl}${targetPath}`);
+            // Store baseHref in request for later use in response
+            req.baseHref = baseHref;
+            console.log(`[Proxy] Routing ${req.url} -> ${targetUrl}${targetPath} (base: ${baseHref})`);
           },
           selfHandleResponse: true,
           onProxyRes: (proxyRes, req, res) => {
@@ -136,7 +136,7 @@ module.exports = {
             });
 
             proxyRes.on("end", () => {
-              // Remove restrictive security headers
+              // Remove restrictive headers
               delete proxyRes.headers["x-frame-options"];
               delete proxyRes.headers["content-security-policy"];
               delete proxyRes.headers["x-content-security-policy"];
@@ -144,13 +144,13 @@ module.exports = {
               delete proxyRes.headers["content-encoding"];
               delete proxyRes.headers["transfer-encoding"];
 
-              // Set permissive headers for iframe embedding
+              // Set permissive headers
               proxyRes.headers["content-security-policy"] = "frame-ancestors 'self' http://localhost:* https://*.fly.dev; default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'";
               proxyRes.headers["x-frame-options"] = "SAMEORIGIN";
               proxyRes.headers["access-control-allow-origin"] = "*";
               proxyRes.headers["access-control-allow-credentials"] = "true";
 
-              // Handle redirects by rewriting location header
+              // Handle redirects
               if (proxyRes.statusCode >= 300 && proxyRes.statusCode < 400 && proxyRes.headers.location) {
                 let location = proxyRes.headers.location;
                 if (!location.startsWith('http://') && !location.startsWith('https://')) {
@@ -159,23 +159,22 @@ module.exports = {
                 proxyRes.headers.location = '/app/crisp?url=' + encodeURIComponent(location);
               }
 
-              // Rewrite cookie domain for proxy
+              // Rewrite cookies
               if (proxyRes.headers["set-cookie"]) {
                 const cookies = Array.isArray(proxyRes.headers["set-cookie"])
                   ? proxyRes.headers["set-cookie"]
                   : [proxyRes.headers["set-cookie"]];
 
                 proxyRes.headers["set-cookie"] = cookies.map(cookie => {
-                  // Remove domain restriction so cookies work through proxy
                   return cookie.replace(/Domain=[^;]*/i, '').replace(/SameSite=Strict/i, 'SameSite=None;Secure');
                 });
 
                 res.setHeader("Set-Cookie", proxyRes.headers["set-cookie"]);
               }
 
-              // Rewrite HTML content to proxy all URLs
+              // Rewrite HTML with base tag
               if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/html")) {
-                body = rewriteHtmlUrls(body);
+                body = rewriteHtmlUrls(body, req.baseHref);
               }
 
               res.writeHead(proxyRes.statusCode, proxyRes.headers);
@@ -185,18 +184,7 @@ module.exports = {
           onError: (err, req, res) => {
             console.error('[Proxy Error]', err);
             res.writeHead(502, { 'Content-Type': 'text/html' });
-            res.end(`
-              <html>
-                <body style="font-family: Arial; padding: 20px;">
-                  <h1>Proxy Error</h1>
-                  <p>Failed to fetch the requested resource.</p>
-                  <details>
-                    <summary>Error Details</summary>
-                    <pre>${err.message}</pre>
-                  </details>
-                </body>
-              </html>
-            `);
+            res.end(`<html><body><h1>Proxy Error</h1><p>${err.message}</p></body></html>`);
           },
           ws: true,
           logLevel: "warn",
