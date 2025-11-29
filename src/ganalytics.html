@@ -212,24 +212,24 @@
           let totalUsers = 0;
           let totalSessions = 0;
           let totalPageViews = 0;
-          let totalBounceRate = 0;
-          let bounceRateCount = 0;
+          let totalEngagement = 0;
+          let engagementCount = 0;
 
           data.monthlyData.forEach((row) => {
             const metrics = row.metricValues || [];
             totalUsers += parseInt(metrics[0]?.value || 0);
             totalSessions += parseInt(metrics[1]?.value || 0);
             totalPageViews += parseInt(metrics[2]?.value || 0);
-            if (metrics[4]?.value) {
-              totalBounceRate += parseFloat(metrics[4]?.value);
-              bounceRateCount++;
+            if (metrics[3]?.value) {
+              totalEngagement += parseFloat(metrics[3]?.value);
+              engagementCount++;
             }
           });
 
           document.getElementById("totalUsers").textContent = totalUsers.toLocaleString();
           document.getElementById("totalSessions").textContent = totalSessions.toLocaleString();
           document.getElementById("totalPageViews").textContent = totalPageViews.toLocaleString();
-          document.getElementById("bounceRate").textContent = (bounceRateCount > 0 ? (totalBounceRate / bounceRateCount).toFixed(2) : "0") + "%";
+          document.getElementById("bounceRate").textContent = (engagementCount > 0 ? ((totalEngagement / engagementCount) * 100).toFixed(2) : "0") + "%";
 
           // Update top pages table
           const topPagesBody = document.getElementById("topPagesTableBody");
