@@ -131,7 +131,7 @@ module.exports = {
               { name: "totalUsers" },
               { name: "sessions" },
               { name: "screenPageViews" },
-              { name: "averageSessionDuration" },
+              { name: "engagementRate" },
               { name: "bounceRate" },
             ],
             dimensions: [
@@ -151,7 +151,7 @@ module.exports = {
             ],
             metrics: [
               { name: "screenPageViews" },
-              { name: "avgSessionDuration" },
+              { name: "engagementRate" },
             ],
             dimensions: [
               { name: "pagePath" },
