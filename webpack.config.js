@@ -188,9 +188,30 @@ module.exports = {
                 proxyRes.headers["access-control-allow-origin"] = req.headers.origin;
               }
 
-              // Rewrite HTML with base tag
+              // Rewrite HTML with base tag and inject credentials script
               if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/html")) {
                 body = rewriteHtmlUrls(body, req.baseHref);
+
+                // Inject script to ensure credentials are sent with all requests
+                const credentialScript = `<script>
+(function() {
+  // Intercept fetch to include credentials
+  const originalFetch = window.fetch;
+  window.fetch = function(...args) {
+    if (!args[1]) args[1] = {};
+    args[1].credentials = 'include';
+    return originalFetch.apply(this, args);
+  };
+
+  // Intercept XMLHttpRequest to include credentials
+  const originalOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+    this.withCredentials = true;
+    return originalOpen.call(this, method, url, ...rest);
+  };
+})();
+</script>`;
+                body = body.replace(/<head[^>]*>/i, (match) => match + credentialScript);
               }
 
               res.writeHead(proxyRes.statusCode, proxyRes.headers);
