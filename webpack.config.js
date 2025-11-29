@@ -149,13 +149,7 @@ module.exports = {
                 res.setHeader("Set-Cookie", proxyRes.headers["set-cookie"]);
               }
 
-              // Inject base tag for relative URL resolution in HTML
-              if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/html")) {
-                body = body.replace(
-                  /<head[^>]*>/i,
-                  `<head><base href="https://app.crisp.chat">`
-                );
-              }
+              // No need to inject base tag - proxy handles all requests
 
               res.writeHead(proxyRes.statusCode, proxyRes.headers);
               res.end(body);
