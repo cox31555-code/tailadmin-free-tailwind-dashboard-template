@@ -184,11 +184,27 @@ module.exports = {
             ],
           });
 
+          // Get overall engagement metrics
+          const engagementResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "sessions" },
+              { name: "engagedSessions" },
+            ],
+          });
+
           res.json({
             realtimeUsers: realtimeResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
             monthlyData: monthlyResponse[0]?.rows || [],
             topPages: topPagesResponse[0]?.rows || [],
             trafficSources: trafficResponse[0]?.rows || [],
+            engagement: engagementResponse[0]?.rows?.[0] || {},
           });
         } catch (error) {
           console.error("GA API Error:", error);
