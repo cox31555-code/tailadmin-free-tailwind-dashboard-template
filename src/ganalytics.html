@@ -117,7 +117,7 @@
                           <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Page Views</p>
                         </th>
                         <th class="px-5 py-3.5 text-left sm:px-6">
-                          <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Avg Duration</p>
+                          <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Engagement</p>
                         </th>
                       </tr>
                     </thead>
@@ -240,7 +240,7 @@
             data.topPages.forEach((row) => {
               const path = row.dimensionValues?.[0]?.value || "Unknown";
               const views = row.metricValues?.[0]?.value || "0";
-              const duration = row.metricValues?.[1]?.value || "0";
+              const engagement = row.metricValues?.[1]?.value || "0";
               const tr = document.createElement("tr");
               tr.className = "hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors";
               tr.innerHTML = `
@@ -251,7 +251,7 @@
                   <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">${views}</p>
                 </td>
                 <td class="px-5 py-3 sm:px-6">
-                  <p class="text-gray-500 text-theme-sm dark:text-gray-400">${parseFloat(duration).toFixed(2)}s</p>
+                  <p class="text-gray-500 text-theme-sm dark:text-gray-400">${(parseFloat(engagement) * 100).toFixed(2)}%</p>
                 </td>
               `;
               topPagesBody.appendChild(tr);
