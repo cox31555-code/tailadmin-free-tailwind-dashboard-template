@@ -54,38 +54,11 @@
               style="height: calc(100vh - 240px)"
             >
               <iframe
-                id="crisp-iframe"
+                src="https://cors.io/?url=https://app.crisp.chat/website/80335e6a-e33e-478a-8ce3-1b88c05b4ad4/inbox/"
                 title="Crisp Live Chat Management"
                 class="w-full h-full border-0"
                 allow="clipboard-read; clipboard-write; microphone; camera"
               ></iframe>
-
-              <script>
-                var crispUrl = 'https://app.crisp.chat/website/80335e6a-e33e-478a-8ce3-1b88c05b4ad4/inbox/';
-                var corsioProxy = 'https://cors.io/?url=';
-                var iframe = document.getElementById('crisp-iframe');
-
-                function loadContent(url) {
-                  console.log('Loading from:', url);
-                  var proxyUrl = corsioProxy + encodeURIComponent(url);
-                  fetch(proxyUrl)
-                    .then(function(res) {
-                      return res.text();
-                    })
-                    .then(function(html) {
-                      var baseHref = '<base href="' + url + '">';
-                      var newHtml = html.replace('<head>', '<head>' + baseHref);
-                      iframe.srcdoc = newHtml;
-                    })
-                    .catch(function(err) {
-                      iframe.srcdoc = '<p>Error: ' + err.message + '</p>';
-                    });
-                }
-
-                setTimeout(function() {
-                  loadContent(crispUrl);
-                }, 100);
-              </script>
             </div>
           </div>
         </main>
