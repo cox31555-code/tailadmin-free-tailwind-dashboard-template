@@ -143,24 +143,12 @@ module.exports = {
                 res.setHeader("Set-Cookie", proxyRes.headers["set-cookie"]);
               }
 
-              // Rewrite URLs in HTML content
+              // Inject base tag for relative URL resolution in HTML
               if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/html")) {
-                body = rewriteUrls(body, "https://app.crisp.chat");
-                body = injectProxyScript(body);
                 body = body.replace(
                   /<head[^>]*>/i,
-                  `<head><base href="/app/crisp/">`
+                  `<head><base href="https://app.crisp.chat">`
                 );
-              }
-
-              // Rewrite URLs in CSS
-              if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/css")) {
-                body = rewriteUrls(body, "https://app.crisp.chat");
-              }
-
-              // Rewrite URLs in JavaScript
-              if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("javascript")) {
-                body = rewriteUrls(body, "https://app.crisp.chat");
               }
 
               res.writeHead(proxyRes.statusCode, proxyRes.headers);
