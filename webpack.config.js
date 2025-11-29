@@ -66,12 +66,16 @@ module.exports = {
           onProxyReq: (proxyReq, req, res) => {
             proxyReq.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
             proxyReq.setHeader("Accept-Language", "en-US,en;q=0.5");
-            proxyReq.setHeader("Accept-Encoding", "gzip, deflate");
+            proxyReq.setHeader("Accept-Encoding", "identity");
             proxyReq.setHeader("Connection", "keep-alive");
             proxyReq.setHeader("Upgrade-Insecure-Requests", "1");
             proxyReq.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
           },
           onProxyRes: (proxyRes, req, res) => {
+            // Remove encoding headers to prevent browser decoding issues
+            delete proxyRes.headers["content-encoding"];
+            delete proxyRes.headers["transfer-encoding"];
+
             // Remove all restrictive security headers that block iframes
             delete proxyRes.headers["x-frame-options"];
             delete proxyRes.headers["content-security-policy"];
