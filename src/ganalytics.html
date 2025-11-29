@@ -198,12 +198,11 @@
 
         try {
           const response = await fetch("/api/ga/metrics");
-          if (!response.ok) {
-            const errData = await response.json();
-            throw new Error(errData.error || "Failed to fetch analytics");
-          }
-
           const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Failed to fetch analytics");
+          }
 
           // Update real-time users
           document.getElementById("realtimeUsers").textContent = data.realtimeUsers;
