@@ -311,21 +311,24 @@ module.exports = {
         createProxyMiddleware({
           target: "https://app.crisp.chat",
           changeOrigin: true,
-          pathRewrite: {
-            "^/app/crisp\\?url=": "",
-            "^/app/crisp": "",
-          },
+          // Don't use pathRewrite - handle it in onProxyReq instead
           onProxyReq: (proxyReq, req, res) => {
-            // Handle URL parameter if present
+            let targetUrl = "https://app.crisp.chat";
+            let targetPath = req.url.replace(/^\/app\/crisp/, "");
+
+            // Handle URL parameter if present (e.g., /app/crisp?url=https%3A%2F%2Fapp.crisp.chat%2Fapi%2Fv1...)
             if (req.url.includes('?url=')) {
               const urlMatch = req.url.match(/\?url=([^&]+)/);
               if (urlMatch) {
-                const targetUrl = decodeURIComponent(urlMatch[1]);
+                targetUrl = decodeURIComponent(urlMatch[1]);
                 const parsedUrl = new URL(targetUrl);
-                proxyReq.path = parsedUrl.pathname + parsedUrl.search;
+                targetPath = parsedUrl.pathname + (parsedUrl.search || '');
                 proxyReq.setHeader('Host', parsedUrl.hostname);
               }
             }
+
+            // Set the correct path for the upstream request
+            proxyReq.path = targetPath;
 
             // Set proper browser headers
             proxyReq.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
@@ -340,6 +343,8 @@ module.exports = {
             if (req.headers.cookie) {
               proxyReq.setHeader("Cookie", req.headers.cookie);
             }
+
+            console.log(`[Proxy] Routing ${req.url} -> ${targetUrl}${targetPath}`);
           },
           selfHandleResponse: true,
           onProxyRes: (proxyRes, req, res) => {
