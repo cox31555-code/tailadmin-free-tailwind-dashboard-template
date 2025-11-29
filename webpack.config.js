@@ -190,7 +190,10 @@ module.exports = {
                 res.setHeader("Set-Cookie", proxyRes.headers["set-cookie"]);
               }
 
-              // No need to inject base tag - proxy handles all requests
+              // Rewrite HTML content to proxy all URLs
+              if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/html")) {
+                body = rewriteHtmlUrls(body);
+              }
 
               res.writeHead(proxyRes.statusCode, proxyRes.headers);
               res.end(body);
