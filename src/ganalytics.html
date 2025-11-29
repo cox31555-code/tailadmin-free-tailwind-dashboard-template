@@ -230,7 +230,6 @@
             data.topPages.forEach((row) => {
               const path = row.dimensionValues?.[0]?.value || "Unknown";
               const views = row.metricValues?.[0]?.value || "0";
-              const sessions = row.metricValues?.[1]?.value || "0";
               const tr = document.createElement("tr");
               tr.className = "hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors";
               tr.innerHTML = `
@@ -241,7 +240,7 @@
                   <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">${views}</p>
                 </td>
                 <td class="px-5 py-3 sm:px-6">
-                  <p class="text-gray-500 text-theme-sm dark:text-gray-400">${sessions}</p>
+                  <p class="text-gray-500 text-theme-sm dark:text-gray-400">-</p>
                 </td>
               `;
               topPagesBody.appendChild(tr);
