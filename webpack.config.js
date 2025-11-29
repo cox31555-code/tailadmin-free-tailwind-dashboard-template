@@ -54,8 +54,6 @@ module.exports = {
       writeToDisk: true,
     },
     setupMiddlewares: (middlewares, devServer) => {
-      const { createProxyMiddleware } = require("http-proxy-middleware");
-
       // Proxy for Crisp with comprehensive routing
       devServer.app.use(
         "/app/crisp",
@@ -73,24 +71,7 @@ module.exports = {
             proxyReq.setHeader("Upgrade-Insecure-Requests", "1");
             proxyReq.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
           },
-          onProxyRes: (proxyRes, req, res) => {
-            delete proxyRes.headers["content-encoding"];
-            delete proxyRes.headers["transfer-encoding"];
-            delete proxyRes.headers["x-frame-options"];
-            delete proxyRes.headers["content-security-policy"];
-            delete proxyRes.headers["x-content-security-policy"];
-            delete proxyRes.headers["x-webkit-csp"];
-
-            proxyRes.headers["content-security-policy"] = "frame-ancestors 'self' http://localhost:* https://*.fly.dev";
-            proxyRes.headers["x-frame-options"] = "SAMEORIGIN";
-            proxyRes.headers["access-control-allow-origin"] = "*";
-
-            if (req.path.endsWith(".js")) {
-              proxyRes.headers["content-type"] = "application/javascript";
-            }
-          },
           selfHandleResponse: true,
-          ws: true,
           onProxyRes: (proxyRes, req, res) => {
             let body = "";
 
@@ -105,13 +86,14 @@ module.exports = {
               delete proxyRes.headers["x-content-security-policy"];
               delete proxyRes.headers["x-webkit-csp"];
               delete proxyRes.headers["content-encoding"];
+              delete proxyRes.headers["transfer-encoding"];
 
               // Set permissive headers
               proxyRes.headers["content-security-policy"] = "frame-ancestors 'self' http://localhost:* https://*.fly.dev";
               proxyRes.headers["x-frame-options"] = "SAMEORIGIN";
               proxyRes.headers["access-control-allow-origin"] = "*";
 
-              // Inject base tag for HTML content
+              // Inject base tag for HTML content so relative URLs work through proxy
               if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/html")) {
                 body = body.replace(
                   /<head[^>]*>/i,
@@ -123,6 +105,7 @@ module.exports = {
               res.end(body);
             });
           },
+          ws: true,
         })
       );
 
