@@ -54,7 +54,7 @@ module.exports = {
       writeToDisk: true,
     },
     setupMiddlewares: (middlewares, devServer) => {
-      // Proxy Crisp requests with header modification
+      // Proxy Crisp requests with comprehensive header modification
       devServer.app.use(
         "/app/crisp",
         createProxyMiddleware({
@@ -63,15 +63,34 @@ module.exports = {
           pathRewrite: {
             "^/app/crisp": "",
           },
+          onProxyReq: (proxyReq, req, res) => {
+            // Ensure proper headers for Crisp
+            proxyReq.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            proxyReq.setHeader("Accept-Language", "en-US,en;q=0.5");
+            proxyReq.setHeader("Accept-Encoding", "gzip, deflate");
+            proxyReq.setHeader("Connection", "keep-alive");
+            proxyReq.setHeader("Upgrade-Insecure-Requests", "1");
+            proxyReq.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+          },
           onProxyRes: (proxyRes, req, res) => {
-            // Remove restrictive frame headers
+            // Remove all restrictive security headers
             delete proxyRes.headers["x-frame-options"];
             delete proxyRes.headers["content-security-policy"];
             delete proxyRes.headers["x-content-security-policy"];
+            delete proxyRes.headers["x-webkit-csp"];
+            delete proxyRes.headers["x-ua-compatible"];
 
-            // Set permissive headers for same-origin iframe
+            // Set permissive headers
             proxyRes.headers["x-frame-options"] = "SAMEORIGIN";
+            proxyRes.headers["access-control-allow-origin"] = "*";
+
+            // Allow all content types through
+            if (req.path.endsWith(".js")) {
+              proxyRes.headers["content-type"] = "application/javascript";
+            }
           },
+          logLevel: "debug",
+          ws: true,
         })
       );
 
