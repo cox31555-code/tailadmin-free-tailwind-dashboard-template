@@ -153,12 +153,7 @@ module.exports = {
             dimensions: [
               { name: "pagePath" },
             ],
-            orderBys: [
-              {
-                metric: { name: "screenPageViews" },
-                descending: true,
-              },
-            ],
+            limit: 10,
           });
 
           // Get traffic sources
@@ -176,12 +171,7 @@ module.exports = {
             dimensions: [
               { name: "sessionDefaultChannelGroup" },
             ],
-            orderBys: [
-              {
-                metric: { name: "sessions" },
-                descending: true,
-              },
-            ],
+            limit: 10,
           });
 
           // Get overall engagement metrics
