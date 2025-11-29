@@ -119,12 +119,14 @@ module.exports = {
             proxyReq.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
             proxyReq.setHeader("Referer", "https://app.crisp.chat/");
 
+            // Always include cookies, even if empty
             if (req.headers.cookie) {
               proxyReq.setHeader("Cookie", req.headers.cookie);
             }
 
             // Store baseHref in request for later use in response
             req.baseHref = baseHref;
+            req.targetUrl = targetUrl;
             console.log(`[Proxy] Routing ${req.url} -> ${targetUrl}${targetPath} (base: ${baseHref})`);
           },
           selfHandleResponse: true,
