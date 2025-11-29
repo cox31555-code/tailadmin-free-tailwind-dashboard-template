@@ -30,7 +30,7 @@
 
       <!-- ===== Content Area Start ===== -->
       <div
-        class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
+        class="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto"
       >
         <!-- Small Device Overlay Start -->
         <include src="./partials/overlay.html" />
@@ -42,32 +42,140 @@
 
         <!-- ===== Main Content Start ===== -->
         <main>
-          <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6">
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
             <!-- Breadcrumb Start -->
             <div x-data="{ pageName: `Google Analytics`}">
               <include src="./partials/breadcrumb.html" />
             </div>
             <!-- Breadcrumb End -->
 
-            <div
-              class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
-              style="height: calc(100vh - 240px)"
-            >
-              <iframe
-                src="https://analytics.google.com/analytics/web/?pli=1#/a372700632p510184850/reports/intelligenthome"
-                title="Google Analytics"
-                class="w-full h-full border-0"
-              ></iframe>
+            <!-- Loading State -->
+            <div id="loading" class="text-center py-12">
+              <div class="inline-flex items-center gap-2">
+                <div class="h-8 w-8 animate-spin rounded-full border-4 border-solid border-brand-500 border-t-transparent"></div>
+                <span class="text-gray-600 dark:text-gray-400">Loading analytics...</span>
+              </div>
             </div>
 
-            <div class="mt-4">
-              <a
-                href="https://analytics.google.com/analytics/web/?pli=1#/a372700632p510184850/reports/intelligenthome"
-                target="_blank"
-                class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-2 text-center font-medium text-white hover:bg-blue-700 transition-colors"
+            <!-- Analytics Dashboard -->
+            <div id="dashboard" style="display: none;" class="space-y-5 sm:space-y-6">
+              <!-- Real-time Users Card -->
+              <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Users (Real-time)</p>
+                    <p class="text-3xl font-bold text-gray-800 dark:text-white mt-2" id="realtimeUsers">0</p>
+                  </div>
+                  <div class="inline-flex items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-500/10 w-16 h-16">
+                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-2a6 6 0 0112 0v2zm0 0h6v-2a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Key Metrics Cards -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Total Users -->
+                <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</p>
+                  <p class="text-2xl font-bold text-gray-800 dark:text-white mt-2" id="totalUsers">0</p>
+                </div>
+
+                <!-- Sessions -->
+                <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Sessions</p>
+                  <p class="text-2xl font-bold text-gray-800 dark:text-white mt-2" id="totalSessions">0</p>
+                </div>
+
+                <!-- Page Views -->
+                <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Page Views</p>
+                  <p class="text-2xl font-bold text-gray-800 dark:text-white mt-2" id="totalPageViews">0</p>
+                </div>
+
+                <!-- Bounce Rate -->
+                <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Bounce Rate</p>
+                  <p class="text-2xl font-bold text-gray-800 dark:text-white mt-2" id="bounceRate">0%</p>
+                </div>
+              </div>
+
+              <!-- Top Pages -->
+              <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                <div class="px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-200 dark:border-gray-800">
+                  <h3 class="text-base font-medium text-gray-800 dark:text-white/90">Top Pages</h3>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full">
+                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                      <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="px-5 py-3.5 text-left sm:px-6">
+                          <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Page Path</p>
+                        </th>
+                        <th class="px-5 py-3.5 text-left sm:px-6">
+                          <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Page Views</p>
+                        </th>
+                        <th class="px-5 py-3.5 text-left sm:px-6">
+                          <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Avg Duration</p>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-white/[0.03]" id="topPagesTableBody">
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+                        <td colspan="3" class="px-5 py-4 sm:px-6 text-center text-gray-500">Loading...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Traffic Sources -->
+              <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                <div class="px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-200 dark:border-gray-800">
+                  <h3 class="text-base font-medium text-gray-800 dark:text-white/90">Traffic Sources</h3>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full">
+                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                      <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="px-5 py-3.5 text-left sm:px-6">
+                          <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Source</p>
+                        </th>
+                        <th class="px-5 py-3.5 text-left sm:px-6">
+                          <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Sessions</p>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-white/[0.03]" id="trafficSourcesTableBody">
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+                        <td colspan="2" class="px-5 py-4 sm:px-6 text-center text-gray-500">Loading...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Refresh Button -->
+              <div class="flex justify-end">
+                <button 
+                  onclick="loadAnalytics()"
+                  class="inline-flex items-center justify-center rounded-lg bg-brand-600 px-6 py-2 text-center font-medium text-white hover:bg-brand-700 transition-colors"
+                >
+                  Refresh Data
+                </button>
+              </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="error" style="display: none;" class="rounded-2xl border border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-500/10 p-6">
+              <p class="text-red-700 dark:text-red-400">Unable to load analytics data. Please try again later.</p>
+              <button 
+                onclick="loadAnalytics()"
+                class="mt-4 inline-flex items-center justify-center rounded-lg bg-red-600 px-6 py-2 text-center font-medium text-white hover:bg-red-700 transition-colors"
               >
-                Open Google Analytics
-              </a>
+                Retry
+              </button>
             </div>
           </div>
         </main>
@@ -76,5 +184,112 @@
       <!-- ===== Content Area End ===== -->
     </div>
     <!-- ===== Page Wrapper End ===== -->
+
+    <script>
+      async function loadAnalytics() {
+        const loading = document.getElementById("loading");
+        const dashboard = document.getElementById("dashboard");
+        const error = document.getElementById("error");
+
+        loading.style.display = "block";
+        dashboard.style.display = "none";
+        error.style.display = "none";
+
+        try {
+          const response = await fetch("/api/ga/metrics");
+          if (!response.ok) throw new Error("Failed to fetch analytics");
+
+          const data = await response.json();
+
+          // Update real-time users
+          document.getElementById("realtimeUsers").textContent = data.realtimeUsers;
+
+          // Calculate aggregated metrics from monthly data
+          let totalUsers = 0;
+          let totalSessions = 0;
+          let totalPageViews = 0;
+          let totalBounceRate = 0;
+          let bounceRateCount = 0;
+
+          data.monthlyData.forEach((row) => {
+            const metrics = row.metricValues || [];
+            totalUsers += parseInt(metrics[0]?.value || 0);
+            totalSessions += parseInt(metrics[1]?.value || 0);
+            totalPageViews += parseInt(metrics[2]?.value || 0);
+            if (metrics[4]?.value) {
+              totalBounceRate += parseFloat(metrics[4]?.value);
+              bounceRateCount++;
+            }
+          });
+
+          document.getElementById("totalUsers").textContent = totalUsers.toLocaleString();
+          document.getElementById("totalSessions").textContent = totalSessions.toLocaleString();
+          document.getElementById("totalPageViews").textContent = totalPageViews.toLocaleString();
+          document.getElementById("bounceRate").textContent = (bounceRateCount > 0 ? (totalBounceRate / bounceRateCount).toFixed(2) : "0") + "%";
+
+          // Update top pages table
+          const topPagesBody = document.getElementById("topPagesTableBody");
+          topPagesBody.innerHTML = "";
+          if (data.topPages.length === 0) {
+            topPagesBody.innerHTML = '<tr><td colspan="3" class="px-5 py-4 sm:px-6 text-center text-gray-500">No data available</td></tr>';
+          } else {
+            data.topPages.forEach((row) => {
+              const path = row.dimensionValues?.[0]?.value || "Unknown";
+              const views = row.metricValues?.[0]?.value || "0";
+              const duration = row.metricValues?.[1]?.value || "0";
+              const tr = document.createElement("tr");
+              tr.className = "hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors";
+              tr.innerHTML = `
+                <td class="px-5 py-3 sm:px-6">
+                  <p class="text-gray-800 text-theme-sm dark:text-white/90 truncate">${path}</p>
+                </td>
+                <td class="px-5 py-3 sm:px-6">
+                  <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">${views}</p>
+                </td>
+                <td class="px-5 py-3 sm:px-6">
+                  <p class="text-gray-500 text-theme-sm dark:text-gray-400">${parseFloat(duration).toFixed(2)}s</p>
+                </td>
+              `;
+              topPagesBody.appendChild(tr);
+            });
+          }
+
+          // Update traffic sources table
+          const trafficBody = document.getElementById("trafficSourcesTableBody");
+          trafficBody.innerHTML = "";
+          if (data.trafficSources.length === 0) {
+            trafficBody.innerHTML = '<tr><td colspan="2" class="px-5 py-4 sm:px-6 text-center text-gray-500">No data available</td></tr>';
+          } else {
+            data.trafficSources.forEach((row) => {
+              const source = row.dimensionValues?.[0]?.value || "Unknown";
+              const sessions = row.metricValues?.[0]?.value || "0";
+              const tr = document.createElement("tr");
+              tr.className = "hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors";
+              tr.innerHTML = `
+                <td class="px-5 py-3 sm:px-6">
+                  <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">${source}</p>
+                </td>
+                <td class="px-5 py-3 sm:px-6">
+                  <p class="text-gray-500 text-theme-sm dark:text-gray-400">${sessions}</p>
+                </td>
+              `;
+              trafficBody.appendChild(tr);
+            });
+          }
+
+          loading.style.display = "none";
+          dashboard.style.display = "block";
+          error.style.display = "none";
+        } catch (err) {
+          console.error("Analytics Error:", err);
+          loading.style.display = "none";
+          dashboard.style.display = "none";
+          error.style.display = "block";
+        }
+      }
+
+      // Load analytics on page load
+      loadAnalytics();
+    </script>
   </body>
 </html>
