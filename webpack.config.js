@@ -103,7 +103,7 @@ module.exports = {
             credentials: serviceAccountKey,
           });
 
-          const propertyId = "372700632";
+          const propertyId = "510184850";
 
           // Get real-time user count
           const realtimeResponse = await analyticsDataClient.runRealtimeReport({
