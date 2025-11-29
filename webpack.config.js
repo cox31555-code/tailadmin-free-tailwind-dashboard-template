@@ -187,6 +187,9 @@ module.exports = {
                 descending: true,
               },
             ],
+          }).catch(err => {
+            console.error("Traffic sources error:", err);
+            return [{ rows: [] }];
           });
 
           res.json({
