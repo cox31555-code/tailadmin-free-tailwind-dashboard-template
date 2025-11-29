@@ -3,6 +3,8 @@ const glob = require("glob");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const { BetaAnalyticsDataClient } = require("@google-analytics/data");
+const { GoogleAuth } = require("google-auth-library");
 
 const INCLUDE_PATTERN =
   /<include\s+src=["'](.+?)["']\s*\/?>\s*(?:<\/include>)?/gis;
