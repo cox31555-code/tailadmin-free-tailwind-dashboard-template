@@ -54,44 +54,27 @@ module.exports = {
       writeToDisk: true,
     },
     setupMiddlewares: (middlewares, devServer) => {
+      // Store the current Crisp URL context for the iframe
+      let crispContext = "https://app.crisp.chat/website/80335e6a-e33e-478a-8ce3-1b88c05b4ad4/";
+
       // Simple URL rewriting for HTML content
-      const rewriteHtmlUrls = (html) => {
-        // Rewrite src attributes to proxy through /app/crisp
-        html = html.replace(/src=["'](?!data:|javascript:|\/app\/crisp)([^"']+)["']/gi, (match, url) => {
-          if (url.startsWith('http://') || url.startsWith('https://')) {
-            return `src="/app/crisp?url=${encodeURIComponent(url)}"`;
-          } else {
-            // Relative URL - proxy through /app/crisp
-            return `src="/app/crisp${url.startsWith('/') ? '' : '/'}${url}"`;
-          }
+      const rewriteHtmlUrls = (html, baseUrl) => {
+        // Extract the base path from the request URL to maintain context
+        baseUrl = baseUrl || crispContext;
+
+        // Rewrite absolute URLs to use proxy
+        html = html.replace(/(?:src|href|action|data)=["'](?!data:|javascript:|\/app\/crisp)(https?:\/\/[^"']+)["']/gi, (match, attr, url) => {
+          const attrName = match.match(/^(\w+)=/)[1];
+          return `${attrName}="/app/crisp?url=${encodeURIComponent(url)}"`;
         });
 
-        // Rewrite href attributes (except anchors)
-        html = html.replace(/href=["'](?!#|data:|javascript:|\/app\/crisp)([^"']+)["']/gi, (match, url) => {
-          if (url.startsWith('http://') || url.startsWith('https://')) {
-            return `href="/app/crisp?url=${encodeURIComponent(url)}"`;
-          } else {
-            return `href="/app/crisp${url.startsWith('/') ? '' : '/'}${url}"`;
-          }
-        });
-
-        // Rewrite action attributes in forms
-        html = html.replace(/action=["'](?!data:|javascript:|\/app\/crisp)([^"']+)["']/gi, (match, url) => {
-          if (url.startsWith('http://') || url.startsWith('https://')) {
-            return `action="/app/crisp?url=${encodeURIComponent(url)}"`;
-          } else {
-            return `action="/app/crisp${url.startsWith('/') ? '' : '/'}${url}"`;
-          }
-        });
-
-        // Rewrite CSS url() functions
-        html = html.replace(/url\(\s*["']?(?!data:|\/app\/crisp)([^"')]+)["']?\s*\)/gi, (match, url) => {
-          if (url.startsWith('http://') || url.startsWith('https://')) {
-            return `url("/app/crisp?url=${encodeURIComponent(url)}")`;
-          } else {
-            return `url("/app/crisp${url.startsWith('/') ? '' : '/'}${url}")`;
-          }
-        });
+        // For relative URLs, just use base tag resolution (don't rewrite them)
+        // Inject base tag to handle relative URL resolution
+        if (baseUrl && !html.includes('<base')) {
+          html = html.replace(/<head[^>]*>/i, (match) => {
+            return match + `\n  <base href="${baseUrl}">`;
+          });
+        }
 
         return html;
       };
