@@ -76,6 +76,12 @@ module.exports = {
                 targetPath = parsedUrl.pathname + (parsedUrl.search || '');
                 proxyReq.setHeader('Host', parsedUrl.hostname);
               }
+            } else {
+              // For requests without ?url= parameter, assume they're for app.crisp.chat
+              // This handles relative requests from the iframe
+              targetUrl = "https://app.crisp.chat";
+              targetPath = req.url.replace(/^\/app\/crisp/, "");
+              proxyReq.setHeader('Host', 'app.crisp.chat');
             }
 
             // Set the correct path for the upstream request
