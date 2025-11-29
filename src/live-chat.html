@@ -50,21 +50,15 @@
             <!-- Breadcrumb End -->
 
             <div
-              class="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12"
+              class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
+              style="height: calc(100vh - 240px)"
             >
-              <div class="mx-auto w-full max-w-[630px] text-center">
-                <h3
-                  class="mb-4 text-theme-xl font-semibold text-gray-800 dark:text-white/90 sm:text-2xl"
-                >
-                  Live Chat
-                </h3>
-
-                <p
-                  class="text-sm text-gray-500 dark:text-gray-400 sm:text-base"
-                >
-                  Live chat content will be displayed here.
-                </p>
-              </div>
+              <iframe
+                src="https://app.crisp.chat/initiate/login/"
+                title="Crisp Live Chat Management"
+                class="w-full h-full border-0"
+                allow="clipboard-read; clipboard-write"
+              ></iframe>
             </div>
           </div>
         </main>
