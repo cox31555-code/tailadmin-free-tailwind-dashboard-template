@@ -181,15 +181,6 @@ module.exports = {
               { name: "sessionDefaultChannelGroup" },
             ],
             limit: 10,
-            orderBys: [
-              {
-                metric: { name: "sessions" },
-                descending: true,
-              },
-            ],
-          }).catch(err => {
-            console.error("Traffic sources error:", err);
-            return [{ rows: [] }];
           });
 
           res.json({
