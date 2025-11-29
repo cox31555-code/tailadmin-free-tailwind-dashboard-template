@@ -128,12 +128,9 @@ module.exports = {
               },
             ],
             metrics: [
-              { name: "totalUsers" },
+              { name: "activeUsers" },
               { name: "sessions" },
               { name: "screenPageViews" },
-            ],
-            dimensions: [
-              { name: "date" },
             ],
           });
 
@@ -148,12 +145,10 @@ module.exports = {
             ],
             metrics: [
               { name: "screenPageViews" },
-              { name: "sessions" },
             ],
             dimensions: [
               { name: "pagePath" },
             ],
-            limit: 10,
           });
 
           // Get traffic sources
@@ -169,13 +164,12 @@ module.exports = {
               { name: "sessions" },
             ],
             dimensions: [
-              { name: "sessionDefaultChannelGroup" },
+              { name: "firstUserSourceMedium" },
             ],
-            limit: 10,
           });
 
-          // Get overall engagement metrics
-          const engagementResponse = await analyticsDataClient.runReport({
+          // Get overall stats
+          const overallResponse = await analyticsDataClient.runReport({
             property: `properties/${propertyId}`,
             dateRanges: [
               {
@@ -184,8 +178,9 @@ module.exports = {
               },
             ],
             metrics: [
+              { name: "activeUsers" },
               { name: "sessions" },
-              { name: "engagedSessions" },
+              { name: "screenPageViews" },
             ],
           });
 
