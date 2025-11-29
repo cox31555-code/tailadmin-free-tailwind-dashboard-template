@@ -159,8 +159,10 @@ module.exports = {
       }
 
       if (shouldProxy(absoluteUrl)) {
-        const proxied = proxyPath + encodeURIComponent(absoluteUrl);
-        console.log('[Proxy] Routing', url, '->', proxied);
+        // Ensure proper encoding
+        const encoded = encodeURIComponent(absoluteUrl);
+        const proxied = proxyPath + encoded;
+        console.log('[Proxy] Intercepted', url, '-> proxying');
         return proxied;
       }
     } catch (e) {
@@ -169,27 +171,41 @@ module.exports = {
     return url;
   }
 
-  // Intercept fetch requests
+  // Intercept fetch requests - this is critical for API calls
   const originalFetch = window.fetch;
   window.fetch = function(...args) {
     if (args[0]) {
       const originalUrl = args[0];
-      args[0] = proxyUrl(args[0]);
-      if (originalUrl !== args[0]) {
-        console.log('[Proxy] fetch() intercepted:', originalUrl);
+      const proxiedUrl = proxyUrl(originalUrl);
+      if (originalUrl !== proxiedUrl) {
+        console.log('[Proxy] fetch() intercepted: ' + originalUrl + ' -> ' + proxiedUrl);
+        args[0] = proxiedUrl;
       }
     }
-    return originalFetch.apply(this, args);
+
+    // Also intercept the response to handle CORS
+    return originalFetch.apply(this, args)
+      .catch(err => {
+        console.error('[Proxy] fetch error:', err);
+        throw err;
+      });
   };
 
-  // Intercept XMLHttpRequest
+  // Intercept XMLHttpRequest - important for older libraries
   const originalOpen = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function(method, url, ...rest) {
     const proxiedUrl = proxyUrl(url);
     if (url !== proxiedUrl) {
-      console.log('[Proxy] XHR open() intercepted:', method, url);
+      console.log('[Proxy] XHR ' + method + ' intercepted: ' + url + ' -> ' + proxiedUrl);
     }
     return originalOpen.call(this, method, proxiedUrl, ...rest);
+  };
+
+  // Also intercept XMLHttpRequest.prototype.send to log it
+  const originalSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.send = function(...args) {
+    console.log('[Proxy] XHR send() called on:', this._method, this._url);
+    return originalSend.apply(this, args);
   };
 
   // Block service worker registration
@@ -206,24 +222,12 @@ module.exports = {
       const original = e.target.action;
       e.target.action = proxyUrl(e.target.action);
       if (original !== e.target.action) {
-        console.log('[Proxy] Form action rewritten:', original);
+        console.log('[Proxy] Form action rewritten');
       }
     }
   }, true);
 
-  // Intercept image loading dynamically
-  const originalImage = Image;
-  window.Image = class ProxiedImage extends originalImage {
-    set src(value) {
-      const proxied = proxyUrl(value);
-      super.src = proxied;
-    }
-    get src() {
-      return super.src;
-    }
-  };
-
-  // Intercept dynamic style/link/script injection
+  // Intercept dynamic resource loading
   const originalInsertBefore = Element.prototype.insertBefore;
   Element.prototype.insertBefore = function(newNode, refNode) {
     if (newNode && newNode.nodeType === Node.ELEMENT_NODE) {
@@ -233,7 +237,7 @@ module.exports = {
       if (newNode.tagName === 'SCRIPT' && newNode.src) {
         newNode.src = proxyUrl(newNode.src);
       }
-      if (newNode.tagName === 'IMG' && newNode.src) {
+      if ((newNode.tagName === 'IMG' || newNode.tagName === 'SOURCE') && newNode.src) {
         newNode.src = proxyUrl(newNode.src);
       }
       if (newNode.tagName === 'IFRAME' && newNode.src) {
@@ -243,7 +247,6 @@ module.exports = {
     return originalInsertBefore.call(this, newNode, refNode);
   };
 
-  // Intercept appendChild
   const originalAppendChild = Element.prototype.appendChild;
   Element.prototype.appendChild = function(node) {
     if (node && node.nodeType === Node.ELEMENT_NODE) {
@@ -253,7 +256,7 @@ module.exports = {
       if (node.tagName === 'SCRIPT' && node.src) {
         node.src = proxyUrl(node.src);
       }
-      if (node.tagName === 'IMG' && node.src) {
+      if ((node.tagName === 'IMG' || node.tagName === 'SOURCE') && node.src) {
         node.src = proxyUrl(node.src);
       }
       if (node.tagName === 'IFRAME' && node.src) {
@@ -266,8 +269,12 @@ module.exports = {
   // Intercept setAttribute for dynamic attribute changes
   const originalSetAttribute = Element.prototype.setAttribute;
   Element.prototype.setAttribute = function(name, value) {
-    if ((name === 'src' || name === 'href') && value && typeof value === 'string') {
-      value = proxyUrl(value);
+    if ((name === 'src' || name === 'href' || name === 'action') && value && typeof value === 'string') {
+      const proxied = proxyUrl(value);
+      if (proxied !== value) {
+        console.log('[Proxy] setAttribute rewritten:', name);
+      }
+      value = proxied;
     }
     return originalSetAttribute.call(this, name, value);
   };
@@ -283,7 +290,7 @@ module.exports = {
     proxyUrl: proxyUrl
   };
 
-  console.log('[Proxy] Initialization complete - proxy is active');
+  console.log('[Proxy] Initialization complete - all requests will be intercepted');
 })();
 </script>
         `;
