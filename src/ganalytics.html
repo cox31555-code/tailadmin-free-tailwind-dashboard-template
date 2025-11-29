@@ -207,18 +207,17 @@
           // Update real-time users
           document.getElementById("realtimeUsers").textContent = data.realtimeUsers;
 
-          // Get metrics from overall data
-          const overallMetrics = data.overall?.metricValues || [];
-          const totalUsers = overallMetrics[0]?.value || "0";
-          const totalSessions = overallMetrics[1]?.value || "0";
-          const totalPageViews = overallMetrics[2]?.value || "0";
+          // Get metrics from response
+          const totalUsers = parseInt(data.totalUsers || "0");
+          const totalSessions = parseInt(data.totalSessions || "0");
+          const totalPageViews = parseInt(data.totalPageViews || "0");
 
           // Calculate engagement rate (sessions / page views)
           const engagementRate = totalPageViews > 0 ? ((totalSessions / totalPageViews) * 100).toFixed(2) : "0";
 
-          document.getElementById("totalUsers").textContent = parseInt(totalUsers).toLocaleString();
-          document.getElementById("totalSessions").textContent = parseInt(totalSessions).toLocaleString();
-          document.getElementById("totalPageViews").textContent = parseInt(totalPageViews).toLocaleString();
+          document.getElementById("totalUsers").textContent = totalUsers.toLocaleString();
+          document.getElementById("totalSessions").textContent = totalSessions.toLocaleString();
+          document.getElementById("totalPageViews").textContent = totalPageViews.toLocaleString();
           document.getElementById("bounceRate").textContent = engagementRate + "%";
 
           // Update top pages table
