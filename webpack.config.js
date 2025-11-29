@@ -157,12 +157,6 @@ module.exports = {
               { name: "pagePath" },
             ],
             limit: 10,
-            orderBys: [
-              {
-                metric: { name: "screenPageViews" },
-                descending: true,
-              },
-            ],
           });
 
           // Get traffic sources
