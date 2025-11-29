@@ -129,8 +129,6 @@ module.exports = {
             ],
             metrics: [
               { name: "activeUsers" },
-              { name: "sessions" },
-              { name: "screenPageViews" },
             ],
           });
 
@@ -151,6 +149,34 @@ module.exports = {
             ],
           });
 
+          // Get sessions metric
+          const sessionsResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "sessions" },
+            ],
+          });
+
+          // Get page views metric
+          const pageViewsResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "screenPageViews" },
+            ],
+          });
+
           // Get traffic sources
           const trafficResponse = await analyticsDataClient.runReport({
             property: `properties/${propertyId}`,
@@ -165,22 +191,6 @@ module.exports = {
             ],
             dimensions: [
               { name: "firstUserSourceMedium" },
-            ],
-          });
-
-          // Get overall stats
-          const overallResponse = await analyticsDataClient.runReport({
-            property: `properties/${propertyId}`,
-            dateRanges: [
-              {
-                startDate: startDate,
-                endDate: endDate,
-              },
-            ],
-            metrics: [
-              { name: "activeUsers" },
-              { name: "sessions" },
-              { name: "screenPageViews" },
             ],
           });
 
