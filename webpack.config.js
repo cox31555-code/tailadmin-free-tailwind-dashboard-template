@@ -48,6 +48,10 @@ module.exports = {
     port: 3000,
     hot: false,
     client: false,
+    liveReload: false,
+    devMiddleware: {
+      writeToDisk: true,
+    },
   },
   module: {
     rules: [
