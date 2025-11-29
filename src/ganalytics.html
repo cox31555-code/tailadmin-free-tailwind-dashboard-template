@@ -207,26 +207,18 @@
           // Update real-time users
           document.getElementById("realtimeUsers").textContent = data.realtimeUsers;
 
-          // Calculate aggregated metrics from monthly data
-          let totalUsers = 0;
-          let totalSessions = 0;
-          let totalPageViews = 0;
+          // Get metrics from overall data
+          const overallMetrics = data.overall?.metricValues || [];
+          const totalUsers = overallMetrics[0]?.value || "0";
+          const totalSessions = overallMetrics[1]?.value || "0";
+          const totalPageViews = overallMetrics[2]?.value || "0";
 
-          data.monthlyData.forEach((row) => {
-            const metrics = row.metricValues || [];
-            totalUsers += parseInt(metrics[0]?.value || 0);
-            totalSessions += parseInt(metrics[1]?.value || 0);
-            totalPageViews += parseInt(metrics[2]?.value || 0);
-          });
+          // Calculate engagement rate (sessions / page views)
+          const engagementRate = totalPageViews > 0 ? ((totalSessions / totalPageViews) * 100).toFixed(2) : "0";
 
-          // Calculate engagement rate from overall engagement data
-          const engagementMetrics = data.engagement?.metricValues || [];
-          const engagedSessions = parseInt(engagementMetrics[1]?.value || 0);
-          const engagementRate = totalSessions > 0 ? ((engagedSessions / totalSessions) * 100).toFixed(2) : "0";
-
-          document.getElementById("totalUsers").textContent = totalUsers.toLocaleString();
-          document.getElementById("totalSessions").textContent = totalSessions.toLocaleString();
-          document.getElementById("totalPageViews").textContent = totalPageViews.toLocaleString();
+          document.getElementById("totalUsers").textContent = parseInt(totalUsers).toLocaleString();
+          document.getElementById("totalSessions").textContent = parseInt(totalSessions).toLocaleString();
+          document.getElementById("totalPageViews").textContent = parseInt(totalPageViews).toLocaleString();
           document.getElementById("bounceRate").textContent = engagementRate + "%";
 
           // Update top pages table
