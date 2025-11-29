@@ -54,7 +54,9 @@ module.exports = {
       writeToDisk: true,
     },
     setupMiddlewares: (middlewares, devServer) => {
-      // Proxy Crisp requests with CSP frame-ancestors support
+      const { createProxyMiddleware } = require("http-proxy-middleware");
+
+      // Proxy for Crisp with comprehensive routing
       devServer.app.use(
         "/app/crisp",
         createProxyMiddleware({
@@ -72,17 +74,13 @@ module.exports = {
             proxyReq.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
           },
           onProxyRes: (proxyRes, req, res) => {
-            // Remove encoding headers to prevent browser decoding issues
             delete proxyRes.headers["content-encoding"];
             delete proxyRes.headers["transfer-encoding"];
-
-            // Remove all restrictive security headers that block iframes
             delete proxyRes.headers["x-frame-options"];
             delete proxyRes.headers["content-security-policy"];
             delete proxyRes.headers["x-content-security-policy"];
             delete proxyRes.headers["x-webkit-csp"];
 
-            // Set modern CSP with frame-ancestors allowing same-origin iframe embedding
             proxyRes.headers["content-security-policy"] = "frame-ancestors 'self' http://localhost:* https://*.fly.dev";
             proxyRes.headers["x-frame-options"] = "SAMEORIGIN";
             proxyRes.headers["access-control-allow-origin"] = "*";
@@ -91,8 +89,40 @@ module.exports = {
               proxyRes.headers["content-type"] = "application/javascript";
             }
           },
-          logLevel: "warn",
+          selfHandleResponse: true,
           ws: true,
+          onProxyRes: (proxyRes, req, res) => {
+            let body = "";
+
+            proxyRes.on("data", (chunk) => {
+              body += chunk;
+            });
+
+            proxyRes.on("end", () => {
+              // Remove restrictive headers
+              delete proxyRes.headers["x-frame-options"];
+              delete proxyRes.headers["content-security-policy"];
+              delete proxyRes.headers["x-content-security-policy"];
+              delete proxyRes.headers["x-webkit-csp"];
+              delete proxyRes.headers["content-encoding"];
+
+              // Set permissive headers
+              proxyRes.headers["content-security-policy"] = "frame-ancestors 'self' http://localhost:* https://*.fly.dev";
+              proxyRes.headers["x-frame-options"] = "SAMEORIGIN";
+              proxyRes.headers["access-control-allow-origin"] = "*";
+
+              // Inject base tag for HTML content
+              if (proxyRes.headers["content-type"] && proxyRes.headers["content-type"].includes("text/html")) {
+                body = body.replace(
+                  /<head[^>]*>/i,
+                  `<head><base href="/app/crisp/">`
+                );
+              }
+
+              res.writeHead(proxyRes.statusCode, proxyRes.headers);
+              res.end(body);
+            });
+          },
         })
       );
 
