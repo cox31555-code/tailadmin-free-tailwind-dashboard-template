@@ -178,7 +178,7 @@ module.exports = {
               { name: "sessions" },
             ],
             dimensions: [
-              { name: "sessionSource" },
+              { name: "sessionDefaultChannelGroup" },
             ],
             limit: 10,
             orderBys: [
