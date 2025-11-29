@@ -56,85 +56,70 @@ module.exports = {
     setupMiddlewares: (middlewares, devServer) => {
       // Helper function to rewrite URLs in HTML/CSS/JS
       const rewriteUrls = (content, baseUrl) => {
-        // Rewrite href, src, action, and url() attributes - MUST avoid double-proxying
-        content = content.replace(/(href|src|action|data|poster|url\()\s*=?\s*["']?([^"'\)]+)["']?\)?/gi, (match, attr, url) => {
-          // Skip data URIs, mailto, javascript, anchors, and already proxied URLs
+        // Helper to check if URL should be proxied
+        const shouldProxyUrl = (url) => {
+          if (!url) return false;
+          if (url.startsWith('/app/crisp')) return false; // Already proxied
           if (url.startsWith('data:') || url.startsWith('mailto:') || url.startsWith('javascript:') ||
-              url.startsWith('#') || url.startsWith('blob:') || url.startsWith('/app/crisp')) {
-            return match;
-          }
+              url.startsWith('#') || url.startsWith('blob:')) return false;
+          // Proxy Crisp URLs or relative paths from Crisp domain
+          return url.includes('app.crisp.chat') ||
+                 url.includes('crisp') ||
+                 url.match(/^\/(api|fonts|ws|static|website|inbox|mailbox)/);
+        };
 
-          // Convert relative URLs to absolute (for Crisp domain)
-          if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            try {
-              url = new URL(url, baseUrl).href;
-            } catch (e) {
-              return match;
+        // Helper to convert URL to absolute and proxy
+        const proxyUrl = (url) => {
+          try {
+            let fullUrl = url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+              fullUrl = new URL(url, baseUrl).href;
             }
+            if (shouldProxyUrl(fullUrl)) {
+              return '/app/crisp?url=' + encodeURIComponent(fullUrl);
+            }
+          } catch (e) {
+            // Silently fail for invalid URLs
           }
+          return url;
+        };
 
-          // Only proxy Crisp URLs
-          if (!url.includes('app.crisp.chat') && !url.includes('crisp')) {
-            return match;
-          }
-
-          // Route through proxy
-          const proxiedUrl = '/app/crisp?url=' + encodeURIComponent(url);
-
-          if (attr.toLowerCase() === 'url(') {
-            return `url(${proxiedUrl})`;
-          } else {
-            return `${attr}="${proxiedUrl}"`;
-          }
+        // Rewrite standard HTML/SVG attributes (href, src, action, data, poster)
+        content = content.replace(/(href|src|action|data|poster)\s*=\s*["']([^"']+)["']/gi, (match, attr, url) => {
+          const newUrl = proxyUrl(url);
+          return newUrl !== url ? `${attr}="${newUrl}"` : match;
         });
 
-        // Rewrite URLs in JSON-like strings (for API endpoints in JS)
-        // Match Crisp URLs and relative paths that should be proxied
-        content = content.replace(/"((?:https?:\/\/)?[^"]*(?:app\.crisp|\.crisp|\/(?:api|fonts|ws|static|website))[^"]*?)"/g, (match, url) => {
-          if (url.startsWith('/app/crisp')) return match; // Already proxied
-
-          let fullUrl = url;
-          if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            try {
-              fullUrl = new URL(url, baseUrl).href;
-            } catch (e) {
-              return match;
-            }
-          }
-
-          return `"${'/app/crisp?url=' + encodeURIComponent(fullUrl)}"`;
+        // Rewrite CSS url() - handle both quoted and unquoted
+        // url(path) or url('path') or url("path")
+        content = content.replace(/url\(\s*["']?([^"')]+)["']?\s*\)/g, (match, url) => {
+          const newUrl = proxyUrl(url);
+          return newUrl !== url ? `url(${newUrl})` : match;
         });
 
-        // Rewrite URLs in JavaScript string literals (with single quotes)
-        content = content.replace(/'((?:https?:\/\/)?[^']*(?:app\.crisp|\.crisp|\/(?:api|fonts|ws|static|website))[^']*)'/g, (match, url) => {
-          if (url.startsWith('/app/crisp')) return match; // Already proxied
-
-          let fullUrl = url;
-          if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            try {
-              fullUrl = new URL(url, baseUrl).href;
-            } catch (e) {
-              return match;
-            }
-          }
-
-          return `'${'/app/crisp?url=' + encodeURIComponent(fullUrl)}'`;
+        // Rewrite URLs in double-quoted strings (JSON, JS)
+        content = content.replace(/"([^"]*(?:app\.crisp|crisp|\/api|\/fonts|\/ws|\/static|\/website|\/inbox)[^"]*)"/g, (match, url) => {
+          const newUrl = proxyUrl(url);
+          return newUrl !== url ? `"${newUrl}"` : match;
         });
 
-        // Rewrite URLs in template literals
-        content = content.replace(/`((?:https?:\/\/)?[^`]*(?:app\.crisp|\.crisp|\/(?:api|fonts|ws|static|website))[^`]*?)`/g, (match, url) => {
-          if (url.startsWith('/app/crisp')) return match; // Already proxied
+        // Rewrite URLs in single-quoted strings (JS)
+        content = content.replace(/'([^']*(?:app\.crisp|crisp|\/api|\/fonts|\/ws|\/static|\/website|\/inbox)[^']*)'/g, (match, url) => {
+          const newUrl = proxyUrl(url);
+          return newUrl !== url ? `'${newUrl}'` : match;
+        });
 
-          let fullUrl = url;
-          if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            try {
-              fullUrl = new URL(url, baseUrl).href;
-            } catch (e) {
-              return match;
-            }
-          }
+        // Rewrite URLs in template literals (JS)
+        content = content.replace(/`([^`]*(?:app\.crisp|crisp|\/api|\/fonts|\/ws|\/static|\/website|\/inbox)[^`]*)`/g, (match, url) => {
+          const newUrl = proxyUrl(url);
+          return newUrl !== url ? `\`${newUrl}\`` : match;
+        });
 
-          return `\`${'/app/crisp?url=' + encodeURIComponent(fullUrl)}\``;
+        // Aggressive catch-all for any remaining Crisp URLs in the content
+        // This catches URLs that might be in JavaScript objects, fetch calls, etc.
+        content = content.replace(/(https?:\/\/[^\s"'<>]+(?:app\.crisp|\.crisp)[^\s"'<>]*)/g, (match) => {
+          if (match.startsWith('/app/crisp')) return match; // Already proxied
+          return '/app/crisp?url=' + encodeURIComponent(match);
         });
 
         return content;
