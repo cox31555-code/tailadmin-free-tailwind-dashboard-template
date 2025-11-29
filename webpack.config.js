@@ -189,7 +189,7 @@ module.exports = {
             monthlyData: monthlyResponse[0]?.rows || [],
             topPages: topPagesResponse[0]?.rows || [],
             trafficSources: trafficResponse[0]?.rows || [],
-            engagement: engagementResponse[0]?.rows?.[0] || {},
+            overall: overallResponse[0]?.rows?.[0] || {},
           });
         } catch (error) {
           console.error("GA API Error:", error);
