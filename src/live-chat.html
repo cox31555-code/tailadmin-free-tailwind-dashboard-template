@@ -54,12 +54,47 @@
               style="height: calc(100vh - 240px)"
             >
               <iframe
-                is="x-frame-bypass"
-                src="https://app.crisp.chat/website/80335e6a-e33e-478a-8ce3-1b88c05b4ad4/inbox/"
+                id="crisp-iframe"
                 title="Crisp Live Chat Management"
                 class="w-full h-full border-0"
                 allow="clipboard-read; clipboard-write; microphone; camera"
               ></iframe>
+
+              <script>
+                (function() {
+                  const crispUrl = 'https://app.crisp.chat/website/80335e6a-e33e-478a-8ce3-1b88c05b4ad4/inbox/';
+                  const corsioProxy = 'https://cors.io/?url=';
+                  const iframe = document.getElementById('crisp-iframe');
+
+                  function loadContent(url) {
+                    console.log('Loading Crisp content from:', url);
+                    fetch(corsioProxy + encodeURIComponent(url))
+                      .then(res => {
+                        if (!res.ok) throw new Error('CORS.io returned status ' + res.status);
+                        return res.text();
+                      })
+                      .then(html => {
+                        var baseUrl = url;
+                        var injectedHtml = html.replace(/<head([^>]*)>/i, function(match, attrs) {
+                          return match + '\n  <base href="' + baseUrl + '">\n  <meta charset="UTF-8">';
+                        });
+                        iframe.srcdoc = injectedHtml;
+                      })
+                      .catch(err => {
+                        console.error('Failed to load Crisp:', err);
+                        iframe.srcdoc = '<html><body style="font-family:Arial;padding:20px"><h1>Error Loading Content</h1><p>' + err.message + '</p></body></html>';
+                      });
+                  }
+
+                  // Initial load
+                  loadContent(crispUrl);
+
+                  // Expose load function on iframe for navigation
+                  iframe.loadUrl = function(url) {
+                    loadContent(url);
+                  };
+                })();
+              </script>
             </div>
           </div>
         </main>
