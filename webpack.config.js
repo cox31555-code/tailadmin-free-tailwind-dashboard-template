@@ -56,20 +56,26 @@ module.exports = {
     setupMiddlewares: (middlewares, devServer) => {
       // Helper function to rewrite URLs in HTML/CSS/JS
       const rewriteUrls = (content, baseUrl) => {
-        // Rewrite href, src, action, and url() attributes
+        // Rewrite href, src, action, and url() attributes - MUST avoid double-proxying
         content = content.replace(/(href|src|action|data|poster|url\()\s*=?\s*["']?([^"'\)]+)["']?\)?/gi, (match, attr, url) => {
-          // Skip data URIs, mailto, javascript, etc.
-          if (url.startsWith('data:') || url.startsWith('mailto:') || url.startsWith('javascript:') || url.startsWith('#') || url.startsWith('blob:')) {
+          // Skip data URIs, mailto, javascript, anchors, and already proxied URLs
+          if (url.startsWith('data:') || url.startsWith('mailto:') || url.startsWith('javascript:') ||
+              url.startsWith('#') || url.startsWith('blob:') || url.startsWith('/app/crisp')) {
             return match;
           }
 
-          // Convert relative URLs to absolute
+          // Convert relative URLs to absolute (for Crisp domain)
           if (!url.startsWith('http://') && !url.startsWith('https://')) {
             try {
               url = new URL(url, baseUrl).href;
             } catch (e) {
               return match;
             }
+          }
+
+          // Only proxy Crisp URLs
+          if (!url.includes('app.crisp.chat') && !url.includes('crisp')) {
+            return match;
           }
 
           // Route through proxy
@@ -83,18 +89,52 @@ module.exports = {
         });
 
         // Rewrite URLs in JSON-like strings (for API endpoints in JS)
-        content = content.replace(/"(https?:\/\/[^"]+app\.crisp[^"]*?)"/g, (match, url) => {
-          return `"${'/app/crisp?url=' + encodeURIComponent(url)}"`;
+        // Match Crisp URLs and relative paths that should be proxied
+        content = content.replace(/"((?:https?:\/\/)?[^"]*(?:app\.crisp|\.crisp|\/(?:api|fonts|ws|static|website))[^"]*?)"/g, (match, url) => {
+          if (url.startsWith('/app/crisp')) return match; // Already proxied
+
+          let fullUrl = url;
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            try {
+              fullUrl = new URL(url, baseUrl).href;
+            } catch (e) {
+              return match;
+            }
+          }
+
+          return `"${'/app/crisp?url=' + encodeURIComponent(fullUrl)}"`;
         });
 
         // Rewrite URLs in JavaScript string literals (with single quotes)
-        content = content.replace(/'(https?:\/\/[^']+app\.crisp[^']*?)'/g, (match, url) => {
-          return `'${'/app/crisp?url=' + encodeURIComponent(url)}'`;
+        content = content.replace(/'((?:https?:\/\/)?[^']*(?:app\.crisp|\.crisp|\/(?:api|fonts|ws|static|website))[^']*)'/g, (match, url) => {
+          if (url.startsWith('/app/crisp')) return match; // Already proxied
+
+          let fullUrl = url;
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            try {
+              fullUrl = new URL(url, baseUrl).href;
+            } catch (e) {
+              return match;
+            }
+          }
+
+          return `'${'/app/crisp?url=' + encodeURIComponent(fullUrl)}'`;
         });
 
         // Rewrite URLs in template literals
-        content = content.replace(/`(https?:\/\/[^`]+app\.crisp[^`]*?)`/g, (match, url) => {
-          return `\`${'/app/crisp?url=' + encodeURIComponent(url)}\``;
+        content = content.replace(/`((?:https?:\/\/)?[^`]*(?:app\.crisp|\.crisp|\/(?:api|fonts|ws|static|website))[^`]*?)`/g, (match, url) => {
+          if (url.startsWith('/app/crisp')) return match; // Already proxied
+
+          let fullUrl = url;
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            try {
+              fullUrl = new URL(url, baseUrl).href;
+            } catch (e) {
+              return match;
+            }
+          }
+
+          return `\`${'/app/crisp?url=' + encodeURIComponent(fullUrl)}\``;
         });
 
         return content;
