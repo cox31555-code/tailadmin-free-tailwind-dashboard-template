@@ -113,13 +113,14 @@ module.exports = {
             ],
           });
 
-          // Get 30-day metrics
+          // Get 30-day date range
           const thirtyDaysAgo = new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
           const startDate = thirtyDaysAgo.toISOString().split("T")[0];
           const endDate = new Date().toISOString().split("T")[0];
 
-          const monthlyResponse = await analyticsDataClient.runReport({
+          // Get daily data for trend chart (last 30 days)
+          const dailyResponse = await analyticsDataClient.runReport({
             property: `properties/${propertyId}`,
             dateRanges: [
               {
@@ -129,23 +130,11 @@ module.exports = {
             ],
             metrics: [
               { name: "activeUsers" },
-            ],
-          });
-
-          // Get top pages
-          const topPagesResponse = await analyticsDataClient.runReport({
-            property: `properties/${propertyId}`,
-            dateRanges: [
-              {
-                startDate: startDate,
-                endDate: endDate,
-              },
-            ],
-            metrics: [
+              { name: "sessions" },
               { name: "screenPageViews" },
             ],
             dimensions: [
-              { name: "pagePath" },
+              { name: "date" },
             ],
           });
 
@@ -177,6 +166,55 @@ module.exports = {
             ],
           });
 
+          // Get total users
+          const usersResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "activeUsers" },
+            ],
+          });
+
+          // Get top pages
+          const topPagesResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "screenPageViews" },
+              { name: "sessions" },
+            ],
+            dimensions: [
+              { name: "pagePath" },
+            ],
+          });
+
+          // Get device breakdown
+          const deviceResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "sessions" },
+            ],
+            dimensions: [
+              { name: "deviceCategory" },
+            ],
+          });
+
           // Get traffic sources
           const trafficResponse = await analyticsDataClient.runReport({
             property: `properties/${propertyId}`,
@@ -194,13 +232,89 @@ module.exports = {
             ],
           });
 
+          // Get countries
+          const countriesResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "sessions" },
+              { name: "activeUsers" },
+            ],
+            dimensions: [
+              { name: "country" },
+            ],
+          });
+
+          // Get user type (new vs returning)
+          const userTypeResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "activeUsers" },
+              { name: "sessions" },
+            ],
+            dimensions: [
+              { name: "userType" },
+            ],
+          });
+
+          // Get browsers
+          const browsersResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "sessions" },
+            ],
+            dimensions: [
+              { name: "browser" },
+            ],
+          });
+
+          // Get operating systems
+          const osResponse = await analyticsDataClient.runReport({
+            property: `properties/${propertyId}`,
+            dateRanges: [
+              {
+                startDate: startDate,
+                endDate: endDate,
+              },
+            ],
+            metrics: [
+              { name: "sessions" },
+            ],
+            dimensions: [
+              { name: "operatingSystem" },
+            ],
+          });
+
           res.json({
             realtimeUsers: realtimeResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
-            totalUsers: monthlyResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
+            totalUsers: usersResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
             totalSessions: sessionsResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
             totalPageViews: pageViewsResponse[0]?.rows?.[0]?.metricValues?.[0]?.value || "0",
+            dailyData: dailyResponse[0]?.rows || [],
             topPages: topPagesResponse[0]?.rows || [],
+            devices: deviceResponse[0]?.rows || [],
             trafficSources: trafficResponse[0]?.rows || [],
+            countries: countriesResponse[0]?.rows || [],
+            userTypes: userTypeResponse[0]?.rows || [],
+            browsers: browsersResponse[0]?.rows || [],
+            operatingSystems: osResponse[0]?.rows || [],
           });
         } catch (error) {
           console.error("GA API Error:", error);
