@@ -108,17 +108,34 @@ module.exports = {
   const proxyPath = '/app/crisp?url=';
   const baseUrl = 'https://app.crisp.chat';
 
-  // Intercept fetch requests
-  const originalFetch = window.fetch;
-  window.fetch = function(...args) {
-    let url = args[0];
-    if (typeof url === 'string' && !url.startsWith('data:') && !url.startsWith('blob:')) {
+  // Helper to check if URL should be proxied
+  function shouldProxy(url) {
+    if (!url || typeof url !== 'string') return false;
+    if (url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('javascript:')) return false;
+    return url.includes('app.crisp.chat') || url.includes('crisp');
+  }
+
+  // Helper to normalize and proxy URL
+  function proxyUrl(url) {
+    if (!url) return url;
+    try {
       if (!url.startsWith('http://') && !url.startsWith('https://')) {
         url = new URL(url, baseUrl).href;
       }
-      if (url.includes('app.crisp.chat')) {
-        args[0] = proxyPath + encodeURIComponent(url);
+      if (shouldProxy(url)) {
+        return proxyPath + encodeURIComponent(url);
       }
+    } catch (e) {
+      console.warn('[Proxy] Failed to parse URL:', url, e);
+    }
+    return url;
+  }
+
+  // Intercept fetch requests
+  const originalFetch = window.fetch;
+  window.fetch = function(...args) {
+    if (args[0]) {
+      args[0] = proxyUrl(args[0]);
     }
     return originalFetch.apply(this, args);
   };
@@ -126,39 +143,69 @@ module.exports = {
   // Intercept XMLHttpRequest
   const originalOpen = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function(method, url, ...rest) {
-    if (typeof url === 'string' && !url.startsWith('data:') && !url.startsWith('blob:')) {
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = new URL(url, baseUrl).href;
-      }
-      if (url.includes('app.crisp.chat')) {
-        url = proxyPath + encodeURIComponent(url);
-      }
-    }
+    url = proxyUrl(url);
     return originalOpen.call(this, method, url, ...rest);
   };
 
   // Block service worker registration
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register = function() {
-      console.warn('Service Worker registration blocked by proxy');
-      return Promise.reject(new Error('Service Worker registration disabled'));
+      console.warn('[Proxy] Service Worker registration blocked');
+      return Promise.reject(new Error('Service Worker registration disabled by proxy'));
     };
   }
 
   // Intercept form submissions
   document.addEventListener('submit', function(e) {
     if (e.target && e.target.action) {
-      let action = e.target.action;
-      if (action && !action.startsWith('data:') && !action.startsWith('javascript:')) {
-        if (!action.startsWith('http://') && !action.startsWith('https://')) {
-          action = new URL(action, baseUrl).href;
-        }
-        if (action.includes('app.crisp.chat')) {
-          e.target.action = proxyPath + encodeURIComponent(action);
-        }
-      }
+      e.target.action = proxyUrl(e.target.action);
     }
   }, true);
+
+  // Intercept image loading dynamically
+  const originalImage = Image;
+  window.Image = class ProxiedImage extends originalImage {
+    set src(value) {
+      super.src = proxyUrl(value);
+    }
+    get src() {
+      return super.src;
+    }
+  };
+
+  // Intercept dynamic style/link injection
+  const originalInsertBefore = Element.prototype.insertBefore;
+  Element.prototype.insertBefore = function(newNode, refNode) {
+    if (newNode && newNode.nodeType === Node.ELEMENT_NODE) {
+      if (newNode.tagName === 'LINK' && newNode.href) {
+        newNode.href = proxyUrl(newNode.href);
+      }
+      if (newNode.tagName === 'SCRIPT' && newNode.src) {
+        newNode.src = proxyUrl(newNode.src);
+      }
+      if (newNode.tagName === 'IMG' && newNode.src) {
+        newNode.src = proxyUrl(newNode.src);
+      }
+    }
+    return originalInsertBefore.call(this, newNode, refNode);
+  };
+
+  // Intercept appendChild
+  const originalAppendChild = Element.prototype.appendChild;
+  Element.prototype.appendChild = function(node) {
+    if (node && node.nodeType === Node.ELEMENT_NODE) {
+      if (node.tagName === 'LINK' && node.href) {
+        node.href = proxyUrl(node.href);
+      }
+      if (node.tagName === 'SCRIPT' && node.src) {
+        node.src = proxyUrl(node.src);
+      }
+      if (node.tagName === 'IMG' && node.src) {
+        node.src = proxyUrl(node.src);
+      }
+    }
+    return originalAppendChild.call(this, node);
+  };
 
   // Log proxy activity for debugging
   window.__proxyDebug = {
@@ -167,7 +214,8 @@ module.exports = {
     },
     error: function(msg) {
       console.error('[Proxy Error] ' + msg);
-    }
+    },
+    proxyUrl: proxyUrl
   };
 })();
 </script>
