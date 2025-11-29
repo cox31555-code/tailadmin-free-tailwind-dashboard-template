@@ -46,12 +46,14 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/list": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
+    "@google-analytics/data": "^5.2.1",
     "alpinejs": "^3.14.1",
     "apexcharts": "^3.51.0",
     "chart.js": "^4.4.6",
     "dropzone": "^6.0.0-beta.2",
     "flatpickr": "^4.6.13",
     "fullcalendar": "^6.1.15",
+    "google-auth-library": "^10.5.0",
     "jsvectormap": "^1.6.0",
     "swiper": "^11.1.14"
   }
