@@ -57,15 +57,19 @@ module.exports = {
       // Helper function to rewrite URLs in HTML/CSS/JS
       const rewriteUrls = (content, baseUrl) => {
         // Rewrite href, src, action, and url() attributes
-        content = content.replace(/(href|src|action|url\()\s*=?\s*["']?([^"'\)]+)["']?\)?/gi, (match, attr, url) => {
+        content = content.replace(/(href|src|action|data|poster|url\()\s*=?\s*["']?([^"'\)]+)["']?\)?/gi, (match, attr, url) => {
           // Skip data URIs, mailto, javascript, etc.
-          if (url.startsWith('data:') || url.startsWith('mailto:') || url.startsWith('javascript:') || url.startsWith('#')) {
+          if (url.startsWith('data:') || url.startsWith('mailto:') || url.startsWith('javascript:') || url.startsWith('#') || url.startsWith('blob:')) {
             return match;
           }
 
           // Convert relative URLs to absolute
           if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            url = new URL(url, baseUrl).href;
+            try {
+              url = new URL(url, baseUrl).href;
+            } catch (e) {
+              return match;
+            }
           }
 
           // Route through proxy
@@ -76,6 +80,21 @@ module.exports = {
           } else {
             return `${attr}="${proxiedUrl}"`;
           }
+        });
+
+        // Rewrite URLs in JSON-like strings (for API endpoints in JS)
+        content = content.replace(/"(https?:\/\/[^"]+app\.crisp[^"]*?)"/g, (match, url) => {
+          return `"${'/app/crisp?url=' + encodeURIComponent(url)}"`;
+        });
+
+        // Rewrite URLs in JavaScript string literals (with single quotes)
+        content = content.replace(/'(https?:\/\/[^']+app\.crisp[^']*?)'/g, (match, url) => {
+          return `'${'/app/crisp?url=' + encodeURIComponent(url)}'`;
+        });
+
+        // Rewrite URLs in template literals
+        content = content.replace(/`(https?:\/\/[^`]+app\.crisp[^`]*?)`/g, (match, url) => {
+          return `\`${'/app/crisp?url=' + encodeURIComponent(url)}\``;
         });
 
         return content;
