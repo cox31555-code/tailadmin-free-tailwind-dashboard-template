@@ -54,6 +54,47 @@ module.exports = {
       writeToDisk: true,
     },
     setupMiddlewares: (middlewares, devServer) => {
+      // Simple URL rewriting for HTML content
+      const rewriteHtmlUrls = (html) => {
+        // Rewrite src attributes to proxy through /app/crisp
+        html = html.replace(/src=["'](?!data:|javascript:|\/app\/crisp)([^"']+)["']/gi, (match, url) => {
+          if (url.startsWith('http://') || url.startsWith('https://')) {
+            return `src="/app/crisp?url=${encodeURIComponent(url)}"`;
+          } else {
+            // Relative URL - proxy through /app/crisp
+            return `src="/app/crisp${url.startsWith('/') ? '' : '/'}${url}"`;
+          }
+        });
+
+        // Rewrite href attributes (except anchors)
+        html = html.replace(/href=["'](?!#|data:|javascript:|\/app\/crisp)([^"']+)["']/gi, (match, url) => {
+          if (url.startsWith('http://') || url.startsWith('https://')) {
+            return `href="/app/crisp?url=${encodeURIComponent(url)}"`;
+          } else {
+            return `href="/app/crisp${url.startsWith('/') ? '' : '/'}${url}"`;
+          }
+        });
+
+        // Rewrite action attributes in forms
+        html = html.replace(/action=["'](?!data:|javascript:|\/app\/crisp)([^"']+)["']/gi, (match, url) => {
+          if (url.startsWith('http://') || url.startsWith('https://')) {
+            return `action="/app/crisp?url=${encodeURIComponent(url)}"`;
+          } else {
+            return `action="/app/crisp${url.startsWith('/') ? '' : '/'}${url}"`;
+          }
+        });
+
+        // Rewrite CSS url() functions
+        html = html.replace(/url\(\s*["']?(?!data:|\/app\/crisp)([^"')]+)["']?\s*\)/gi, (match, url) => {
+          if (url.startsWith('http://') || url.startsWith('https://')) {
+            return `url("/app/crisp?url=${encodeURIComponent(url)}")`;
+          } else {
+            return `url("/app/crisp${url.startsWith('/') ? '' : '/'}${url}")`;
+          }
+        });
+
+        return html;
+      };
 
 
       // Proxy for Crisp with comprehensive routing and session support
