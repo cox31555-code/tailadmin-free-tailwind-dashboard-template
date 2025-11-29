@@ -2,8 +2,7 @@ const path = require("path");
 const glob = require("glob");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const http = require("http");
-const https = require("https");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const INCLUDE_PATTERN =
   /<include\s+src=["'](.+?)["']\s*\/?>\s*(?:<\/include>)?/gis;
@@ -55,32 +54,26 @@ module.exports = {
       writeToDisk: true,
     },
     setupMiddlewares: (middlewares, devServer) => {
-      // Proxy middleware for Crisp iframe wrapper
-      devServer.app.get("/app/crisp-login", (req, res) => {
-        const crispUrl = "https://app.crisp.chat/initiate/login/";
+      // Proxy Crisp requests with header modification
+      devServer.app.use(
+        "/app/crisp",
+        createProxyMiddleware({
+          target: "https://app.crisp.chat",
+          changeOrigin: true,
+          pathRewrite: {
+            "^/app/crisp": "",
+          },
+          onProxyRes: (proxyRes, req, res) => {
+            // Remove restrictive frame headers
+            delete proxyRes.headers["x-frame-options"];
+            delete proxyRes.headers["content-security-policy"];
+            delete proxyRes.headers["x-content-security-policy"];
 
-        const request = https.get(crispUrl, (response) => {
-          // Remove X-Frame-Options and CSP frame-ancestors restrictions
-          delete response.headers["x-frame-options"];
-          delete response.headers["content-security-policy"];
-
-          // Add permissive headers for same-origin iframe
-          res.setHeader("X-Frame-Options", "SAMEORIGIN");
-          res.setHeader("Access-Control-Allow-Origin", "*");
-
-          // Forward other important headers
-          if (response.headers["content-type"]) {
-            res.setHeader("Content-Type", response.headers["content-type"]);
-          }
-
-          response.pipe(res);
-        });
-
-        request.on("error", (error) => {
-          console.error("Proxy error:", error);
-          res.status(500).send("Proxy error");
-        });
-      });
+            // Set permissive headers for same-origin iframe
+            proxyRes.headers["x-frame-options"] = "SAMEORIGIN";
+          },
+        })
+      );
 
       return middlewares;
     },
