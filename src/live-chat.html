@@ -61,39 +61,43 @@
               ></iframe>
 
               <script>
-                (function() {
-                  const crispUrl = 'https://app.crisp.chat/website/80335e6a-e33e-478a-8ce3-1b88c05b4ad4/inbox/';
-                  const corsioProxy = 'https://cors.io/?url=';
-                  const iframe = document.getElementById('crisp-iframe');
+                document.addEventListener('DOMContentLoaded', function() {
+                  var crispUrl = 'https://app.crisp.chat/website/80335e6a-e33e-478a-8ce3-1b88c05b4ad4/inbox/';
+                  var corsioProxy = 'https://cors.io/?url=';
+                  var iframe = document.getElementById('crisp-iframe');
 
                   function loadContent(url) {
                     console.log('Loading Crisp content from:', url);
-                    fetch(corsioProxy + encodeURIComponent(url))
-                      .then(res => {
-                        if (!res.ok) throw new Error('CORS.io returned status ' + res.status);
+                    var proxyUrl = corsioProxy + encodeURIComponent(url);
+                    fetch(proxyUrl)
+                      .then(function(res) {
+                        if (!res.ok) {
+                          throw new Error('CORS.io returned status ' + res.status);
+                        }
                         return res.text();
                       })
-                      .then(html => {
-                        var baseUrl = url;
-                        var injectedHtml = html.replace(/<head([^>]*)>/i, function(match, attrs) {
-                          return match + '\n  <base href="' + baseUrl + '">\n  <meta charset="UTF-8">';
-                        });
-                        iframe.srcdoc = injectedHtml;
+                      .then(function(html) {
+                        var baseTag = '<base href="' + url + '">';
+                        var headMatch = html.match(/<head[^>]*>/i);
+                        if (headMatch) {
+                          html = html.replace(headMatch[0], headMatch[0] + '\n  ' + baseTag);
+                        } else {
+                          html = '<head>' + baseTag + '</head>' + html;
+                        }
+                        iframe.srcdoc = html;
                       })
-                      .catch(err => {
+                      .catch(function(err) {
                         console.error('Failed to load Crisp:', err);
-                        iframe.srcdoc = '<html><body style="font-family:Arial;padding:20px"><h1>Error Loading Content</h1><p>' + err.message + '</p></body></html>';
+                        iframe.srcdoc = '<html><body style="font-family:Arial;padding:20px"><h1>Error</h1><p>' + err.message + '</p></body></html>';
                       });
                   }
 
-                  // Initial load
                   loadContent(crispUrl);
 
-                  // Expose load function on iframe for navigation
                   iframe.loadUrl = function(url) {
                     loadContent(url);
                   };
-                })();
+                });
               </script>
             </div>
           </div>
