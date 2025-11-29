@@ -131,12 +131,10 @@ module.exports = {
               { name: "totalUsers" },
               { name: "sessions" },
               { name: "screenPageViews" },
-              { name: "engagementRate" },
             ],
             dimensions: [
               { name: "date" },
             ],
-            limit: 30,
           });
 
           // Get top pages
@@ -150,12 +148,17 @@ module.exports = {
             ],
             metrics: [
               { name: "screenPageViews" },
-              { name: "engagementRate" },
+              { name: "engagedSessions" },
             ],
             dimensions: [
               { name: "pagePath" },
             ],
-            limit: 10,
+            orderBys: [
+              {
+                metric: { name: "screenPageViews" },
+                descending: true,
+              },
+            ],
           });
 
           // Get traffic sources
@@ -173,7 +176,12 @@ module.exports = {
             dimensions: [
               { name: "sessionDefaultChannelGroup" },
             ],
-            limit: 10,
+            orderBys: [
+              {
+                metric: { name: "sessions" },
+                descending: true,
+              },
+            ],
           });
 
           res.json({
