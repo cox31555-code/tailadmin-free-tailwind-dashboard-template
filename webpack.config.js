@@ -148,7 +148,7 @@ module.exports = {
             ],
             metrics: [
               { name: "screenPageViews" },
-              { name: "engagedSessions" },
+              { name: "sessions" },
             ],
             dimensions: [
               { name: "pagePath" },
