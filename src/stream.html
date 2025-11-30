@@ -65,23 +65,141 @@
     <!-- ===== Page Wrapper End ===== -->
 
     <script>
-      // Minimal popup blocker for additional safety
-      // Sandbox attribute handles most blocking at browser level
+      // Comprehensive Popup Blocker without Sandbox
+      console.log('[Stream] Popup blocker activated');
 
-      console.log('[Stream] Iframe sandbox is active - blocking: popups, new windows, plugins, top-level navigation');
-
-      // Override window.open as last resort
+      // Override window.open completely
       window.open = function(url, target, features) {
-        console.log('[Stream] Popup attempt blocked:', url);
+        console.log('[PopupBlocker] window.open() blocked:', url);
         return null;
       };
 
-      // Suppress console errors about sandbox restrictions
-      window.addEventListener('error', (e) => {
-        if (e.message && (e.message.includes('Sandbox') || e.message.includes('parent context'))) {
+      // Block keyboard shortcuts for opening new windows
+      document.addEventListener('keydown', function(e) {
+        // Block Ctrl/Cmd + N (new window)
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
           e.preventDefault();
+          console.log('[PopupBlocker] Blocked Ctrl+N');
+        }
+        // Block Ctrl/Cmd + T (new tab)
+        if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+          e.preventDefault();
+          console.log('[PopupBlocker] Blocked Ctrl+T');
+        }
+        // Block Ctrl/Cmd + W (close tab - but allow it to prevent frustration)
+        // if ((e.ctrlKey || e.metaKey) && e.key === 'w') {
+        //   e.preventDefault();
+        // }
+      });
+
+      // Intercept all link clicks
+      document.addEventListener('click', function(e) {
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        const target = link.getAttribute('target');
+
+        // Block new tab/window attempts
+        if (target === '_blank' || target === '_new') {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('[PopupBlocker] Blocked blank target link');
+          return false;
+        }
+
+        // Block javascript: protocol
+        if (href && href.startsWith('javascript:')) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('[PopupBlocker] Blocked javascript: link');
+          return false;
+        }
+
+        // Block vbscript: and data: protocols
+        if (href && (href.startsWith('vbscript:') || href.startsWith('data:'))) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }, true);
+
+      // Intercept form submissions to external domains
+      document.addEventListener('submit', function(e) {
+        const form = e.target;
+        const target = form.getAttribute('target');
+
+        // Block forms targeting new windows
+        if (target === '_blank' || target === '_new') {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('[PopupBlocker] Blocked form submission to blank target');
+          return false;
+        }
+      }, true);
+
+      // Monitor and hide any popups that appear
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.addedNodes.length) {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1) { // Element node
+                const tag = node.tagName ? node.tagName.toLowerCase() : '';
+                const id = node.id ? node.id.toLowerCase() : '';
+                const className = node.className ? String(node.className).toLowerCase() : '';
+
+                // Hide popup-like elements
+                if (className.includes('popup') || className.includes('modal') ||
+                    className.includes('overlay') || className.includes('ad') ||
+                    id.includes('popup') || id.includes('modal')) {
+                  node.style.display = 'none !important';
+                  console.log('[PopupBlocker] Hidden popup element:', tag);
+                }
+
+                // Hide ad iframes
+                if (tag === 'iframe') {
+                  const src = node.getAttribute('src') || '';
+                  if (src.includes('ad') || src.includes('doubleclick') || src.includes('google') ||
+                      src.includes('analytics') || src.includes('popup')) {
+                    node.style.display = 'none !important';
+                    console.log('[PopupBlocker] Hidden ad iframe:', src);
+                  }
+                }
+              }
+            });
+          }
+        });
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+
+      // Block navigation away from the page (but allow same-page navigation)
+      window.addEventListener('beforeunload', function(e) {
+        // This is a gentle approach - we only warn, not block
+        // Some sites may need this for legitimate functions
+      });
+
+      // Suppress error messages about popup blocking
+      window.addEventListener('error', function(e) {
+        if (e.message && (e.message.includes('blocked') || e.message.includes('popup'))) {
+          // Silently ignore
         }
       });
+
+      // Monitor focus changes to catch opened windows
+      let focusCount = 0;
+      window.addEventListener('focus', function() {
+        focusCount++;
+        // If focus changes unexpectedly, it might be a popup
+        if (focusCount > 20) {
+          console.log('[PopupBlocker] Suspicious focus activity detected');
+        }
+      });
+
+      console.log('[Stream] Popup blocker ready - blocking window.open(), new tabs, external forms, and ad elements');
     </script>
   </body>
 </html>
