@@ -111,6 +111,16 @@ module.exports = {
             client_email: serviceAccountKey.client_email ? "✓" : "✗"
           });
 
+          console.log("[GA API] Credentials object:", {
+            type: serviceAccountKey.type,
+            project_id: serviceAccountKey.project_id,
+            private_key_id: serviceAccountKey.private_key_id,
+            private_key_length: serviceAccountKey.private_key?.length,
+            private_key_start: serviceAccountKey.private_key?.substring(0, 50),
+            client_email: serviceAccountKey.client_email,
+            client_id: serviceAccountKey.client_id
+          });
+
           const analyticsDataClient = new BetaAnalyticsDataClient({
             credentials: serviceAccountKey,
           });
