@@ -235,37 +235,49 @@
 
         // Check if an element looks like a popup
         isPopupElement(element) {
-          const classes = element.className.toLowerCase();
-          const id = element.id.toLowerCase();
-          const tag = element.tagName.toLowerCase();
+          try {
+            // Safely get className as string
+            const classStr = (element.className && typeof element.className === 'string')
+              ? element.className.toLowerCase()
+              : '';
+            const idStr = (element.id && typeof element.id === 'string')
+              ? element.id.toLowerCase()
+              : '';
+            const tag = element.tagName ? element.tagName.toLowerCase() : '';
 
-          // Check for common popup indicators
-          const isPopupClass = (
-            classes.includes('popup') ||
-            classes.includes('modal') ||
-            classes.includes('overlay') ||
-            classes.includes('modal-ad') ||
-            classes.includes('ad-') ||
-            id.includes('popup') ||
-            id.includes('ad') ||
-            id.includes('modal')
-          );
+            // Check for common popup indicators
+            const isPopupClass = (
+              classStr.includes('popup') ||
+              classStr.includes('modal') ||
+              classStr.includes('overlay') ||
+              classStr.includes('modal-ad') ||
+              classStr.includes('ad-') ||
+              idStr.includes('popup') ||
+              idStr.includes('ad') ||
+              idStr.includes('modal')
+            );
 
-          // Check for fixed positioning with high z-index (popup behavior)
-          const isFixedPopup = (
-            element.style.position === 'fixed' &&
-            parseInt(element.style.zIndex || 0) > 1000
-          );
+            // Check for fixed positioning with high z-index (popup behavior)
+            const zIndex = parseInt(window.getComputedStyle(element).zIndex || 0);
+            const isFixedPopup = (
+              window.getComputedStyle(element).position === 'fixed' &&
+              zIndex > 1000
+            );
 
-          // Check for common ad/popup tag combinations
-          const isAdTag = (
-            (tag === 'iframe' && this.isAdUrl(element.src)) ||
-            (tag === 'script' && this.isAdUrl(element.src)) ||
-            (tag === 'object') ||
-            (tag === 'embed' && !['video', 'audio'].includes(element.type))
-          );
+            // Check for common ad/popup tag combinations
+            const srcStr = (element.src && typeof element.src === 'string') ? element.src.toLowerCase() : '';
+            const isAdTag = (
+              (tag === 'iframe' && this.isAdUrl(srcStr)) ||
+              (tag === 'script' && this.isAdUrl(srcStr)) ||
+              (tag === 'object') ||
+              (tag === 'embed' && !['video', 'audio'].includes(element.type))
+            );
 
-          return isPopupClass || isFixedPopup || isAdTag;
+            return isPopupClass || isFixedPopup || isAdTag;
+          } catch (e) {
+            console.log('[PopupBlocker] Error checking element:', e);
+            return false;
+          }
         }
       };
 
