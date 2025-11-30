@@ -7,19 +7,15 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 const { BetaAnalyticsDataClient } = require("@google-analytics/data");
 const { GoogleAuth } = require("google-auth-library");
 
-// Load .env file
-const envFilePath = path.join(__dirname, ".env");
-if (fs.existsSync(envFilePath)) {
-  const envContent = fs.readFileSync(envFilePath, "utf8");
-  envContent.split("\n").forEach(line => {
-    const [key, ...valueParts] = line.split("=");
-    if (key && valueParts.length > 0) {
-      const value = valueParts.join("=").trim();
-      // Unescape \\n to actual newlines for GA_PRIVATE_KEY
-      const unescapedValue = value.replace(/\\n/g, "\n");
-      process.env[key.trim()] = unescapedValue;
-    }
-  });
+// Load GA credentials from JSON file
+let gaCredentials = null;
+const credentialsPath = path.join(__dirname, "ga-credentials.json");
+if (fs.existsSync(credentialsPath)) {
+  try {
+    gaCredentials = JSON.parse(fs.readFileSync(credentialsPath, "utf8"));
+  } catch (err) {
+    console.error("Failed to load GA credentials:", err);
+  }
 }
 
 const INCLUDE_PATTERN =
