@@ -341,8 +341,19 @@ module.exports = {
             operatingSystems: osResponse[0]?.rows || [],
           });
         } catch (error) {
-          console.error("GA API Error:", error);
-          res.status(500).json({ error: error.message });
+          console.error("GA API Error:", {
+            message: error.message,
+            code: error.code,
+            details: error.details,
+            credentials_check: {
+              project_id: process.env.GA_PROJECT_ID ? "set" : "missing",
+              private_key_id: process.env.GA_PRIVATE_KEY_ID ? "set" : "missing",
+              private_key: process.env.GA_PRIVATE_KEY ? `set (${process.env.GA_PRIVATE_KEY.length} chars)` : "missing",
+              client_email: process.env.GA_CLIENT_EMAIL ? "set" : "missing",
+              client_id: process.env.GA_CLIENT_ID ? "set" : "missing"
+            }
+          });
+          res.status(500).json({ error: error.message, code: error.code });
         }
       });
 
