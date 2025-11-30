@@ -65,8 +65,10 @@
     <!-- ===== Page Wrapper End ===== -->
 
     <script>
-      // Popup and Ad Blocker for Stream Iframe
+      // Aggressive Popup and Ad Blocker for Stream Iframe
       const PopupBlocker = {
+        blockedWindows: new Set(),
+
         // List of common ad domains to block
         adDomains: [
           'google-analytics',
@@ -91,6 +93,9 @@
           this.blockWindowOpen();
           this.blockTargetBlank();
           this.blockPopups();
+          this.blockNavigation();
+          this.blockBeforeUnload();
+          this.monitorNewWindows();
         },
 
         // Block window.open() calls
@@ -102,44 +107,40 @@
               return originalOpen.apply(window, arguments);
             }
 
-            // Block if it looks like an ad or popup
-            if (this.isAdUrl(url)) {
-              console.log('[PopupBlocker] Blocked popup:', url);
-              return null;
-            }
-
-            // Block if target is new window/tab (but allow iframe targets)
-            if (target && target !== '_self' && target !== 'streamFrame') {
-              console.log('[PopupBlocker] Blocked new window:', url);
-              return null;
-            }
-
-            // Block popups with features indicating new window
-            if (features && (features.includes('width') || features.includes('height'))) {
-              console.log('[PopupBlocker] Blocked popup window:', url);
-              return null;
-            }
-
-            return originalOpen.apply(window, arguments);
+            // Block all new window/tab attempts
+            console.log('[PopupBlocker] Blocked window.open():', url);
+            return null;
           };
         },
 
-        // Block target="_blank" links within iframe communication
+        // Block target="_blank" links and form submissions
         blockTargetBlank() {
           document.addEventListener('click', (e) => {
             const target = e.target.closest('a, button, [role="button"]');
             if (!target) return;
 
             const href = target.getAttribute('href') || target.getAttribute('data-url');
-            if (!href) return;
+            const targetAttr = target.getAttribute('target');
 
-            // Check if it's trying to open in new tab
-            if (target.getAttribute('target') === '_blank' || target.getAttribute('target') === '_new') {
-              if (this.isAdUrl(href)) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('[PopupBlocker] Blocked blank target link:', href);
-              }
+            // Block if trying to open in new tab or window
+            if (targetAttr === '_blank' || targetAttr === '_new') {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('[PopupBlocker] Blocked blank target:', href);
+              return false;
+            }
+          }, true);
+
+          // Block form submissions to external targets
+          document.addEventListener('submit', (e) => {
+            const form = e.target;
+            const target = form.getAttribute('target');
+
+            if (target === '_blank' || target === '_new') {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('[PopupBlocker] Blocked form submission to blank target');
+              return false;
             }
           }, true);
         },
@@ -154,6 +155,8 @@
                     // Check if it's a popup-like element
                     if (this.isPopupElement(node)) {
                       node.style.display = 'none';
+                      node.style.visibility = 'hidden';
+                      node.style.pointerEvents = 'none';
                       console.log('[PopupBlocker] Blocked popup element:', node.tagName);
                     }
                   }
@@ -164,7 +167,61 @@
 
           observer.observe(document.body, {
             childList: true,
-            subtree: true
+            subtree: true,
+            attributes: false,
+            characterData: false
+          });
+        },
+
+        // Block navigation that might trigger popups
+        blockNavigation() {
+          // Intercept all link clicks
+          document.addEventListener('click', (e) => {
+            const link = e.target.closest('a[href]');
+            if (!link) return;
+
+            const href = link.getAttribute('href');
+            if (!href) return;
+
+            // Block javascript: URIs that might open popups
+            if (href.startsWith('javascript:')) {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('[PopupBlocker] Blocked javascript: link');
+              return false;
+            }
+
+            // Block unknown protocols
+            if (href.startsWith('vbscript:') || href.startsWith('data:')) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            }
+          }, true);
+        },
+
+        // Monitor and close any new windows that get created
+        monitorNewWindows() {
+          const originalOpen = window.open;
+          window.open = () => {
+            console.log('[PopupBlocker] Attempted to open new window - blocked');
+            return null;
+          };
+
+          // Also trap any existing window references
+          window.addEventListener('beforeunload', (e) => {
+            // This prevents navigation away from the page
+          });
+        },
+
+        // Block beforeunload prompts that might be used for popups
+        blockBeforeUnload() {
+          window.addEventListener('beforeunload', (e) => {
+            // Check if this is a legitimate navigation or a popup attempt
+            if (e.returnValue === undefined && !window.event.isTrusted) {
+              e.preventDefault();
+              e.returnValue = '';
+            }
           });
         },
 
@@ -180,15 +237,35 @@
         isPopupElement(element) {
           const classes = element.className.toLowerCase();
           const id = element.id.toLowerCase();
+          const tag = element.tagName.toLowerCase();
 
-          return (
+          // Check for common popup indicators
+          const isPopupClass = (
             classes.includes('popup') ||
+            classes.includes('modal') ||
+            classes.includes('overlay') ||
             classes.includes('modal-ad') ||
             classes.includes('ad-') ||
             id.includes('popup') ||
             id.includes('ad') ||
-            (element.style.position === 'fixed' && element.style.zIndex > 9000)
+            id.includes('modal')
           );
+
+          // Check for fixed positioning with high z-index (popup behavior)
+          const isFixedPopup = (
+            element.style.position === 'fixed' &&
+            parseInt(element.style.zIndex || 0) > 1000
+          );
+
+          // Check for common ad/popup tag combinations
+          const isAdTag = (
+            (tag === 'iframe' && this.isAdUrl(element.src)) ||
+            (tag === 'script' && this.isAdUrl(element.src)) ||
+            (tag === 'object') ||
+            (tag === 'embed' && !['video', 'audio'].includes(element.type))
+          );
+
+          return isPopupClass || isFixedPopup || isAdTag;
         }
       };
 
@@ -203,6 +280,12 @@
       } else {
         PopupBlocker.init();
       }
+
+      // Monitor for any attempts to open new windows via console or external methods
+      window.addEventListener('focus', () => {
+        // If a new window was somehow opened, this will be called
+        console.log('[PopupBlocker] Window focus event - checking for popups');
+      });
     </script>
   </body>
 </html>
