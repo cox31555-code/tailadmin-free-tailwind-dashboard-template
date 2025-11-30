@@ -99,6 +99,14 @@ module.exports = {
             universe_domain: "googleapis.com"
           };
 
+          // Debug logging
+          console.log("[GA API] Using credentials:", {
+            project_id: serviceAccountKey.project_id ? "✓" : "✗",
+            private_key_id: serviceAccountKey.private_key_id ? "✓" : "✗",
+            private_key: serviceAccountKey.private_key ? `✓ (${serviceAccountKey.private_key.length} chars)` : "✗",
+            client_email: serviceAccountKey.client_email ? "✓" : "✗"
+          });
+
           const analyticsDataClient = new BetaAnalyticsDataClient({
             credentials: serviceAccountKey,
           });
