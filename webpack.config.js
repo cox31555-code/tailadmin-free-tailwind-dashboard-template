@@ -94,6 +94,24 @@ module.exports = {
       };
 
 
+      // Test GA credentials endpoint
+      devServer.app.get("/api/ga/test", async (req, res) => {
+        try {
+          if (!gaCredentials) {
+            return res.status(500).json({ error: "GA credentials not loaded" });
+          }
+          res.json({
+            loaded: true,
+            project_id: gaCredentials.project_id,
+            client_email: gaCredentials.client_email,
+            private_key_length: gaCredentials.private_key?.length,
+            type: gaCredentials.type
+          });
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      });
+
       // Google Analytics API endpoint
       devServer.app.get("/api/ga/metrics", async (req, res) => {
         try {
