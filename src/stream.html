@@ -65,141 +65,147 @@
     <!-- ===== Page Wrapper End ===== -->
 
     <script>
-      // Comprehensive Popup Blocker without Sandbox
-      console.log('[Stream] Popup blocker activated');
+      // Super Aggressive Popup Blocker - Intercepts at every level
+      console.log('[Stream] Hardcore popup blocker activated');
 
-      // Override window.open completely
-      window.open = function(url, target, features) {
-        console.log('[PopupBlocker] window.open() blocked:', url);
-        return null;
-      };
+      // 1. NUCLEAR OPTION: Override window.open at the most fundamental level
+      window.open = function() { return null; };
 
-      // Block keyboard shortcuts for opening new windows
-      document.addEventListener('keydown', function(e) {
-        // Block Ctrl/Cmd + N (new window)
-        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
-          e.preventDefault();
-          console.log('[PopupBlocker] Blocked Ctrl+N');
+      // 2. Override with a proxy that logs all attempts
+      const OriginalOpen = window.open;
+      window.open = new Proxy(OriginalOpen, {
+        apply: () => {
+          console.log('[PopupBlocker] window.open intercepted and blocked');
+          return null;
         }
-        // Block Ctrl/Cmd + T (new tab)
-        if ((e.ctrlKey || e.metaKey) && e.key === 't') {
-          e.preventDefault();
-          console.log('[PopupBlocker] Blocked Ctrl+T');
-        }
-        // Block Ctrl/Cmd + W (close tab - but allow it to prevent frustration)
-        // if ((e.ctrlKey || e.metaKey) && e.key === 'w') {
-        //   e.preventDefault();
-        // }
       });
 
-      // Intercept all link clicks
-      document.addEventListener('click', function(e) {
-        const link = e.target.closest('a[href]');
-        if (!link) return;
-
-        const href = link.getAttribute('href');
-        const target = link.getAttribute('target');
-
-        // Block new tab/window attempts
-        if (target === '_blank' || target === '_new') {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('[PopupBlocker] Blocked blank target link');
-          return false;
+      // 3. Try to prevent programmatic navigation
+      const originalNavigate = HTMLAnchorElement.prototype.click;
+      HTMLAnchorElement.prototype.click = function() {
+        if (this.target === '_blank' || this.target === '_new') {
+          console.log('[PopupBlocker] Blocked anchor click with _blank target');
+          return;
         }
+        originalNavigate.call(this);
+      };
 
-        // Block javascript: protocol
-        if (href && href.startsWith('javascript:')) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('[PopupBlocker] Blocked javascript: link');
-          return false;
-        }
-
-        // Block vbscript: and data: protocols
-        if (href && (href.startsWith('vbscript:') || href.startsWith('data:'))) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        }
-      }, true);
-
-      // Intercept form submissions to external domains
-      document.addEventListener('submit', function(e) {
-        const form = e.target;
-        const target = form.getAttribute('target');
-
-        // Block forms targeting new windows
-        if (target === '_blank' || target === '_new') {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('[PopupBlocker] Blocked form submission to blank target');
-          return false;
-        }
-      }, true);
-
-      // Monitor and hide any popups that appear
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          if (mutation.addedNodes.length) {
-            mutation.addedNodes.forEach(function(node) {
-              if (node.nodeType === 1) { // Element node
-                const tag = node.tagName ? node.tagName.toLowerCase() : '';
-                const id = node.id ? node.id.toLowerCase() : '';
-                const className = node.className ? String(node.className).toLowerCase() : '';
-
-                // Hide popup-like elements
-                if (className.includes('popup') || className.includes('modal') ||
-                    className.includes('overlay') || className.includes('ad') ||
-                    id.includes('popup') || id.includes('modal')) {
-                  node.style.display = 'none !important';
-                  console.log('[PopupBlocker] Hidden popup element:', tag);
-                }
-
-                // Hide ad iframes
-                if (tag === 'iframe') {
-                  const src = node.getAttribute('src') || '';
-                  if (src.includes('ad') || src.includes('doubleclick') || src.includes('google') ||
-                      src.includes('analytics') || src.includes('popup')) {
-                    node.style.display = 'none !important';
-                    console.log('[PopupBlocker] Hidden ad iframe:', src);
-                  }
-                }
-              }
-            });
+      // 4. Monitor every single click on the entire document
+      document.addEventListener('click', (e) => {
+        // Remove target="_blank" before execution
+        let elem = e.target;
+        while (elem) {
+          if (elem.target === '_blank' || elem.target === '_new') {
+            elem.removeAttribute('target');
           }
+          elem = elem.parentElement;
+        }
+      }, true);
+
+      // 5. Monitor mousedown to catch clicks early
+      document.addEventListener('mousedown', (e) => {
+        const link = e.target.closest('a[href]');
+        if (link && (link.target === '_blank' || link.target === '_new')) {
+          link.target = '_self';
+          e.preventDefault();
+        }
+      }, true);
+
+      // 6. Intercept right-click "Open in new tab"
+      document.addEventListener('contextmenu', (e) => {
+        const link = e.target.closest('a[href]');
+        if (link) {
+          e.preventDefault();
+        }
+      }, true);
+
+      // 7. Monitor form submissions aggressively
+      document.addEventListener('submit', (e) => {
+        const form = e.target;
+        if (form.target === '_blank' || form.target === '_new') {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          form.target = '_self';
+        }
+      }, true);
+
+      // 8. Override HTMLFormElement.submit()
+      const originalSubmit = HTMLFormElement.prototype.submit;
+      HTMLFormElement.prototype.submit = function() {
+        if (this.target === '_blank' || this.target === '_new') {
+          this.target = '_self';
+          console.log('[PopupBlocker] Form submit hijacked - changed target to _self');
+        }
+        originalSubmit.call(this);
+      };
+
+      // 9. Aggressive MutationObserver - hide anything popup-like immediately
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) {
+              const el = node;
+              const css = window.getComputedStyle(el);
+              const html = el.outerHTML ? el.outerHTML.substring(0, 100).toLowerCase() : '';
+
+              // Hide anything that looks like a popup
+              if (css.position === 'fixed' && parseInt(css.zIndex || 0) > 500) {
+                el.style.display = 'none !important';
+                el.style.visibility = 'hidden !important';
+                el.style.pointerEvents = 'none !important';
+                console.log('[PopupBlocker] Hidden fixed element with high z-index');
+              }
+
+              // Hide known ad/popup elements
+              if (html.includes('popup') || html.includes('modal') || html.includes('ad') || html.includes('banner')) {
+                el.style.display = 'none !important';
+              }
+            }
+          });
         });
       });
 
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
+      observer.observe(document, { childList: true, subtree: true });
 
-      // Block navigation away from the page (but allow same-page navigation)
-      window.addEventListener('beforeunload', function(e) {
-        // This is a gentle approach - we only warn, not block
-        // Some sites may need this for legitimate functions
-      });
+      // 10. Block javascript: protocol execution
+      document.addEventListener('click', (e) => {
+        if (e.target.href && e.target.href.startsWith('javascript:')) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        }
+      }, true);
 
-      // Suppress error messages about popup blocking
-      window.addEventListener('error', function(e) {
-        if (e.message && (e.message.includes('blocked') || e.message.includes('popup'))) {
-          // Silently ignore
+      // 11. Intercept window properties that might be used for popups
+      try {
+        Object.defineProperty(window, 'open', {
+          value: () => null,
+          writable: false,
+          configurable: false
+        });
+      } catch (e) {
+        console.log('[PopupBlocker] Could not lock window.open');
+      }
+
+      // 12. Monitor any attempts to change window location
+      Object.defineProperty(window, 'location', {
+        get: function() {
+          return window.location;
+        },
+        set: function(val) {
+          console.log('[PopupBlocker] Attempted window.location change blocked');
+          return false;
         }
       });
 
-      // Monitor focus changes to catch opened windows
-      let focusCount = 0;
-      window.addEventListener('focus', function() {
-        focusCount++;
-        // If focus changes unexpectedly, it might be a popup
-        if (focusCount > 20) {
-          console.log('[PopupBlocker] Suspicious focus activity detected');
+      // 13. Suppress all error messages about blocked popups
+      window.addEventListener('error', (e) => {
+        if (e && (String(e.message).includes('popup') || String(e.message).includes('blocked'))) {
+          e.preventDefault();
+          return false;
         }
       });
 
-      console.log('[Stream] Popup blocker ready - blocking window.open(), new tabs, external forms, and ad elements');
+      console.log('[Stream] Popup blocker initialized - ALL popup attempts will be blocked');
     </script>
   </body>
 </html>
