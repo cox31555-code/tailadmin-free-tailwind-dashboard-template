@@ -108,8 +108,13 @@
             }
 
             // Block all new window/tab attempts
-            console.log('[PopupBlocker] Blocked window.open():', url);
-            return null;
+            console.log('[PopupBlocker] Blocked window.open():', url, 'target:', target);
+            // Return a fake window object to prevent errors
+            return {
+              close: () => {},
+              closed: true,
+              window: window
+            };
           };
         },
 
