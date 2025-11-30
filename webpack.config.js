@@ -128,12 +128,23 @@ module.exports = {
           const propertyId = "510184850";
 
           // Get real-time user count
-          const realtimeResponse = await analyticsDataClient.runRealtimeReport({
-            property: `properties/${propertyId}`,
-            metrics: [
-              { name: "activeUsers" },
-            ],
-          });
+          let realtimeResponse;
+          try {
+            realtimeResponse = await analyticsDataClient.runRealtimeReport({
+              property: `properties/${propertyId}`,
+              metrics: [
+                { name: "activeUsers" },
+              ],
+            });
+          } catch (rtError) {
+            console.error("[GA API] Realtime report error:", {
+              message: rtError.message,
+              code: rtError.code,
+              details: rtError.details,
+              metadata: rtError.metadata
+            });
+            throw rtError;
+          }
 
           // Get 30-day date range
           const thirtyDaysAgo = new Date();
