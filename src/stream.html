@@ -298,6 +298,26 @@
         // If a new window was somehow opened, this will be called
         console.log('[PopupBlocker] Window focus event - checking for popups');
       });
+
+      // Suppress error messages from iframe parent context issues
+      window.addEventListener('error', (event) => {
+        if (event.message && event.message.includes('parent context')) {
+          event.preventDefault();
+          return false;
+        }
+      });
+
+      // Intercept postMessage from iframe to prevent popup commands
+      window.addEventListener('message', (event) => {
+        if (event.data && typeof event.data === 'object') {
+          // Block popup-related messages
+          if (event.data.type === 'popup' || event.data.action === 'popup' || event.data.command === 'popup') {
+            event.preventDefault();
+            console.log('[PopupBlocker] Blocked popup message:', event.data);
+            return false;
+          }
+        }
+      }, true);
     </script>
   </body>
 </html>
