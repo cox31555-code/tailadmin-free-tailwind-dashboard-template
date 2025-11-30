@@ -1,10 +1,26 @@
 const path = require("path");
+const fs = require("fs");
 const glob = require("glob");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const { BetaAnalyticsDataClient } = require("@google-analytics/data");
 const { GoogleAuth } = require("google-auth-library");
+
+// Load .env file
+const envFilePath = path.join(__dirname, ".env");
+if (fs.existsSync(envFilePath)) {
+  const envContent = fs.readFileSync(envFilePath, "utf8");
+  envContent.split("\n").forEach(line => {
+    const [key, ...valueParts] = line.split("=");
+    if (key && valueParts.length > 0) {
+      const value = valueParts.join("=").trim();
+      // Unescape \\n to actual newlines for GA_PRIVATE_KEY
+      const unescapedValue = value.replace(/\\n/g, "\n");
+      process.env[key.trim()] = unescapedValue;
+    }
+  });
+}
 
 const INCLUDE_PATTERN =
   /<include\s+src=["'](.+?)["']\s*\/?>\s*(?:<\/include>)?/gis;
