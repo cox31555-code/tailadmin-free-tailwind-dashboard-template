@@ -365,8 +365,38 @@
                 </div>
 
                 <!-- Modal Body -->
-                <div class="max-h-96 overflow-y-auto">
-                  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <style>
+                  .modal-scroller::-webkit-scrollbar {
+                    width: 8px;
+                  }
+                  .modal-scroller::-webkit-scrollbar-track {
+                    background: transparent;
+                  }
+                  .modal-scroller::-webkit-scrollbar-thumb {
+                    background: rgba(59, 130, 246, 0.6);
+                    border-radius: 4px;
+                    transition: background 0.3s ease;
+                  }
+                  .modal-scroller::-webkit-scrollbar-thumb:hover {
+                    background: rgba(59, 130, 246, 0.9);
+                  }
+                </style>
+                <div class="max-h-[65vh] overflow-y-auto modal-scroller pr-2">
+                  <!-- Base Pricing Header -->
+                  <div class="mb-8 pb-6 border-b-2 border-gray-200 dark:border-gray-700">
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                      Base Pricing
+                    </label>
+                    <input
+                      type="number"
+                      step="1"
+                      placeholder="500"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-blue-800 text-lg font-medium"
+                    />
+                  </div>
+
+                  <!-- Multipliers Grid -->
+                  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <!-- Age Multiplier -->
                     <div>
                       <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
