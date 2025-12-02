@@ -12,7 +12,30 @@
     </title>
   </head>
   <body
-    x-data="{ page: 'basePricing', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-data="{
+      page: 'basePricing',
+      'loaded': true,
+      'darkMode': false,
+      'stickyMenu': false,
+      'sidebarToggle': false,
+      'scrollTop': false,
+      'showEditModal': false,
+      'multipliers': {
+        am: 1.0,
+        vam: 1.0,
+        esm: 1.0,
+        vwm: 1.0,
+        ncbm: 1.0,
+        mm: 1.0,
+        mcm: 1.0,
+        adam: 1.0,
+        lm: 1.0,
+        ccm: 1.0,
+        cim: 1.0,
+        cum: 1.0,
+        om: 1.0
+      }
+    }"
     x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
