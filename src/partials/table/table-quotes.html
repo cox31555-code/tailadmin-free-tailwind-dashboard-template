@@ -40,7 +40,7 @@
 </style>
 
 <div
-  class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
+  class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
 >
   <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
     <div>
@@ -49,9 +49,9 @@
       </h3>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
       <button
-        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 w-full sm:w-auto justify-center sm:justify-start"
       >
         <svg
           class="stroke-current fill-white dark:fill-gray-800"
@@ -91,20 +91,20 @@
         Filter
       </button>
 
-      <div class="flex items-center gap-2">
-        <span class="text-theme-sm text-gray-600 dark:text-gray-400">Show</span>
-        <select class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-gray-600 dark:focus:border-brand-600">
+      <div class="flex items-center gap-2 justify-center sm:justify-start">
+        <span class="text-theme-xs sm:text-theme-sm text-gray-600 dark:text-gray-400">Show</span>
+        <select class="rounded-lg border border-gray-300 bg-white px-2 sm:px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-gray-600 dark:focus:border-brand-600">
           <option value="10">10</option>
           <option value="25" selected>25</option>
           <option value="50">50</option>
           <option value="100">100</option>
         </select>
-        <span class="text-theme-sm text-gray-600 dark:text-gray-400">entries</span>
+        <span class="text-theme-xs sm:text-theme-sm text-gray-600 dark:text-gray-400">entries</span>
       </div>
     </div>
   </div>
 
-  <div class="overflow-visible overflow-x-auto table-scroller" id="tableScroller">
+  <div class="max-w-full overflow-x-auto table-scroller" id="tableScroller">
     <table class="min-w-max sm:min-w-full table-auto overflow-visible">
       <!-- table header start -->
       <thead class="bg-gray-50 dark:bg-gray-800/50">
@@ -120,14 +120,7 @@
             <p
               class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
             >
-              Vehicle
-            </p>
-          </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Quote Amount
+              Price
             </p>
           </th>
           <th class="px-5 py-3.5 text-left sm:px-6">
@@ -141,7 +134,14 @@
             <p
               class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
             >
-              Type
+              Phone
+            </p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p
+              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+            >
+              Vehicle
             </p>
           </th>
           <th class="px-5 py-3.5 text-left sm:px-6">
@@ -155,7 +155,7 @@
             <p
               class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
             >
-              Valid Until
+              Policy End
             </p>
           </th>
           <th class="px-5 py-3.5 text-left sm:px-6">
@@ -168,7 +168,6 @@
         </tr>
       </thead>
       <!-- table header end -->
-
       <!-- table body start -->
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-white/[0.03]">
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
@@ -178,13 +177,8 @@
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              Toyota Camry
-            </p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-              £245.99
+              $245.99
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
@@ -193,13 +187,18 @@
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
-              Annual
-            </span>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              07912345678
+            </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              Jan 15, 2024
+              Toyota Camry
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Jan 15, 2025
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
@@ -225,8 +224,8 @@
                 <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03]">
                   Delete
                 </button>
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
-                  Mark as Paid
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
+                  Send Email
                 </button>
               </div>
             </div>
@@ -240,13 +239,8 @@
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              BMW X5
-            </p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-              £389.50
+              $389.50
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
@@ -255,18 +249,23 @@
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-purple-50 px-3 py-1 text-theme-xs font-medium text-purple-600 dark:bg-purple-500/15 dark:text-purple-400">
-              Temporary
-            </span>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              Jan 08, 2024
+              07923456789
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              Jan 20, 2024
+              BMW X5
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Jan 08, 2025
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Jan 20, 2025
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
@@ -287,8 +286,8 @@
                 <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03]">
                   Delete
                 </button>
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
-                  Mark as Paid
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
+                  Send Email
                 </button>
               </div>
             </div>
@@ -302,13 +301,8 @@
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              Mercedes-Benz C-Class
-            </p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-              £425.00
+              $425.00
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
@@ -317,18 +311,23 @@
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-red-50 px-3 py-1 text-theme-xs font-medium text-red-600 dark:bg-red-500/15 dark:text-red-400">
-              Impound
-            </span>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              Dec 20, 2023
+              07934567890
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              Dec 27, 2023
+              Mercedes-Benz C-Class
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Dec 20, 2024
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Dec 27, 2024
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
@@ -349,8 +348,8 @@
                 <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03]">
                   Delete
                 </button>
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
-                  Mark as Paid
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
+                  Send Email
                 </button>
               </div>
             </div>
@@ -364,13 +363,8 @@
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              Audi A6
-            </p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-              £310.75
+              $310.75
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
@@ -379,13 +373,18 @@
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
-              Annual
-            </span>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              07945678901
+            </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-              Feb 01, 2024
+              Audi A6
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Feb 01, 2025
             </p>
           </td>
           <td class="px-5 py-3 sm:px-6">
@@ -411,8 +410,132 @@
                 <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03]">
                   Delete
                 </button>
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
-                  Mark as Paid
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
+                  Send Email
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              Michael Chen
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $299.99
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              michael.chen@example.com
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              07956789012
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Honda Civic
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Jan 20, 2025
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Feb 20, 2025
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-40">
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
+                  View
+                </button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03]">
+                  Edit
+                </button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03]">
+                  Delete
+                </button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
+                  Send Email
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              Sarah Johnson
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+              $279.50
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              sarah.johnson@example.com
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              07967890123
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Toyota Corolla
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Jan 25, 2025
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+              Feb 25, 2025
+            </p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-40">
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">
+                  View
+                </button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03]">
+                  Edit
+                </button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03]">
+                  Delete
+                </button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">
+                  Send Email
                 </button>
               </div>
             </div>
@@ -423,24 +546,34 @@
     </table>
   </div>
 
-  <div class="flex items-center justify-center gap-1 border-t border-gray-200 px-5 py-4 dark:border-gray-700 sm:px-6 mt-48">
-    <button class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-      Previous
+  <div class="flex flex-wrap items-center justify-center gap-1 border-t border-gray-200 px-3 py-4 dark:border-gray-700 sm:px-6">
+    <button class="rounded-lg border border-gray-300 bg-white px-2 py-2 sm:px-4 text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+      Prev
     </button>
-    
-    <div class="flex items-center gap-1">
-      <button class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500 text-theme-sm font-medium text-white">
+
+    <div class="flex items-center gap-0.5 sm:gap-1">
+      <button class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-brand-500 text-theme-xs sm:text-theme-sm font-medium text-white">
         1
       </button>
-      <button class="flex h-9 w-9 items-center justify-center rounded-lg text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+      <button class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
         2
       </button>
-      <button class="flex h-9 w-9 items-center justify-center rounded-lg text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+      <button class="hidden sm:flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
         3
+      </button>
+      <span class="px-1 sm:px-2 py-1 sm:py-2 text-theme-xs sm:text-theme-sm text-gray-500 dark:text-gray-400">...</span>
+      <button class="hidden sm:flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+        8
+      </button>
+      <button class="hidden sm:flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+        9
+      </button>
+      <button class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+        10
       </button>
     </div>
 
-    <button class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+    <button class="rounded-lg border border-gray-300 bg-white px-2 py-2 sm:px-4 text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
       Next
     </button>
   </div>
