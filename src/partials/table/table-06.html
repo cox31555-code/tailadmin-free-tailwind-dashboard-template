@@ -1,3 +1,24 @@
+<style>
+  .table-scroller::-webkit-scrollbar {
+    height: 8px;
+  }
+  .table-scroller::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .table-scroller::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.6);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  .table-scroller::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.9);
+  }
+  .table-scroller {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59, 130, 246, 0.6) transparent;
+  }
+</style>
+
 <div
   class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
 >
