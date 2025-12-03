@@ -4,14 +4,13 @@
 >
   <!-- SIDEBAR HEADER -->
   <div
-    :class="sidebarToggle ? 'justify-center' : 'justify-between'"
     class="flex items-center gap-3 pt-8 sidebar-header pb-7"
   >
-    <a href="index.html" class="flex items-center gap-3">
+    <a href="index.html" class="flex items-center gap-3 w-full">
       <img class="limitless-logo-svg dark:hidden h-10 w-10" src="./images/logo/limitless-logo.svg" alt="Limitless Logo" />
       <img class="limitless-logo-svg hidden dark:block h-10 w-10" src="./images/logo/limitless-logo.svg" alt="Limitless Logo" />
 
-      <span class="logo-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+      <span class="logo-text hidden lg:inline">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Limitless Dashboard</h2>
       </span>
     </a>
