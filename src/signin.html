@@ -25,27 +25,32 @@
       <div
         class="relative flex flex-col justify-center w-full h-screen dark:bg-gray-900 sm:p-0 lg:flex-row"
       >
+        <!-- Mobile Branding Section -->
+        <div class="relative w-full -mx-6 mb-8 lg:hidden">
+          <div class="absolute inset-0 bg-brand-950 dark:bg-white/5">
+            <div class="max-w-xs absolute right-0 top-0 w-full -z-10 sm:max-w-sm">
+              <img alt="grid" src="./images/shape/grid-01.svg" class="block w-full" />
+            </div>
+            <div class="max-w-xs absolute bottom-0 left-0 w-full rotate-180 -z-10">
+              <img alt="grid" src="./images/shape/grid-01.svg" class="block w-full" />
+            </div>
+          </div>
+          <div class="relative flex flex-col items-center justify-center gap-3 py-8 px-6">
+            <img class="limitless-logo-svg dark:hidden h-16 w-16" src="./images/logo/limitless-logo.svg" alt="Limitless Logo" />
+            <img class="limitless-logo-svg hidden dark:block h-16 w-16" src="./images/logo/limitless-logo.svg" alt="Limitless Logo" />
+            <h2 class="text-2xl font-bold text-white text-center">Limitless Dashboard</h2>
+            <p class="text-center text-sm text-gray-200 dark:text-gray-300">
+              Limitless Admin Dashboard
+            </p>
+          </div>
+        </div>
+
         <!-- Form -->
         <div class="flex flex-col flex-1 w-full lg:w-1/2">
           <div
             class="flex flex-col justify-center flex-1 w-full max-w-md mx-auto"
           >
             <div>
-              <!-- Mobile Branding -->
-              <div class="relative w-screen -mx-6 sm:mx-0 sm:w-auto mb-8 lg:hidden">
-                <div class="absolute inset-0 bg-brand-950 dark:bg-white/5 sm:rounded-xl">
-                  <include src="./partials/common-grid-shape.html"></include>
-                </div>
-                <div class="relative flex flex-col items-center justify-center gap-3 py-8 px-6 sm:px-8">
-                  <img class="limitless-logo-svg dark:hidden h-16 w-16" src="./images/logo/limitless-logo.svg" alt="Limitless Logo" />
-                  <img class="limitless-logo-svg hidden dark:block h-16 w-16" src="./images/logo/limitless-logo.svg" alt="Limitless Logo" />
-                  <h2 class="text-2xl sm:text-3xl font-bold text-white text-center">Limitless Dashboard</h2>
-                  <p class="text-center text-sm sm:text-base text-gray-200 dark:text-gray-300">
-                    Limitless Admin Dashboard
-                  </p>
-                </div>
-              </div>
-
               <div class="mb-5 sm:mb-8">
                 <h1
                   class="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md"
