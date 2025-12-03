@@ -1,6 +1,6 @@
 <div
   x-show="promoCodeEditModal"
-  class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999"
+  class="fixed inset-0 flex items-end sm:items-center justify-center sm:p-5 z-99999"
 >
   <div
     class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"
@@ -8,12 +8,12 @@
   ></div>
   <div
     @click.outside="promoCodeEditModal = false"
-    class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11"
+    class="no-scrollbar relative w-full max-w-[700px] h-screen sm:h-auto sm:rounded-3xl rounded-t-3xl overflow-y-auto bg-white p-4 dark:bg-gray-900 sm:p-8 lg:p-11"
   >
     <!-- close btn -->
     <button
       @click="promoCodeEditModal = false"
-      class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300"
+      class="transition-color absolute right-4 top-4 sm:right-5 sm:top-5 z-999 flex h-10 sm:h-11 w-10 sm:w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300"
     >
       <svg
         class="fill-current"
@@ -32,21 +32,21 @@
       </svg>
     </button>
 
-    <div class="px-2 pr-14">
-      <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+    <div class="pr-8 sm:pr-0">
+      <h4 class="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white/90">
         Edit Promo Code
       </h4>
-      <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+      <p class="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
         Update promo code details and settings.
       </p>
     </div>
 
-    <form class="flex flex-col">
-      <div class="custom-scrollbar h-auto px-2 space-y-6">
-        <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-          <div class="col-span-2 lg:col-span-1">
+    <form class="flex flex-col mt-5 sm:mt-6">
+      <div class="custom-scrollbar space-y-5 sm:space-y-6">
+        <div class="grid grid-cols-1 gap-4 sm:gap-x-6 sm:gap-y-5 lg:grid-cols-2">
+          <div class="col-span-1">
             <label
-              class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+              class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400"
             >
               Promo Code
             </label>
@@ -54,13 +54,13 @@
               type="text"
               x-model="selectedPromo?.code"
               placeholder="SAVE20"
-              class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+              class="dark:bg-dark-900 h-10 sm:h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
             />
           </div>
 
-          <div class="col-span-2 lg:col-span-1">
+          <div class="col-span-1">
             <label
-              class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+              class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400"
             >
               % Saving
             </label>
@@ -69,32 +69,32 @@
                 type="text"
                 x-model="selectedPromo?.savings"
                 placeholder="20"
-                class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+                class="dark:bg-dark-900 h-10 sm:h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
               />
-              <span class="ml-2 text-gray-700 dark:text-gray-400">%</span>
+              <span class="ml-2 text-xs sm:text-sm text-gray-700 dark:text-gray-400">%</span>
             </div>
           </div>
 
-          <div class="col-span-2 lg:col-span-1">
+          <div class="col-span-1">
             <label
-              class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+              class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400"
             >
               Minimum Spend
             </label>
             <div class="flex items-center">
-              <span class="text-gray-700 dark:text-gray-400">£</span>
+              <span class="text-xs sm:text-sm text-gray-700 dark:text-gray-400">£</span>
               <input
                 type="text"
                 x-model="selectedPromo?.minSpend"
                 placeholder="50"
-                class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ml-2"
+                class="dark:bg-dark-900 h-10 sm:h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ml-2"
               />
             </div>
           </div>
 
-          <div class="col-span-2 lg:col-span-1">
+          <div class="col-span-1">
             <label
-              class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+              class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400"
             >
               Expiry Date
             </label>
@@ -104,14 +104,14 @@
                 type="text"
                 x-model="selectedPromo.expiryDate"
                 placeholder="Select a date"
-                class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+                class="dark:bg-dark-900 h-10 sm:h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
               />
             </div>
           </div>
 
-          <div class="col-span-2 lg:col-span-1">
+          <div class="col-span-1">
             <label
-              class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+              class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400"
             >
               Status
             </label>
@@ -121,7 +121,7 @@
             >
               <select
                 x-model="selectedPromo?.status"
-                class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+                class="dark:bg-dark-900 h-10 sm:h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-3 sm:px-4 py-2 sm:py-2.5 pr-10 sm:pr-11 text-xs sm:text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
                 :class="isOptionSelected && 'text-gray-800 dark:text-white/90'"
                 @change="isOptionSelected = true"
               >
@@ -133,12 +133,10 @@
                 </option>
               </select>
               <span
-                class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400"
+                class="pointer-events-none absolute top-1/2 right-3 sm:right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400"
               >
                 <svg
-                  class="stroke-current"
-                  width="20"
-                  height="20"
+                  class="stroke-current w-4 h-4 sm:w-5 sm:h-5"
                   viewBox="0 0 20 20"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -155,9 +153,9 @@
             </div>
           </div>
 
-          <div class="col-span-2 lg:col-span-1">
+          <div class="col-span-1">
             <label
-              class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+              class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400"
             >
               Number of Uses
             </label>
@@ -165,14 +163,14 @@
               type="number"
               x-model="selectedPromo?.uses"
               placeholder="0"
-              class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+              class="dark:bg-dark-900 h-10 sm:h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
             />
           </div>
 
-          <div class="col-span-2 flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="col-span-1 lg:col-span-2 flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4 dark:border-gray-800 dark:bg-white/[0.03]">
             <div>
               <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                class="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 Skip Payment
               </label>
@@ -184,28 +182,28 @@
               type="button"
               @click="selectedPromo.skipPayment = !selectedPromo.skipPayment"
               :class="selectedPromo?.skipPayment ? 'bg-brand-500' : 'bg-gray-300 dark:bg-gray-600'"
-              class="relative inline-flex h-7 w-12 flex-shrink-0 rounded-full border border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+              class="relative inline-flex h-6 sm:h-7 w-11 sm:w-12 flex-shrink-0 rounded-full border border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
             >
               <span
-                :class="selectedPromo?.skipPayment ? 'translate-x-5' : 'translate-x-0.5'"
-                class="inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out"
+                :class="selectedPromo?.skipPayment ? 'translate-x-5 sm:translate-x-5' : 'translate-x-0.5'"
+                class="inline-block h-5 sm:h-6 w-5 sm:w-6 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out"
               ></span>
             </button>
           </div>
         </div>
       </div>
 
-      <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+      <div class="flex flex-col-reverse sm:flex-row items-center gap-3 mt-6 sm:mt-8 lg:justify-end pb-4 sm:pb-0">
         <button
           @click="promoCodeEditModal = false"
           type="button"
-          class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto"
+          class="flex w-full sm:w-auto justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
         >
           Close
         </button>
         <button
           type="button"
-          class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+          class="flex w-full sm:w-auto justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-xs sm:text-sm font-medium text-white hover:bg-brand-600"
         >
           Save Changes
         </button>
