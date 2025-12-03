@@ -16,14 +16,25 @@
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
     :class="{'dark bg-gray-900': darkMode === true}"
   >
+    <style>
+      @media (max-width: 640px) {
+        .signin-page-wrapper {
+          height: 896px;
+        }
+        .signin-content-container {
+          height: 619px;
+        }
+      }
+    </style>
+
     <!-- ===== Preloader Start ===== -->
     <include src="./partials/preloader.html"></include>
     <!-- ===== Preloader End ===== -->
 
     <!-- ===== Page Wrapper Start ===== -->
-    <div class="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
+    <div class="signin-page-wrapper relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
       <div
-        class="relative flex flex-col justify-center w-full h-screen dark:bg-gray-900 sm:p-0 lg:flex-row"
+        class="signin-content-container relative flex flex-col justify-center w-full h-screen dark:bg-gray-900 sm:p-0 lg:flex-row"
       >
         <!-- Mobile Branding Section -->
         <div class="relative w-full -mx-6 mb-8 lg:hidden">
