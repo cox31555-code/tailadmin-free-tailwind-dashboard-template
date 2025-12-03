@@ -1,24 +1,20 @@
 <div
   x-show="contactFormViewModal"
-  class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999"
+  class="fixed inset-0 z-99999 flex items-start justify-center overflow-y-auto bg-gray-400/50 backdrop-blur-[32px] sm:items-center sm:p-4"
 >
   <div
-    class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"
-    @click="contactFormViewModal = false"
-  ></div>
-  <div
     @click.outside="contactFormViewModal = false"
-    class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11"
+    class="no-scrollbar relative w-full max-w-sm overflow-hidden rounded-2xl bg-white dark:bg-gray-900 sm:max-w-lg md:max-w-2xl"
   >
     <!-- close btn -->
     <button
       @click="contactFormViewModal = false"
-      class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300"
+      class="transition-color absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300 sm:right-4 sm:top-4 sm:h-11 sm:w-11"
     >
       <svg
         class="fill-current"
-        width="24"
-        height="24"
+        width="20"
+        height="20"
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -32,49 +28,56 @@
       </svg>
     </button>
 
-    <div class="px-2 pr-14">
-      <div class="mb-4 flex items-center gap-3">
-        <svg
-          class="h-5 w-5 flex-shrink-0 text-gray-400 dark:text-gray-500"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-          <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-        </svg>
-        <h4 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Message from
-        </h4>
-      </div>
-      <p class="mb-6 text-sm font-medium text-gray-600 dark:text-gray-400">
-        • <span x-text="selectedMessage?.email"></span>
-      </p>
-    </div>
+    <!-- Modal content -->
+    <div class="overflow-y-auto">
+      <div class="space-y-4 p-4 sm:p-6">
+        <!-- Header section -->
+        <div class="pr-9 sm:pr-12">
+          <div class="mb-3 flex items-center gap-2 sm:gap-3">
+            <svg
+              class="h-5 w-5 flex-shrink-0 text-gray-400 dark:text-gray-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+            </svg>
+            <h4 class="text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
+              Message from
+            </h4>
+          </div>
+          <p class="text-xs font-medium text-gray-600 dark:text-gray-400 sm:text-sm">
+            • <span class="break-all" x-text="selectedMessage?.email"></span>
+          </p>
+        </div>
 
-    <div class="px-2 pr-14">
-      <p class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-        Message:
-      </p>
-      <div class="rounded-lg bg-gray-100 p-6 dark:bg-gray-950 min-h-[150px]">
-        <p class="text-base leading-relaxed text-gray-800 dark:text-gray-200 whitespace-pre-wrap" x-text="selectedMessage?.message">
+        <!-- Message section -->
+        <div class="space-y-2">
+          <p class="text-xs font-medium text-gray-700 dark:text-gray-300 sm:text-sm">
+            Message:
+          </p>
+          <div class="rounded-lg bg-gray-100 p-3 dark:bg-gray-950 sm:p-4">
+            <p class="break-words text-sm leading-relaxed text-gray-800 dark:text-gray-200 sm:text-base whitespace-pre-wrap" x-text="selectedMessage?.message">
+            </p>
+          </div>
+        </div>
+
+        <!-- Date section -->
+        <p class="text-xs text-gray-500 dark:text-gray-400 sm:text-sm" x-text="selectedMessage?.received">
         </p>
       </div>
-    </div>
 
-    <div class="px-2 pr-14 mt-6 mb-6">
-      <p class="text-sm text-gray-500 dark:text-gray-400" x-text="selectedMessage?.received">
-      </p>
-    </div>
-
-    <div class="flex items-center px-2 gap-3 lg:justify-end">
-      <button
-        @click="contactFormViewModal = false"
-        type="button"
-        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 lg:w-auto"
-      >
-        Close
-      </button>
+      <!-- Action button -->
+      <div class="border-t border-gray-100 bg-gray-50 p-3 dark:border-gray-800 dark:bg-white/[0.02] sm:p-4">
+        <button
+          @click="contactFormViewModal = false"
+          type="button"
+          class="w-full rounded-lg bg-brand-500 px-3 py-2.5 text-sm font-medium text-white hover:bg-brand-600 active:bg-brand-700 transition-colors sm:py-3"
+        >
+          Close
+        </button>
+      </div>
     </div>
   </div>
 </div>
