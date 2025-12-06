@@ -1,5 +1,23 @@
 <header
-  x-data="{menuToggle: false}"
+  x-data="{
+    menuToggle: false,
+    londonTime: '',
+    initTime() {
+      this.updateLondonTime();
+      setInterval(() => this.updateLondonTime(), 1000);
+    },
+    updateLondonTime() {
+      const now = new Date();
+      const londonTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }));
+      this.londonTime = londonTime.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+    }
+  }"
+  x-init="initTime()"
   class="sticky top-0 z-99999 flex w-full border-gray-200 bg-white lg:border-b dark:border-gray-800 dark:bg-gray-900"
 >
   <div
