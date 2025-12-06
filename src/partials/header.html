@@ -2,14 +2,20 @@
   x-data="{
     menuToggle: false,
     londonTime: '',
+    londonDate: '',
     initTime() {
-      this.updateLondonTime();
-      setInterval(() => this.updateLondonTime(), 1000);
+      this.updateLondonDateTime();
+      setInterval(() => this.updateLondonDateTime(), 1000);
     },
-    updateLondonTime() {
+    updateLondonDateTime() {
       const now = new Date();
-      const londonTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }));
-      this.londonTime = londonTime.toLocaleTimeString('en-US', {
+      const londonDateTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }));
+      this.londonDate = londonDateTime.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+      this.londonTime = londonDateTime.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
