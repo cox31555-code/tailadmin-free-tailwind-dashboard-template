@@ -438,7 +438,7 @@ Alpine.data('revenueOverview', function() {
       }
     },
 
-    calculateRevenue() {
+    async calculateRevenue() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -449,8 +449,7 @@ Alpine.data('revenueOverview', function() {
       let daily = 0;
       let weekly = 0;
 
-      const ordersDataStr = localStorage.getItem('ordersData');
-      const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
+      const orders = await this.loadOrdersData();
 
       orders.forEach((order) => {
         try {
@@ -459,7 +458,6 @@ Alpine.data('revenueOverview', function() {
 
           const orderDate = parseDate(order.date);
           if (orderDate === null) {
-            console.warn('RevenueOverview: Could not parse order date:', order.date);
             return;
           }
 
@@ -471,7 +469,7 @@ Alpine.data('revenueOverview', function() {
             weekly += price;
           }
         } catch (e) {
-          console.warn('RevenueOverview: Failed to process order:', order, e);
+          // Skip invalid entries
         }
       });
 
@@ -481,18 +479,11 @@ Alpine.data('revenueOverview', function() {
     },
 
     async init() {
-      await this.loadOrdersData();
-      this.calculateRevenue();
+      await this.calculateRevenue();
 
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'ordersData') {
-          this.calculateRevenue();
-        }
-      });
-
-      setInterval(() => {
-        this.calculateRevenue();
-      }, 3000);
+      setInterval(async () => {
+        await this.calculateRevenue();
+      }, 5000);
     }
   };
 });
