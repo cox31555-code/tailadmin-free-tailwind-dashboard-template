@@ -1,6 +1,6 @@
 [
   {
-    "date": "Dec 03, 2024",
+    "date": "Jan 08, 2025",
     "vehicle": "Toyota Camry",
     "amount": "£245.99",
     "email": "james.wilson@example.com",
@@ -9,7 +9,7 @@
     "validUntil": "Feb 10, 2025"
   },
   {
-    "date": "Nov 28, 2024",
+    "date": "Jan 08, 2025",
     "vehicle": "BMW X5",
     "amount": "£389.50",
     "email": "nicole.roberts@example.com",
@@ -18,7 +18,7 @@
     "validUntil": "Jan 20, 2024"
   },
   {
-    "date": "Nov 25, 2024",
+    "date": "Jan 07, 2025",
     "vehicle": "Mercedes-Benz C-Class",
     "amount": "£425.00",
     "email": "robert.taylor@example.com",
@@ -27,12 +27,30 @@
     "validUntil": "Dec 27, 2023"
   },
   {
-    "date": "Nov 20, 2024",
+    "date": "Jan 05, 2025",
     "vehicle": "Audi A6",
     "amount": "£310.75",
     "email": "patricia.anderson@example.com",
     "type": "Annual",
     "policyStart": "Feb 01, 2024",
     "validUntil": "Feb 15, 2025"
+  },
+  {
+    "date": "Jan 03, 2025",
+    "vehicle": "Honda Accord",
+    "amount": "£275.50",
+    "email": "michael.green@example.com",
+    "type": "Temporary",
+    "policyStart": "Jan 01, 2025",
+    "validUntil": "Jan 31, 2025"
+  },
+  {
+    "date": "Jan 02, 2025",
+    "vehicle": "Volkswagen Passat",
+    "amount": "£355.00",
+    "email": "sarah.clark@example.com",
+    "type": "Annual",
+    "policyStart": "Jan 02, 2025",
+    "validUntil": "Feb 15, 2026"
   }
 ]
