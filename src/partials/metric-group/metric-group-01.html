@@ -51,6 +51,8 @@
 
   <!-- Orders Overview Card Start -->
   <div
+    x-data="ordersCounter()"
+    x-init="init()"
     class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]"
   >
     <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
@@ -66,7 +68,7 @@
         <h4
           class="mt-2 text-title-sm font-bold text-gray-800 dark:text-white/90"
         >
-          1,245
+          <span x-text="formatNumber(todayCount)"></span>
         </h4>
       </div>
 
@@ -78,7 +80,7 @@
         <h4
           class="mt-2 text-title-sm font-bold text-gray-800 dark:text-white/90"
         >
-          2,890
+          <span x-text="formatNumber(last7DaysCount)"></span>
         </h4>
       </div>
 
@@ -90,7 +92,7 @@
         <h4
           class="mt-2 text-title-sm font-bold text-gray-800 dark:text-white/90"
         >
-          5,359
+          <span x-text="formatNumber(past30DaysCount)"></span>
         </h4>
       </div>
     </div>
