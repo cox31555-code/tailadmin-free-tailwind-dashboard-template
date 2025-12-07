@@ -503,6 +503,264 @@ Alpine.data('revenueOverview', function() {
   };
 });
 
+/**
+ * Alpine.js component for recent items (combines all tables)
+ */
+Alpine.data('recentItems', function() {
+  return {
+    items: [],
+    loading: true,
+
+    formatDateTime(dateStr, timeStr) {
+      if (!dateStr) return '';
+      if (timeStr && timeStr !== 'N/A') {
+        return `${dateStr} ${timeStr}`;
+      }
+      return dateStr;
+    },
+
+    getTypeBadge(type) {
+      const types = {
+        'quote': { label: 'Quote', color: 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400' },
+        'annual': { label: 'Annual', color: 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400' },
+        'temporary': { label: 'Temporary', color: 'bg-purple-50 text-purple-600 dark:bg-purple-500/15 dark:text-purple-400' },
+        'impound': { label: 'Impound', color: 'bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400' },
+        'contact': { label: 'Contact', color: 'bg-gray-50 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400' }
+      };
+      return types[type] || types['quote'];
+    },
+
+    parseDateTime(dateStr) {
+      if (!dateStr) return new Date(0);
+      try {
+        const parts = dateStr.trim().split(/\s+/);
+        if (parts.length >= 3) {
+          const monthStr = parts[0];
+          const dayStr = parts[1].replace(',', '');
+          const yearStr = parts[2];
+
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const monthIndex = months.indexOf(monthStr);
+
+          if (monthIndex !== -1 && dayStr && yearStr) {
+            const date = new Date(yearStr, monthIndex, dayStr);
+
+            if (parts.length > 3) {
+              const timeStr = parts.slice(3).join(' ');
+              const timeParts = timeStr.match(/(\d+):(\d+)\s*(AM|PM)?/i);
+              if (timeParts) {
+                let hours = parseInt(timeParts[1]);
+                const minutes = parseInt(timeParts[2]);
+                const period = timeParts[3];
+
+                if (period && period.toUpperCase() === 'PM' && hours !== 12) {
+                  hours += 12;
+                } else if (period && period.toUpperCase() === 'AM' && hours === 12) {
+                  hours = 0;
+                }
+
+                date.setHours(hours, minutes, 0, 0);
+              }
+            }
+
+            return date;
+          }
+        }
+      } catch (e) {
+        // Silently fail
+      }
+      return new Date(0);
+    },
+
+    async loadQuotesData() {
+      try {
+        const response = await fetch('/quotes.html', { cache: 'no-cache' });
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const quotes = [];
+        const rows = doc.querySelectorAll('table tbody tr');
+
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll('td');
+          if (cells.length >= 4) {
+            const dateElement = cells[0]?.querySelector('p:first-child');
+            const dateText = dateElement?.textContent?.trim() || '';
+
+            if (dateText) {
+              const customerElement = cells[0]?.querySelector('p:first-child');
+              const customerText = customerElement?.textContent?.trim() || 'Unknown';
+              const vehicleElement = cells[1]?.querySelector('p');
+              const vehicleText = vehicleElement?.textContent?.trim() || '';
+              const amountElement = cells[2]?.querySelector('p');
+              const amountText = amountElement?.textContent?.trim() || '';
+              const emailElement = cells[3]?.querySelector('p');
+              const emailText = emailElement?.textContent?.trim() || '';
+
+              quotes.push({
+                type: 'quote',
+                date: dateText,
+                time: '',
+                customer: customerText,
+                vehicle: vehicleText,
+                amount: amountText,
+                email: emailText
+              });
+            }
+          }
+        });
+
+        return quotes;
+      } catch (error) {
+        console.warn('Failed to fetch quotes:', error);
+        return [];
+      }
+    },
+
+    async loadOrdersData() {
+      try {
+        const pages = [
+          { url: '/annual.html', type: 'annual' },
+          { url: '/temporary.html', type: 'temporary' },
+          { url: '/impound.html', type: 'impound' }
+        ];
+        const allOrders = [];
+
+        for (const page of pages) {
+          try {
+            const response = await fetch(page.url, { cache: 'no-cache' });
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const rows = doc.querySelectorAll('table tbody tr');
+            rows.forEach((row) => {
+              const cells = row.querySelectorAll('td');
+              if (cells.length >= 2) {
+                const dateElement = cells[0]?.querySelector('p:first-child');
+                const dateText = dateElement?.textContent?.trim() || '';
+
+                if (dateText) {
+                  const priceElement = cells[1]?.querySelector('p');
+                  const priceText = priceElement?.textContent?.trim() || '';
+                  const emailElement = cells[2]?.querySelector('p');
+                  const emailText = emailElement?.textContent?.trim() || '';
+                  const phoneElement = cells[3]?.querySelector('p');
+                  const phoneText = phoneElement?.textContent?.trim() || '';
+                  const vehicleElement = cells[4]?.querySelector('p');
+                  const vehicleText = vehicleElement?.textContent?.trim() || '';
+
+                  allOrders.push({
+                    type: page.type,
+                    date: dateText,
+                    time: '',
+                    customer: 'Policy Holder',
+                    vehicle: vehicleText,
+                    amount: priceText,
+                    email: emailText
+                  });
+                }
+              }
+            });
+          } catch (e) {
+            console.warn(`Failed to fetch ${page.url}:`, e);
+          }
+        }
+
+        return allOrders;
+      } catch (error) {
+        console.warn('Failed to fetch orders:', error);
+        return [];
+      }
+    },
+
+    async loadContactFormData() {
+      try {
+        const response = await fetch('/contact-form.html', { cache: 'no-cache' });
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const submissions = [];
+        const rows = doc.querySelectorAll('table tbody tr');
+
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll('td');
+          if (cells.length >= 4) {
+            const nameElement = cells[0]?.querySelector('p');
+            const nameText = nameElement?.textContent?.trim() || '';
+            const emailElement = cells[2]?.querySelector('p');
+            const emailText = emailElement?.textContent?.trim() || '';
+            const dateElement = cells[3]?.querySelector('p');
+            const dateText = dateElement?.textContent?.trim() || '';
+            const timeElement = cells[4]?.querySelector('p');
+            const timeText = timeElement?.textContent?.trim() || '';
+
+            if (dateText) {
+              submissions.push({
+                type: 'contact',
+                date: dateText,
+                time: timeText,
+                customer: nameText,
+                vehicle: '',
+                amount: '',
+                email: emailText
+              });
+            }
+          }
+        });
+
+        return submissions;
+      } catch (error) {
+        console.warn('Failed to fetch contact form:', error);
+        return [];
+      }
+    },
+
+    async loadAllItems() {
+      try {
+        const [quotes, orders, contactForms] = await Promise.all([
+          this.loadQuotesData(),
+          this.loadOrdersData(),
+          this.loadContactFormData()
+        ]);
+
+        const allItems = [...quotes, ...orders, ...contactForms];
+
+        allItems.sort((a, b) => {
+          const dateA = this.parseDateTime(`${a.date} ${a.time}`);
+          const dateB = this.parseDateTime(`${b.date} ${b.time}`);
+          return dateB.getTime() - dateA.getTime();
+        });
+
+        this.items = allItems.slice(0, 10);
+        this.loading = false;
+      } catch (error) {
+        console.warn('Failed to load recent items:', error);
+        this.items = [];
+        this.loading = false;
+      }
+    },
+
+    async init() {
+      try {
+        await this.loadAllItems();
+
+        setInterval(async () => {
+          try {
+            await this.loadAllItems();
+          } catch (e) {
+            // Silently fail on refresh
+          }
+        }, 5000);
+      } catch (e) {
+        console.warn('RecentItems init error:', e);
+      }
+    }
+  };
+});
+
 Alpine.start();
 
 // Init flatpickr
