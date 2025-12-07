@@ -37,11 +37,16 @@ const parseDate = (dateStr) => {
       if (monthIndex !== -1 && dayStr && yearStr) {
         const date = new Date(yearStr, monthIndex, dayStr);
         date.setHours(0, 0, 0, 0);
+        console.log('parseDate: Successfully parsed', dateStr, '→', date.toISOString().split('T')[0], 'monthIndex:', monthIndex, 'day:', dayStr, 'year:', yearStr);
         return date;
+      } else {
+        console.warn('parseDate: Failed validation for', dateStr, '- monthIndex:', monthIndex, 'dayStr:', dayStr, 'yearStr:', yearStr);
       }
+    } else {
+      console.warn('parseDate: Invalid format for', dateStr, '- parts:', parts);
     }
   } catch (e) {
-    console.warn('Failed to parse date:', dateStr, e);
+    console.warn('parseDate: Exception parsing', dateStr, e);
   }
 
   return null;
