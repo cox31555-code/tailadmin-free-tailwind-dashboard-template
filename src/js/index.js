@@ -49,6 +49,109 @@ if (dropzoneArea.length) {
   let myDropzone = new Dropzone("#demo-upload", { url: "/file/post" });
 }
 
+/**
+ * Alpine.js component for quotes counter
+ */
+window.quotesCounter = function() {
+  return {
+    todayCount: 0,
+    last7DaysCount: 0,
+    past30DaysCount: 0,
+
+    formatNumber(num) {
+      return num.toLocaleString('en-US');
+    },
+
+    getQuotesCount() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const sevenDaysAgo = new Date(today);
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+
+      const thirtyDaysAgo = new Date(today);
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+
+      let todayCount = 0;
+      let last7DaysCount = 0;
+      let past30DaysCount = 0;
+
+      // Get all table rows from the quotes table
+      const tableRows = document.querySelectorAll('table tbody tr');
+
+      tableRows.forEach((row) => {
+        // Get the date from the first cell (Date & Time column)
+        const dateCell = row.querySelector('td:first-child p:first-child');
+        if (!dateCell) return;
+
+        const dateText = dateCell.textContent.trim();
+
+        // Parse the date (format: "Nov 12, 2025")
+        try {
+          const quoteDate = new Date(dateText);
+          quoteDate.setHours(0, 0, 0, 0);
+
+          // Count based on date ranges
+          if (quoteDate.getTime() === today.getTime()) {
+            todayCount++;
+          }
+
+          if (quoteDate >= sevenDaysAgo && quoteDate <= today) {
+            last7DaysCount++;
+          }
+
+          if (quoteDate >= thirtyDaysAgo && quoteDate <= today) {
+            past30DaysCount++;
+          }
+        } catch (e) {
+          console.warn('Failed to parse date:', dateText);
+        }
+      });
+
+      return {
+        today: todayCount,
+        last7Days: last7DaysCount,
+        past30Days: past30DaysCount,
+      };
+    },
+
+    init() {
+      this.updateCounts();
+
+      // Watch for table changes
+      const observer = new MutationObserver(() => {
+        this.updateCounts();
+      });
+
+      // Start observing the table for changes
+      const tableContainer = document.querySelector('table');
+      if (tableContainer) {
+        observer.observe(tableContainer, {
+          childList: true,
+          subtree: true,
+          characterData: true,
+        });
+      }
+
+      // Also check periodically in case table is loaded after this component initializes
+      setTimeout(() => {
+        this.updateCounts();
+      }, 1000);
+    },
+
+    updateCounts() {
+      const counts = this.getQuotesCount();
+      this.todayCount = counts.today;
+      this.last7DaysCount = counts.last7Days;
+      this.past30DaysCount = counts.past30Days;
+    },
+
+    x_init() {
+      this.init();
+    }
+  };
+};
+
 // Document Loaded
 document.addEventListener("DOMContentLoaded", () => {
   chart01();
