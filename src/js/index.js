@@ -32,20 +32,24 @@ Alpine.data('quotesCounter', function() {
     },
 
     async loadQuotesData() {
+      console.log('QuotesCounter: loadQuotesData() called');
       try {
+        console.log('QuotesCounter: Fetching /data/quotes.json');
         const response = await fetch('/data/quotes.json', { cache: 'no-cache' });
+        console.log('QuotesCounter: Response status:', response.status);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const quotes = await response.json();
+        console.log('QuotesCounter: Parsed JSON, entries:', quotes.length);
         localStorage.setItem('quotesData', JSON.stringify(quotes));
-        console.log('Quotes loaded successfully. Count:', quotes.length);
+        console.log('QuotesCounter: Stored in localStorage');
         return quotes;
       } catch (error) {
-        console.warn('Failed to load quotes.json:', error);
+        console.warn('QuotesCounter: Failed to load quotes.json:', error);
         const quotesDataStr = localStorage.getItem('quotesData');
         const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
-        console.log('Using cached quotes from localStorage. Count:', quotes.length);
+        console.log('QuotesCounter: Using cached quotes from localStorage. Count:', quotes.length);
         return quotes;
       }
     },
