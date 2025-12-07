@@ -2,6 +2,32 @@ import ApexCharts from "apexcharts";
 
 // ===== chartOne
 const chart01 = async () => {
+  const parseDate = (dateStr) => {
+    if (!dateStr) return null;
+
+    try {
+      const parts = dateStr.trim().split(/\s+/);
+      if (parts.length === 3) {
+        const monthStr = parts[0];
+        const dayStr = parts[1].replace(',', '');
+        const yearStr = parts[2];
+
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthIndex = months.indexOf(monthStr);
+
+        if (monthIndex !== -1 && dayStr && yearStr) {
+          const date = new Date(yearStr, monthIndex, dayStr);
+          date.setHours(0, 0, 0, 0);
+          return date;
+        }
+      }
+    } catch (e) {
+      console.warn('Chart-01: Failed to parse date:', dateStr, e);
+    }
+
+    return null;
+  };
+
   const loadOrdersData = async () => {
     try {
       const ordersDataStr = localStorage.getItem('ordersData');
