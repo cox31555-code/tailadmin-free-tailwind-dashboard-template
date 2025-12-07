@@ -29,11 +29,41 @@ const chart01 = async () => {
   };
 
   const loadOrdersData = async () => {
-    // Always read from localStorage (populated by table pages)
-    const ordersDataStr = localStorage.getItem('ordersData');
-    const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
-    console.log('Chart-01: Loaded orders from localStorage, count:', orders.length);
-    return orders;
+    try {
+      const pages = ['/annual.html', '/temporary.html', '/impound.html'];
+      const allOrders = [];
+
+      for (const page of pages) {
+        try {
+          const response = await fetch(page, { cache: 'no-cache' });
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+
+          const rows = doc.querySelectorAll('table tbody tr');
+          rows.forEach((row) => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 3) {
+              const dateText = cells[0]?.textContent?.trim() || '';
+              if (dateText) {
+                allOrders.push({
+                  date: dateText,
+                  type: page.includes('annual') ? 'annual' : page.includes('temporary') ? 'temporary' : 'impound',
+                  price: cells[2]?.textContent?.trim() || '£0.00',
+                });
+              }
+            }
+          });
+        } catch (e) {
+          console.warn(`Failed to fetch ${page}:`, e);
+        }
+      }
+
+      return allOrders;
+    } catch (error) {
+      console.warn('Chart-01: Failed to load orders:', error);
+      return [];
+    }
   };
 
   // Get current year
