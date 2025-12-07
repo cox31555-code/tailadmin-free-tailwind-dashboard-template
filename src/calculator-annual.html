@@ -501,7 +501,11 @@
                     <div class="border-t border-gray-200 pt-2 dark:border-gray-700">
                       <template x-for="(multiplier, index) in selectedMultipliers" :key="index">
                         <div class="flex items-center justify-between text-sm">
-                          <span class="text-gray-600 dark:text-gray-400">× <span x-text="multiplier.name"></span>:</span>
+                          <span class="text-gray-600 dark:text-gray-400">
+                            <span x-show="multiplier.name === 'Car Use' || multiplier.name === 'Employment'">+ </span>
+                            <span x-show="multiplier.name !== 'Car Use' && multiplier.name !== 'Employment'">× </span>
+                            <span x-text="multiplier.name"></span>:
+                          </span>
                           <span class="text-gray-900 dark:text-white"><span x-text="parseFloat(multiplier.value).toFixed(2)"></span></span>
                         </div>
                       </template>
