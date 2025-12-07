@@ -94,21 +94,21 @@ const chart02 = async () => {
       let impoundCount = 0;
 
       orders.forEach((order) => {
-        try {
-          const orderDate = new Date(order.date);
-          orderDate.setHours(0, 0, 0, 0);
+        const orderDate = parseDate(order.date);
 
-          if (orderDate.getTime() === dayDate.getTime()) {
-            if (order.type === 'annual') {
-              annualCount++;
-            } else if (order.type === 'temporary') {
-              temporaryCount++;
-            } else if (order.type === 'impound') {
-              impoundCount++;
-            }
+        if (orderDate === null) {
+          console.warn('Chart-02: Could not parse order date:', order.date);
+          return;
+        }
+
+        if (orderDate.getTime() === dayDate.getTime()) {
+          if (order.type === 'annual') {
+            annualCount++;
+          } else if (order.type === 'temporary') {
+            temporaryCount++;
+          } else if (order.type === 'impound') {
+            impoundCount++;
           }
-        } catch (e) {
-          console.warn('Failed to parse order date:', order.date);
         }
       });
 
