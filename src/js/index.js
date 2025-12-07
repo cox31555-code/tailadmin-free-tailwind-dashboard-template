@@ -360,23 +360,10 @@ Alpine.data('revenueOverview', function() {
     },
 
     async loadOrdersData() {
-      try {
-        const ordersDataStr = localStorage.getItem('ordersData');
-        if (ordersDataStr) {
-          return JSON.parse(ordersDataStr);
-        }
-
-        const response = await fetch('/data/orders.json', { cache: 'no-cache' });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const orders = await response.json();
-        localStorage.setItem('ordersData', JSON.stringify(orders));
-        return orders;
-      } catch (error) {
-        console.warn('Failed to load orders data:', error);
-        return [];
-      }
+      // Always read from localStorage (populated by table pages)
+      const ordersDataStr = localStorage.getItem('ordersData');
+      const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
+      return orders;
     },
 
     calculateRevenue() {
