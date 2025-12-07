@@ -33,17 +33,33 @@ Alpine.data('quotesCounter', function() {
 
     async loadQuotesData() {
       try {
-        const response = await fetch('./data/quotes.json');
-        if (!response.ok) {
-          throw new Error(`Failed to load quotes data: ${response.statusText}`);
+        // Try multiple fetch paths to handle different environments
+        const paths = ['/data/quotes.json', './data/quotes.json', 'data/quotes.json'];
+        let response;
+        let lastError;
+
+        for (const path of paths) {
+          try {
+            response = await fetch(path, { cache: 'no-cache' });
+            if (response.ok) {
+              const quotes = await response.json();
+              localStorage.setItem('quotesData', JSON.stringify(quotes));
+              console.log('Quotes loaded successfully from:', path, 'Count:', quotes.length);
+              return quotes;
+            }
+          } catch (e) {
+            lastError = e;
+            continue;
+          }
         }
-        const quotes = await response.json();
-        localStorage.setItem('quotesData', JSON.stringify(quotes));
-        return quotes;
+
+        throw lastError || new Error('All fetch paths failed');
       } catch (error) {
-        console.warn('Failed to load quotes.json, trying localStorage:', error);
+        console.warn('Failed to load quotes.json, attempting localStorage fallback:', error);
         const quotesDataStr = localStorage.getItem('quotesData');
-        return quotesDataStr ? JSON.parse(quotesDataStr) : [];
+        const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
+        console.log('Using cached quotes from localStorage. Count:', quotes.length);
+        return quotes;
       }
     },
 
@@ -72,12 +88,10 @@ Alpine.data('quotesCounter', function() {
       quotes.forEach((quote) => {
         const dateText = quote.date;
 
-        // Parse the date (format: "Nov 12, 2025")
         try {
           const quoteDate = new Date(dateText);
           quoteDate.setHours(0, 0, 0, 0);
 
-          // Count based on date ranges
           if (quoteDate.getTime() === today.getTime()) {
             todayCount++;
           }
@@ -102,23 +116,22 @@ Alpine.data('quotesCounter', function() {
     },
 
     async init() {
-      // Load quotes data from JSON file
       const quotes = await this.loadQuotesData();
       this.updateCounts(quotes);
 
-      // Watch for localStorage changes (from other tabs or the quotes page)
-      window.addEventListener('storage', () => {
-        const quotesDataStr = localStorage.getItem('quotesData');
-        const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
-        this.updateCounts(quotes);
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'quotesData') {
+          const quotesDataStr = localStorage.getItem('quotesData');
+          const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
+          this.updateCounts(quotes);
+        }
       });
 
-      // Also check periodically in case data is updated
       setInterval(() => {
         const quotesDataStr = localStorage.getItem('quotesData');
         const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
         this.updateCounts(quotes);
-      }, 2000);
+      }, 3000);
     },
 
     updateCounts(quotes) {
