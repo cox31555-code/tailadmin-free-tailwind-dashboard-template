@@ -1,3 +1,41 @@
+<script>
+  // Store quotes data in localStorage when page loads
+  function storeQuotesData() {
+    const quotes = [];
+    const tableRows = document.querySelectorAll('table tbody tr');
+
+    tableRows.forEach((row) => {
+      const dateCell = row.querySelector('td:first-child p:first-child');
+      if (dateCell) {
+        const dateText = dateCell.textContent.trim();
+        quotes.push({
+          date: dateText
+        });
+      }
+    });
+
+    localStorage.setItem('quotesData', JSON.stringify(quotes));
+  }
+
+  // Store data when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', storeQuotesData);
+  } else {
+    storeQuotesData();
+  }
+
+  // Also watch for mutations in case table changes
+  const tableContainer = document.querySelector('table');
+  if (tableContainer) {
+    const observer = new MutationObserver(storeQuotesData);
+    observer.observe(tableContainer, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+  }
+</script>
+
 <style>
   .table-scroller {
     position: relative;
