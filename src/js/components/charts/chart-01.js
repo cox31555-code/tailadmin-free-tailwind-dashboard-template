@@ -58,17 +58,19 @@ const chart01 = async () => {
     const monthlyCounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 12 months
 
     orders.forEach((order) => {
-      try {
-        const orderDate = new Date(order.date);
-        const orderYear = orderDate.getFullYear();
-        const orderMonth = orderDate.getMonth();
+      const orderDate = parseDate(order.date);
 
-        // Count orders from current year
-        if (orderYear === currentYear) {
-          monthlyCounts[orderMonth]++;
-        }
-      } catch (e) {
-        console.warn('Failed to parse order date:', order.date);
+      if (orderDate === null) {
+        console.warn('Chart-01: Could not parse order date:', order.date);
+        return;
+      }
+
+      const orderYear = orderDate.getFullYear();
+      const orderMonth = orderDate.getMonth();
+
+      // Count orders from current year
+      if (orderYear === currentYear) {
+        monthlyCounts[orderMonth]++;
       }
     });
 
