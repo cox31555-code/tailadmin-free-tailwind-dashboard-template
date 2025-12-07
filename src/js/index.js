@@ -585,24 +585,27 @@ Alpine.data('recentItems', function() {
         rows.forEach((row) => {
           const cells = row.querySelectorAll('td');
           if (cells.length >= 4) {
-            const dateElement = cells[0]?.querySelector('p:first-child');
+            const dateDiv = cells[0]?.querySelector('div');
+            const dateElement = dateDiv?.querySelector('p:first-child');
+            const timeElement = dateDiv?.querySelector('p:last-child');
             const dateText = dateElement?.textContent?.trim() || '';
+            const timeText = timeElement?.textContent?.trim() || '';
 
             if (dateText) {
-              const customerElement = cells[0]?.querySelector('p:first-child');
-              const customerText = customerElement?.textContent?.trim() || 'Unknown';
               const vehicleElement = cells[1]?.querySelector('p');
               const vehicleText = vehicleElement?.textContent?.trim() || '';
               const amountElement = cells[2]?.querySelector('p');
               const amountText = amountElement?.textContent?.trim() || '';
               const emailElement = cells[3]?.querySelector('p');
               const emailText = emailElement?.textContent?.trim() || '';
+              const typeElement = cells[4]?.querySelector('span');
+              const typeText = typeElement?.textContent?.trim() || '';
 
               quotes.push({
                 type: 'quote',
                 date: dateText,
-                time: '',
-                customer: customerText,
+                time: timeText,
+                customer: 'Quote Request',
                 vehicle: vehicleText,
                 amount: amountText,
                 email: emailText
