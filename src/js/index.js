@@ -415,9 +415,11 @@ Alpine.data('revenueOverview', function() {
             const rows = doc.querySelectorAll('table tbody tr');
             rows.forEach((row) => {
               const cells = row.querySelectorAll('td');
-              if (cells.length >= 3) {
-                const dateText = cells[0]?.textContent?.trim() || '';
-                const priceText = cells[2]?.textContent?.trim() || '£0.00';
+              if (cells.length >= 2) {
+                const dateElement = cells[0]?.querySelector('p:first-child');
+                const dateText = dateElement?.textContent?.trim() || '';
+                const priceElement = cells[1]?.querySelector('p');
+                const priceText = priceElement?.textContent?.trim() || '£0.00';
                 if (dateText) {
                   allOrders.push({
                     date: dateText,
