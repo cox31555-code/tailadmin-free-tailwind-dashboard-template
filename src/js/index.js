@@ -73,7 +73,10 @@ Alpine.data('quotesCounter', function() {
         rows.forEach((row) => {
           const cells = row.querySelectorAll('td');
           if (cells.length >= 4) {
-            const dateText = cells[0]?.textContent?.trim() || '';
+            // Get date from first p tag in first cell
+            const dateElement = cells[0]?.querySelector('p:first-child');
+            const dateText = dateElement?.textContent?.trim() || '';
+
             if (dateText) {
               quotes.push({
                 date: dateText,
