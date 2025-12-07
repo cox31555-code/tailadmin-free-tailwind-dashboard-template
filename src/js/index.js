@@ -33,29 +33,16 @@ Alpine.data('quotesCounter', function() {
 
     async loadQuotesData() {
       try {
-        // Try multiple fetch paths to handle different environments
-        const paths = ['/data/quotes.json', './data/quotes.json', 'data/quotes.json'];
-        let response;
-        let lastError;
-
-        for (const path of paths) {
-          try {
-            response = await fetch(path, { cache: 'no-cache' });
-            if (response.ok) {
-              const quotes = await response.json();
-              localStorage.setItem('quotesData', JSON.stringify(quotes));
-              console.log('Quotes loaded successfully from:', path, 'Count:', quotes.length);
-              return quotes;
-            }
-          } catch (e) {
-            lastError = e;
-            continue;
-          }
+        const response = await fetch('/data/quotes.json', { cache: 'no-cache' });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        throw lastError || new Error('All fetch paths failed');
+        const quotes = await response.json();
+        localStorage.setItem('quotesData', JSON.stringify(quotes));
+        console.log('Quotes loaded successfully. Count:', quotes.length);
+        return quotes;
       } catch (error) {
-        console.warn('Failed to load quotes.json, attempting localStorage fallback:', error);
+        console.warn('Failed to load quotes.json:', error);
         const quotesDataStr = localStorage.getItem('quotesData');
         const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
         console.log('Using cached quotes from localStorage. Count:', quotes.length);
