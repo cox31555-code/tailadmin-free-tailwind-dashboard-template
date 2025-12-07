@@ -29,24 +29,11 @@ const chart01 = async () => {
   };
 
   const loadOrdersData = async () => {
-    try {
-      const ordersDataStr = localStorage.getItem('ordersData');
-      if (ordersDataStr) {
-        return JSON.parse(ordersDataStr);
-      }
-
-      const response = await fetch('/data/orders.json', { cache: 'no-cache' });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const orders = await response.json();
-      localStorage.setItem('ordersData', JSON.stringify(orders));
-      console.log('Chart-01: Orders loaded successfully');
-      return orders;
-    } catch (error) {
-      console.warn('Chart-01: Failed to load orders data:', error);
-      return [];
-    }
+    // Always read from localStorage (populated by table pages)
+    const ordersDataStr = localStorage.getItem('ordersData');
+    const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
+    console.log('Chart-01: Loaded orders from localStorage, count:', orders.length);
+    return orders;
   };
 
   // Get current year
