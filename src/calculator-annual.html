@@ -339,7 +339,7 @@
                 </div>
 
                 <!-- Car Use Multiplier -->
-                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800/50 hover:shadow-md transition-shadow duration-300">
+                <div x-data="{ carUse: '', carUseValue: '' }" class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800/50 hover:shadow-md transition-shadow duration-300">
                   <div class="mb-4">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Car Use Multiplier</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">CUM</p>
@@ -347,13 +347,20 @@
                   <div class="space-y-3">
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
-                      <select class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      <select x-model="carUse" @change="carUseValue = {
+                        'social': '0',
+                        'social-commute': '20',
+                        'social-commute-business': '50'
+                      }[carUse] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
+                        <option value="social">Social use only</option>
+                        <option value="social-commute">Social and commuting</option>
+                        <option value="social-commute-business">Social commuting business</option>
                       </select>
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="carUseValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
