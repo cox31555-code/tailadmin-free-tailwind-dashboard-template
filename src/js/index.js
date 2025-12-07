@@ -66,8 +66,35 @@ Alpine.data('quotesCounter', function() {
     },
 
     async loadQuotesData() {
-      const quotesDataStr = localStorage.getItem('quotesData');
-      return quotesDataStr ? JSON.parse(quotesDataStr) : [];
+      try {
+        const response = await fetch('/quotes.html', { cache: 'no-cache' });
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const quotes = [];
+        const rows = doc.querySelectorAll('table tbody tr');
+
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll('td');
+          if (cells.length >= 4) {
+            const dateText = cells[0]?.textContent?.trim() || '';
+            if (dateText) {
+              quotes.push({
+                date: dateText,
+                vehicle: cells[1]?.textContent?.trim() || '',
+                amount: cells[2]?.textContent?.trim() || '',
+                email: cells[3]?.textContent?.trim() || '',
+              });
+            }
+          }
+        });
+
+        return quotes;
+      } catch (error) {
+        console.warn('Failed to fetch quotes table:', error);
+        return [];
+      }
     },
 
     parseDate(dateStr) {
