@@ -49,30 +49,42 @@
       calculateTotal() {
         let total = this.basePrice;
         this.selectedMultipliers = [];
+        let additionTotal = 0;
 
         const multiplierData = [
-          { name: 'Age Multiplier', value: this.ageValue },
-          { name: 'Vehicle Age', value: this.vehicleAgeValue },
-          { name: 'Engine Size', value: this.engineSizeValue },
-          { name: 'Vehicle Worth', value: this.vehicleWorthValue },
-          { name: 'No Claims Bonus', value: this.noClaimBonusValue },
-          { name: 'Mileage', value: this.mileageValue },
-          { name: 'Modified Car', value: this.modCarValue },
-          { name: 'Additional Driver Age', value: this.additionalAgeValue },
-          { name: 'Location', value: this.locationValue },
-          { name: 'Criminal Convictions', value: this.criminalValue },
-          { name: 'Cancelled Insurance', value: this.cancelledInsValue },
-          { name: 'Car Use', value: this.carUseValue },
-          { name: 'Employment', value: this.employmentValue }
+          { name: 'Age Multiplier', value: this.ageValue, isAddition: false },
+          { name: 'Vehicle Age', value: this.vehicleAgeValue, isAddition: false },
+          { name: 'Engine Size', value: this.engineSizeValue, isAddition: false },
+          { name: 'Vehicle Worth', value: this.vehicleWorthValue, isAddition: false },
+          { name: 'No Claims Bonus', value: this.noClaimBonusValue, isAddition: false },
+          { name: 'Mileage', value: this.mileageValue, isAddition: false },
+          { name: 'Modified Car', value: this.modCarValue, isAddition: false },
+          { name: 'Additional Driver Age', value: this.additionalAgeValue, isAddition: false },
+          { name: 'Location', value: this.locationValue, isAddition: false },
+          { name: 'Criminal Convictions', value: this.criminalValue, isAddition: false },
+          { name: 'Cancelled Insurance', value: this.cancelledInsValue, isAddition: false },
+          { name: 'Car Use', value: this.carUseValue, isAddition: true },
+          { name: 'Employment', value: this.employmentValue, isAddition: true }
         ];
 
         multiplierData.forEach(m => {
-          if (m.value && parseFloat(m.value) > 0) {
-            this.selectedMultipliers.push(m);
-            total *= parseFloat(m.value);
+          if (m.value && parseFloat(m.value) >= 0) {
+            const numValue = parseFloat(m.value);
+            if (m.isAddition) {
+              if (numValue > 0) {
+                this.selectedMultipliers.push(m);
+                additionTotal += numValue;
+              }
+            } else {
+              if (numValue > 0) {
+                this.selectedMultipliers.push(m);
+                total *= numValue;
+              }
+            }
           }
         });
 
+        total += additionTotal;
         return Math.round(total * 100) / 100;
       }
     }"
