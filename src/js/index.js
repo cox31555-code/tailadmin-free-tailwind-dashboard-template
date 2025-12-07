@@ -176,13 +176,11 @@ Alpine.data('quotesCounter', function() {
       const quotes = await this.loadQuotesData();
       this.updateCounts(quotes);
 
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'quotesData') {
-          const quotesDataStr = localStorage.getItem('quotesData');
-          const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
-          this.updateCounts(quotes);
-        }
-      });
+      // Periodically refresh quotes from the HTML table
+      setInterval(async () => {
+        const freshQuotes = await this.loadQuotesData();
+        this.updateCounts(freshQuotes);
+      }, 5000);
     },
 
     updateCounts(quotes) {
