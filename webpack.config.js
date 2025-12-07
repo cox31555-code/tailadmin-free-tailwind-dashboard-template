@@ -3,6 +3,7 @@ const fs = require("fs");
 const glob = require("glob");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const { BetaAnalyticsDataClient } = require("@google-analytics/data");
 const { GoogleAuth } = require("google-auth-library");
