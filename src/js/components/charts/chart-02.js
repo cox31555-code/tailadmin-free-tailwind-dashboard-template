@@ -60,21 +60,36 @@ const chart02 = async () => {
 
   const loadOrdersData = async () => {
     try {
-      const ordersDataStr = localStorage.getItem('ordersData');
-      if (ordersDataStr) {
-        return JSON.parse(ordersDataStr);
+      const pages = ['/annual.html', '/temporary.html', '/impound.html'];
+      const allOrders = [];
+
+      for (const page of pages) {
+        try {
+          const response = await fetch(page, { cache: 'no-cache' });
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+
+          const rows = doc.querySelectorAll('table tbody tr');
+          rows.forEach((row) => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 3) {
+              const dateText = cells[0]?.textContent?.trim() || '';
+              if (dateText) {
+                allOrders.push({
+                  date: dateText,
+                  type: page.includes('annual') ? 'annual' : page.includes('temporary') ? 'temporary' : 'impound',
+                });
+              }
+            }
+          });
+        } catch (e) {
+          // Continue if one page fails
+        }
       }
 
-      const response = await fetch('/data/orders.json', { cache: 'no-cache' });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const orders = await response.json();
-      localStorage.setItem('ordersData', JSON.stringify(orders));
-      console.log('Chart-02: Orders loaded successfully');
-      return orders;
+      return allOrders;
     } catch (error) {
-      console.warn('Chart-02: Failed to load orders data:', error);
       return [];
     }
   };
