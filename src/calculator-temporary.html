@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Temporary Calculator | TailAdmin - Tailwind CSS Admin Dashboard Template</title>
+  </head>
+
+  <body
+    x-data="{ page: 'calculator', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+    :class="{'dark bg-gray-900': darkMode === true}"
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <!-- Small Device Overlay Start -->
+        <include src="./partials/overlay.html" />
+        <!-- Small Device Overlay End -->
+
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+            <!-- Breadcrumb Start -->
+            <div x-data="{ pageName: `Temporary Calculator`}">
+              <include src="./partials/breadcrumb.html" />
+            </div>
+            <!-- Breadcrumb End -->
+
+            <!-- Back Button -->
+            <div class="mb-6">
+              <a href="calculator.html" class="inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Back to Calculator
+              </a>
+            </div>
+
+            <!-- Calculator Card -->
+            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
+              <div class="mb-8 flex items-center gap-4">
+                <div class="flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 dark:bg-purple-900/30">
+                  <svg class="w-7 h-7 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-1">
+                    Temporary Insurance Multiplier Calculator
+                  </h2>
+                  <p class="text-sm lg:text-base text-gray-600 dark:text-gray-400">
+                    Manage and view all insurance multipliers for temporary policies
+                  </p>
+                </div>
+              </div>
+
+              <!-- Calculator Grid -->
+              <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
+                <!-- Age Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Age Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">AM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vehicle Damage Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Vehicle Damage Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">VAM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Engine Size Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Engine Size Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">ESM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2-10a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vehicle Worth Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Vehicle Worth Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">VWM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 group-hover:bg-yellow-200 dark:group-hover:bg-yellow-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- No Claims Bonus Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">No Claims Bonus Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">NCBM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900/30 group-hover:bg-pink-200 dark:group-hover:bg-pink-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-pink-600 dark:text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-pink-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Mileage Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Mileage Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">MM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modified Car Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Modified Car Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">MCM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-100 dark:bg-cyan-900/30 group-hover:bg-cyan-200 dark:group-hover:bg-cyan-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Additional Driver Age Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Additional Driver Age Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">ADAM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/30 group-hover:bg-teal-200 dark:group-hover:bg-teal-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Location Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Location Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">LM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 group-hover:bg-orange-200 dark:group-hover:bg-orange-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Criminal Convictions Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Criminal Convictions Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">CCM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 group-hover:bg-red-200 dark:group-hover:bg-red-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 0v2m0-6v-2m0 0V7a2 2 0 012-2h2.586a1 1 0 00.707-.293l1.414-1.414A2 2 0 0121 2h.586a2 2 0 012 2v2a2 2 0 01-2 2h-2.586a1 1 0 00-.707.293l-1.414 1.414A2 2 0 0117 9h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2m-8 0v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cancelled Insurance Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Cancelled Insurance Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">CIM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-900/30 group-hover:bg-rose-200 dark:group-hover:bg-rose-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-rose-600 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-rose-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Car Use Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Car Use Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">CUM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-violet-100 dark:bg-violet-900/30 group-hover:bg-violet-200 dark:group-hover:bg-violet-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500" disabled />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Employment Multiplier -->
+                <div class="group rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5 dark:border-gray-700 dark:from-gray-800/50 dark:to-gray-900/30 hover:shadow-lg transition-all duration-300">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 class="text-base font-semibold text-gray-800 dark:text-white">Employment Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">OM</p>
+                    </div>
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-fuchsia-100 dark:bg-fuchsia-900/30 group-hover:bg-fuchsia-200 dark:group-hover:bg-fuchsia-900/50 transition-colors">
+                      <svg class="w-6 h-6 text-fuchsia-600 dark:text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.728 0-7.333-.889-10.451-2.490M5 13a3 3 0 116 0 3 3 0 01-6 0z"></path></svg>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Select Option</label>
+                      <div class="relative flex-1">
+                        <select class="w-full h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-fuchsia-500">
+                          <option value="">Choose an option</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 flex-1">Multiplier</label>
+                      <input type="text" placeholder="0.00" class="flex-1 h-10 px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-500" disabled />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+  </body>
+</html>
