@@ -83,7 +83,7 @@
                     type="number"
                     value="250"
                     placeholder="250"
-                    class="flex-1 h-12 px-4 py-2 text-lg rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="flex-1 h-12 px-4 py-2 text-lg rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
                 </div>
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Default base price for annual insurance policies</p>
@@ -106,7 +106,7 @@
                         '26-35': '1.2',
                         '36-50': '1',
                         '51+': '0.8'
-                      }[ageMultiplier] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[ageMultiplier] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="17-20">17-20 years</option>
                         <option value="21-25">21-25 years</option>
@@ -117,7 +117,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="ageValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="ageValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -137,7 +137,7 @@
                         '8-12': '1.3',
                         '13-19': '1.5',
                         '20+': '1.8'
-                      }[vehicleAge] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[vehicleAge] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="0-3">0-3 years</option>
                         <option value="4-7">4-7 years</option>
@@ -148,7 +148,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="vehicleAgeValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="vehicleAgeValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -169,7 +169,7 @@
                         '1.7l-2.0l': '1.5',
                         '2.1l-3.0l': '1.8',
                         '>3.0l': '2.2'
-                      }[engineSize] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[engineSize] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="<1.0l">&lt;1.0L</option>
                         <option value="1.0l-1.3">1.0L-1.3</option>
@@ -181,7 +181,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="engineSizeValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="engineSizeValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -202,7 +202,7 @@
                         '21-30k': '1.2',
                         '31-50k': '1.4',
                         '50k+': '1.7'
-                      }[vehicleWorth] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[vehicleWorth] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="0-5k">£0-5k</option>
                         <option value="6-10k">£6-10k</option>
@@ -214,7 +214,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="vehicleWorthValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="vehicleWorthValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -233,7 +233,7 @@
                         '1-2-years': '1.6',
                         '3-4-years': '1.3',
                         '5-plus-years': '1'
-                      }[noClaimBonus] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[noClaimBonus] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="0-years">0 years (no NCB or recent claims)</option>
                         <option value="1-2-years">1-2 years</option>
@@ -243,7 +243,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="noClaimBonusValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="noClaimBonusValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -262,7 +262,7 @@
                         '3-4k': '1.05',
                         '5-9k': '1.1',
                         '10k+': '1.15'
-                      }[mileage] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[mileage] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="1-2k">1-2k Miles</option>
                         <option value="3-4k">3-4k Miles</option>
@@ -272,7 +272,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="mileageValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="mileageValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -291,7 +291,7 @@
                         '1-mod': '1.05',
                         '2-mods': '1.1',
                         '3-mods+': '1.2'
-                      }[modCar] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[modCar] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="no-mods">No Mods</option>
                         <option value="1-mod">1 Mod</option>
@@ -301,7 +301,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="modCarValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="modCarValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -321,7 +321,7 @@
                         '22-30': '1.2',
                         '31-45': '1.1',
                         '46+': '0.9'
-                      }[additionalAge] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[additionalAge] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="no-driver">No Driver</option>
                         <option value="17-21">17-21</option>
@@ -332,7 +332,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="additionalAgeValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="additionalAgeValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -352,7 +352,7 @@
                         'gu-vy': '1',
                         'br-vc': '1.05',
                         'default': '1'
-                      }[location] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[location] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="hs-bt">HS-BT</option>
                         <option value="bn-wa">BN-WA</option>
@@ -363,7 +363,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="locationValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="locationValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -380,7 +380,7 @@
                       <select x-model="criminalConviction" @change="criminalValue = {
                         'yes': '1.1',
                         'no': '1'
-                      }[criminalConviction] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[criminalConviction] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
@@ -388,7 +388,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="criminalValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="criminalValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -405,7 +405,7 @@
                       <select x-model="cancelledIns" @change="cancelledInsValue = {
                         'yes': '1.1',
                         'no': '1'
-                      }[cancelledIns] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[cancelledIns] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
@@ -413,7 +413,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="cancelledInsValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="cancelledInsValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -431,7 +431,7 @@
                         'social': '0',
                         'social-commute': '20',
                         'social-commute-business': '50'
-                      }[carUse] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[carUse] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="social">Social use only</option>
                         <option value="social-commute">Social and commuting</option>
@@ -440,7 +440,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="carUseValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="carUseValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
@@ -460,7 +460,7 @@
                         'self-employed': '20',
                         'student': '30',
                         'retired': '0'
-                      }[employment] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      }[employment] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="unemployed">Unemployed</option>
                         <option value="employed">Employed</option>
@@ -471,7 +471,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="employmentValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="employmentValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
