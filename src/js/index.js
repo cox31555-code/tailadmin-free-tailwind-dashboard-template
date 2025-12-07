@@ -31,7 +31,23 @@ Alpine.data('quotesCounter', function() {
       return num.toLocaleString('en-US');
     },
 
-    getQuotesCount() {
+    async loadQuotesData() {
+      try {
+        const response = await fetch('./data/quotes.json');
+        if (!response.ok) {
+          throw new Error(`Failed to load quotes data: ${response.statusText}`);
+        }
+        const quotes = await response.json();
+        localStorage.setItem('quotesData', JSON.stringify(quotes));
+        return quotes;
+      } catch (error) {
+        console.warn('Failed to load quotes.json, trying localStorage:', error);
+        const quotesDataStr = localStorage.getItem('quotesData');
+        return quotesDataStr ? JSON.parse(quotesDataStr) : [];
+      }
+    },
+
+    getQuotesCount(quotes) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -45,9 +61,7 @@ Alpine.data('quotesCounter', function() {
       let last7DaysCount = 0;
       let past30DaysCount = 0;
 
-      // Get quotes data from localStorage
-      const quotesDataStr = localStorage.getItem('quotesData');
-      if (!quotesDataStr) {
+      if (!quotes || !Array.isArray(quotes)) {
         return {
           today: 0,
           last7Days: 0,
@@ -55,36 +69,30 @@ Alpine.data('quotesCounter', function() {
         };
       }
 
-      try {
-        const quotes = JSON.parse(quotesDataStr);
+      quotes.forEach((quote) => {
+        const dateText = quote.date;
 
-        quotes.forEach((quote) => {
-          const dateText = quote.date;
+        // Parse the date (format: "Nov 12, 2025")
+        try {
+          const quoteDate = new Date(dateText);
+          quoteDate.setHours(0, 0, 0, 0);
 
-          // Parse the date (format: "Nov 12, 2025")
-          try {
-            const quoteDate = new Date(dateText);
-            quoteDate.setHours(0, 0, 0, 0);
-
-            // Count based on date ranges
-            if (quoteDate.getTime() === today.getTime()) {
-              todayCount++;
-            }
-
-            if (quoteDate >= sevenDaysAgo && quoteDate <= today) {
-              last7DaysCount++;
-            }
-
-            if (quoteDate >= thirtyDaysAgo && quoteDate <= today) {
-              past30DaysCount++;
-            }
-          } catch (e) {
-            console.warn('Failed to parse date:', dateText);
+          // Count based on date ranges
+          if (quoteDate.getTime() === today.getTime()) {
+            todayCount++;
           }
-        });
-      } catch (e) {
-        console.warn('Failed to parse quotesData from localStorage:', e);
-      }
+
+          if (quoteDate >= sevenDaysAgo && quoteDate <= today) {
+            last7DaysCount++;
+          }
+
+          if (quoteDate >= thirtyDaysAgo && quoteDate <= today) {
+            past30DaysCount++;
+          }
+        } catch (e) {
+          console.warn('Failed to parse date:', dateText);
+        }
+      });
 
       return {
         today: todayCount,
