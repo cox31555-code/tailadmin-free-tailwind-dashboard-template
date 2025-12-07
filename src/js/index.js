@@ -402,10 +402,40 @@ Alpine.data('revenueOverview', function() {
     },
 
     async loadOrdersData() {
-      // Always read from localStorage (populated by table pages)
-      const ordersDataStr = localStorage.getItem('ordersData');
-      const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
-      return orders;
+      try {
+        const pages = ['/annual.html', '/temporary.html', '/impound.html'];
+        const allOrders = [];
+
+        for (const page of pages) {
+          try {
+            const response = await fetch(page, { cache: 'no-cache' });
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const rows = doc.querySelectorAll('table tbody tr');
+            rows.forEach((row) => {
+              const cells = row.querySelectorAll('td');
+              if (cells.length >= 3) {
+                const dateText = cells[0]?.textContent?.trim() || '';
+                const priceText = cells[2]?.textContent?.trim() || '£0.00';
+                if (dateText) {
+                  allOrders.push({
+                    date: dateText,
+                    price: priceText,
+                  });
+                }
+              }
+            });
+          } catch (e) {
+            // Continue if one page fails
+          }
+        }
+
+        return allOrders;
+      } catch (error) {
+        return [];
+      }
     },
 
     calculateRevenue() {
