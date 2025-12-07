@@ -132,7 +132,7 @@ const chart01 = async () => {
       },
       y: {
         formatter: function (val) {
-          return val;
+          return val + " orders";
         },
       },
     },
