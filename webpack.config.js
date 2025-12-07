@@ -590,6 +590,11 @@ module.exports = {
       filename: "style.css",
       chunkFilename: "style.css",
     }),
+    new CopyPlugin({
+      patterns: [
+        { from: "src/data", to: "data" },
+      ],
+    }),
   ],
   output: {
     filename: "bundle.js",
