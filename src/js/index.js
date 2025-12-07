@@ -158,17 +158,32 @@ Alpine.data('ordersCounter', function() {
 
     async loadOrdersData() {
       try {
-        const response = await fetch('./data/orders.json');
-        if (!response.ok) {
-          throw new Error(`Failed to load orders data: ${response.statusText}`);
+        const paths = ['/data/orders.json', './data/orders.json', 'data/orders.json'];
+        let response;
+        let lastError;
+
+        for (const path of paths) {
+          try {
+            response = await fetch(path, { cache: 'no-cache' });
+            if (response.ok) {
+              const orders = await response.json();
+              localStorage.setItem('ordersData', JSON.stringify(orders));
+              console.log('Orders loaded successfully from:', path, 'Count:', orders.length);
+              return orders;
+            }
+          } catch (e) {
+            lastError = e;
+            continue;
+          }
         }
-        const orders = await response.json();
-        localStorage.setItem('ordersData', JSON.stringify(orders));
-        return orders;
+
+        throw lastError || new Error('All fetch paths failed');
       } catch (error) {
-        console.warn('Failed to load orders.json, trying localStorage:', error);
+        console.warn('Failed to load orders.json, attempting localStorage fallback:', error);
         const ordersDataStr = localStorage.getItem('ordersData');
-        return ordersDataStr ? JSON.parse(ordersDataStr) : [];
+        const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
+        console.log('Using cached orders from localStorage. Count:', orders.length);
+        return orders;
       }
     },
 
@@ -197,12 +212,10 @@ Alpine.data('ordersCounter', function() {
       orders.forEach((order) => {
         const dateText = order.date;
 
-        // Parse the date (format: "Nov 10, 2025")
         try {
           const orderDate = new Date(dateText);
           orderDate.setHours(0, 0, 0, 0);
 
-          // Count based on date ranges
           if (orderDate.getTime() === today.getTime()) {
             todayCount++;
           }
@@ -227,23 +240,22 @@ Alpine.data('ordersCounter', function() {
     },
 
     async init() {
-      // Load orders data from JSON file
       const orders = await this.loadOrdersData();
       this.updateCounts(orders);
 
-      // Watch for localStorage changes (from other tabs or the order pages)
-      window.addEventListener('storage', () => {
-        const ordersDataStr = localStorage.getItem('ordersData');
-        const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
-        this.updateCounts(orders);
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'ordersData') {
+          const ordersDataStr = localStorage.getItem('ordersData');
+          const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
+          this.updateCounts(orders);
+        }
       });
 
-      // Also check periodically in case data is updated
       setInterval(() => {
         const ordersDataStr = localStorage.getItem('ordersData');
         const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
         this.updateCounts(orders);
-      }, 2000);
+      }, 3000);
     },
 
     updateCounts(orders) {
