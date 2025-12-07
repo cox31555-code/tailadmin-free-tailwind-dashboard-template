@@ -66,11 +66,8 @@ Alpine.data('quotesCounter', function() {
     },
 
     async loadQuotesData() {
-      // Always read from localStorage (populated by quotes.html table)
       const quotesDataStr = localStorage.getItem('quotesData');
-      const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
-      console.log('QuotesCounter: Loaded quotes from localStorage, count:', quotes.length);
-      return quotes;
+      return quotesDataStr ? JSON.parse(quotesDataStr) : [];
     },
 
     parseDate(dateStr) {
