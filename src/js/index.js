@@ -643,6 +643,8 @@ Alpine.data('recentItems', function() {
               if (cells.length >= 2) {
                 const dateElement = cells[0]?.querySelector('p:first-child');
                 const dateText = dateElement?.textContent?.trim() || '';
+                const timeElement = cells[0]?.querySelector('p:last-child');
+                const timeText = timeElement?.textContent?.trim() || '';
 
                 if (dateText) {
                   const priceElement = cells[1]?.querySelector('p');
@@ -657,7 +659,7 @@ Alpine.data('recentItems', function() {
                   allOrders.push({
                     type: page.type,
                     date: dateText,
-                    time: '',
+                    time: timeText,
                     customer: 'Policy Holder',
                     vehicle: vehicleText,
                     amount: priceText,
