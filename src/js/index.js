@@ -66,51 +66,11 @@ Alpine.data('quotesCounter', function() {
     },
 
     async loadQuotesData() {
-      try {
-        // First, check if data is already in localStorage (from visiting quotes.html)
-        const cachedData = localStorage.getItem('quotesData');
-        if (cachedData) {
-          const quotes = JSON.parse(cachedData);
-          console.log('QuotesCounter: Found cached data in localStorage, count:', quotes.length);
-          return quotes;
-        }
-
-        // If not in localStorage, fetch the quotes.html page and extract table data
-        console.log('QuotesCounter: Fetching quotes table data from quotes.html');
-        const response = await fetch('/quotes.html', { cache: 'no-cache' });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-
-        // Extract quote data from table rows
-        const quotes = [];
-        const rows = doc.querySelectorAll('table tbody tr');
-
-        rows.forEach((row) => {
-          const cells = row.querySelectorAll('td');
-          if (cells.length >= 4) {
-            const quote = {
-              date: cells[0]?.textContent?.trim() || '',
-              vehicle: cells[1]?.textContent?.trim() || '',
-              amount: cells[2]?.textContent?.trim() || '',
-              email: cells[3]?.textContent?.trim() || '',
-              type: cells[4]?.textContent?.trim() || '',
-            };
-            if (quote.date) quotes.push(quote);
-          }
-        });
-
-        console.log('QuotesCounter: Extracted quotes from HTML, count:', quotes.length);
-        localStorage.setItem('quotesData', JSON.stringify(quotes));
-        return quotes;
-      } catch (error) {
-        console.warn('QuotesCounter: Failed to load quotes:', error);
-        return [];
-      }
+      // Always read from localStorage (populated by quotes.html table)
+      const quotesDataStr = localStorage.getItem('quotesData');
+      const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
+      console.log('QuotesCounter: Loaded quotes from localStorage, count:', quotes.length);
+      return quotes;
     },
 
     parseDate(dateStr) {
