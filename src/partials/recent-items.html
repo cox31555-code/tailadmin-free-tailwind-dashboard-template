@@ -63,7 +63,7 @@
             </tr>
           </template>
 
-          <template x-for="item in items" :key="item">
+          <template x-for="(item, index) in items" :key="index">
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
               <td class="px-5 py-4 sm:px-6">
                 <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90" x-text="item.customer">
