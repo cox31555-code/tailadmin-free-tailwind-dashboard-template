@@ -203,22 +203,11 @@ Alpine.data('ordersCounter', function() {
     },
 
     async loadOrdersData() {
-      try {
-        const response = await fetch('/data/orders.json', { cache: 'no-cache' });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const orders = await response.json();
-        localStorage.setItem('ordersData', JSON.stringify(orders));
-        console.log('Orders loaded successfully. Count:', orders.length);
-        return orders;
-      } catch (error) {
-        console.warn('Failed to load orders.json:', error);
-        const ordersDataStr = localStorage.getItem('ordersData');
-        const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
-        console.log('Using cached orders from localStorage. Count:', orders.length);
-        return orders;
-      }
+      // Always read from localStorage (populated by annual.html, temporary.html, impound.html tables)
+      const ordersDataStr = localStorage.getItem('ordersData');
+      const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
+      console.log('OrdersCounter: Loaded orders from localStorage, count:', orders.length);
+      return orders;
     },
 
     parseDate(dateStr) {
