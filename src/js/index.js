@@ -405,11 +405,27 @@ if (dropzoneArea.length) {
 }
 
 // Document Loaded
-document.addEventListener("DOMContentLoaded", () => {
-  chart01();
-  chart02();
-  chart03();
-  map01();
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await chart01();
+  } catch (error) {
+    console.error('Error initializing chart01:', error);
+  }
+  try {
+    await chart02();
+  } catch (error) {
+    console.error('Error initializing chart02:', error);
+  }
+  try {
+    chart03();
+  } catch (error) {
+    console.error('Error initializing chart03:', error);
+  }
+  try {
+    map01();
+  } catch (error) {
+    console.error('Error initializing map01:', error);
+  }
 });
 
 // Get the current year
