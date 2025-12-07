@@ -50,6 +50,33 @@ Alpine.data('quotesCounter', function() {
       }
     },
 
+    parseDate(dateStr) {
+      if (!dateStr) return null;
+
+      // Handle "Dec 07, 2024" format
+      try {
+        const parts = dateStr.trim().split(/\s+/);
+        if (parts.length === 3) {
+          const monthStr = parts[0];
+          const dayStr = parts[1].replace(',', '');
+          const yearStr = parts[2];
+
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const monthIndex = months.indexOf(monthStr);
+
+          if (monthIndex !== -1 && dayStr && yearStr) {
+            const date = new Date(yearStr, monthIndex, dayStr);
+            date.setHours(0, 0, 0, 0);
+            return date;
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to parse date:', dateStr, e);
+      }
+
+      return null;
+    },
+
     getQuotesCount(quotes) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -73,25 +100,23 @@ Alpine.data('quotesCounter', function() {
       }
 
       quotes.forEach((quote) => {
-        const dateText = quote.date;
+        const quoteDate = this.parseDate(quote.date);
 
-        try {
-          const quoteDate = new Date(dateText);
-          quoteDate.setHours(0, 0, 0, 0);
+        if (quoteDate === null) {
+          console.warn('Could not parse quote date:', quote.date);
+          return;
+        }
 
-          if (quoteDate.getTime() === today.getTime()) {
-            todayCount++;
-          }
+        if (quoteDate.getTime() === today.getTime()) {
+          todayCount++;
+        }
 
-          if (quoteDate >= sevenDaysAgo && quoteDate <= today) {
-            last7DaysCount++;
-          }
+        if (quoteDate >= sevenDaysAgo && quoteDate <= today) {
+          last7DaysCount++;
+        }
 
-          if (quoteDate >= thirtyDaysAgo && quoteDate <= today) {
-            past30DaysCount++;
-          }
-        } catch (e) {
-          console.warn('Failed to parse date:', dateText);
+        if (quoteDate >= thirtyDaysAgo && quoteDate <= today) {
+          past30DaysCount++;
         }
       });
 
