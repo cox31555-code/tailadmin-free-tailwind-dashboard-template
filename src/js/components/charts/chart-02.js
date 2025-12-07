@@ -1,7 +1,7 @@
 import ApexCharts from "apexcharts";
 
 // ===== chartTwo - Bar Chart for Product Types
-const chart02 = () => {
+const chart02 = async () => {
   // Generate last 7 days labels (simple day names only)
   const getLast7Days = () => {
     const days = [];
@@ -17,21 +17,97 @@ const chart02 = () => {
     return days;
   };
 
-  const chartTwoOptions = {
-    series: [
+  // Get last 7 days with full dates
+  const getLast7DaysWithDates = () => {
+    const dates = [];
+    const today = new Date();
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      date.setHours(0, 0, 0, 0);
+      dates.push(date);
+    }
+
+    return dates;
+  };
+
+  // Load orders data
+  const loadOrdersData = async () => {
+    try {
+      const ordersDataStr = localStorage.getItem('ordersData');
+      if (ordersDataStr) {
+        return JSON.parse(ordersDataStr);
+      }
+
+      const response = await fetch('./data/orders.json');
+      const orders = await response.json();
+      localStorage.setItem('ordersData', JSON.stringify(orders));
+      return orders;
+    } catch (error) {
+      console.warn('Failed to load orders data:', error);
+      return [];
+    }
+  };
+
+  // Count orders by type for each day in the past 7 days
+  const getOrdersDataBySeries = async () => {
+    const orders = await loadOrdersData();
+    const last7Days = getLast7DaysWithDates();
+
+    const annualCounts = [];
+    const temporaryCounts = [];
+    const impoundCounts = [];
+
+    last7Days.forEach((dayDate) => {
+      let annualCount = 0;
+      let temporaryCount = 0;
+      let impoundCount = 0;
+
+      orders.forEach((order) => {
+        try {
+          const orderDate = new Date(order.date);
+          orderDate.setHours(0, 0, 0, 0);
+
+          if (orderDate.getTime() === dayDate.getTime()) {
+            if (order.type === 'annual') {
+              annualCount++;
+            } else if (order.type === 'temporary') {
+              temporaryCount++;
+            } else if (order.type === 'impound') {
+              impoundCount++;
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to parse order date:', order.date);
+        }
+      });
+
+      annualCounts.push(annualCount);
+      temporaryCounts.push(temporaryCount);
+      impoundCounts.push(impoundCount);
+    });
+
+    return [
       {
         name: "Annual",
-        data: [32, 38, 41, 39, 37, 35, 42],
+        data: annualCounts,
       },
       {
         name: "Temporary",
-        data: [18, 22, 19, 25, 21, 19, 28],
+        data: temporaryCounts,
       },
       {
         name: "Impound",
-        data: [12, 15, 14, 17, 16, 14, 19],
+        data: impoundCounts,
       },
-    ],
+    ];
+  };
+
+  const series = await getOrdersDataBySeries();
+
+  const chartTwoOptions = {
+    series: series,
     colors: ["#465fff", "#10B981", "#F59E0B"],
     chart: {
       fontFamily: "Outfit, sans-serif",
