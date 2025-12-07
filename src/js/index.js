@@ -327,14 +327,22 @@ Alpine.data('ordersCounter', function() {
     },
 
     async init() {
-      const orders = await this.loadOrdersData();
-      this.updateCounts(orders);
+      try {
+        const orders = await this.loadOrdersData();
+        this.updateCounts(orders);
 
-      // Periodically refresh orders from the HTML tables
-      setInterval(async () => {
-        const freshOrders = await this.loadOrdersData();
-        this.updateCounts(freshOrders);
-      }, 5000);
+        // Periodically refresh orders from the HTML tables
+        setInterval(async () => {
+          try {
+            const freshOrders = await this.loadOrdersData();
+            this.updateCounts(freshOrders);
+          } catch (e) {
+            // Silently fail on refresh
+          }
+        }, 5000);
+      } catch (e) {
+        console.warn('OrdersCounter init error:', e);
+      }
     },
 
     updateCounts(orders) {
