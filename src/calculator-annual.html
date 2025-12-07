@@ -187,7 +187,7 @@
                 </div>
 
                 <!-- Vehicle Worth Multiplier -->
-                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800/50 hover:shadow-md transition-shadow duration-300">
+                <div x-data="{ vehicleWorth: '', vehicleWorthValue: '' }" class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800/50 hover:shadow-md transition-shadow duration-300">
                   <div class="mb-4">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Vehicle Worth Multiplier</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">VWM</p>
@@ -195,13 +195,26 @@
                   <div class="space-y-3">
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
-                      <select class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      <select x-model="vehicleWorth" @change="vehicleWorthValue = {
+                        '0-5k': '1.2',
+                        '6-10k': '1.1',
+                        '11-20k': '1',
+                        '21-30k': '1.2',
+                        '31-50k': '1.4',
+                        '50k+': '1.7'
+                      }[vehicleWorth] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
+                        <option value="0-5k">£0-5k</option>
+                        <option value="6-10k">£6-10k</option>
+                        <option value="11-20k">£11-20k</option>
+                        <option value="21-30k">£21-30k</option>
+                        <option value="31-50k">£31-50k</option>
+                        <option value="50k+">£50k+</option>
                       </select>
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="vehicleWorthValue" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
                     </div>
                   </div>
                 </div>
