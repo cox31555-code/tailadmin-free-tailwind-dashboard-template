@@ -73,8 +73,9 @@ const chart02 = async () => {
           const rows = doc.querySelectorAll('table tbody tr');
           rows.forEach((row) => {
             const cells = row.querySelectorAll('td');
-            if (cells.length >= 3) {
-              const dateText = cells[0]?.textContent?.trim() || '';
+            if (cells.length >= 2) {
+              const dateElement = cells[0]?.querySelector('p:first-child');
+              const dateText = dateElement?.textContent?.trim() || '';
               if (dateText) {
                 allOrders.push({
                   date: dateText,
