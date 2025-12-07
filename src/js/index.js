@@ -200,11 +200,8 @@ Alpine.data('ordersCounter', function() {
     },
 
     async loadOrdersData() {
-      // Always read from localStorage (populated by annual.html, temporary.html, impound.html tables)
       const ordersDataStr = localStorage.getItem('ordersData');
-      const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
-      console.log('OrdersCounter: Loaded orders from localStorage, count:', orders.length);
-      return orders;
+      return ordersDataStr ? JSON.parse(ordersDataStr) : [];
     },
 
     parseDate(dateStr) {
