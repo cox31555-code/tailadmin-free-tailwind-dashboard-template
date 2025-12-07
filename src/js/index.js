@@ -130,6 +130,118 @@ Alpine.data('quotesCounter', function() {
   };
 });
 
+/**
+ * Alpine.js component for orders counter (combines annual, temporary, and impound)
+ */
+Alpine.data('ordersCounter', function() {
+  return {
+    todayCount: 0,
+    last7DaysCount: 0,
+    past30DaysCount: 0,
+
+    formatNumber(num) {
+      return num.toLocaleString('en-US');
+    },
+
+    async loadOrdersData() {
+      try {
+        const response = await fetch('./data/orders.json');
+        if (!response.ok) {
+          throw new Error(`Failed to load orders data: ${response.statusText}`);
+        }
+        const orders = await response.json();
+        localStorage.setItem('ordersData', JSON.stringify(orders));
+        return orders;
+      } catch (error) {
+        console.warn('Failed to load orders.json, trying localStorage:', error);
+        const ordersDataStr = localStorage.getItem('ordersData');
+        return ordersDataStr ? JSON.parse(ordersDataStr) : [];
+      }
+    },
+
+    getOrdersCount(orders) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const sevenDaysAgo = new Date(today);
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+
+      const thirtyDaysAgo = new Date(today);
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+
+      let todayCount = 0;
+      let last7DaysCount = 0;
+      let past30DaysCount = 0;
+
+      if (!orders || !Array.isArray(orders)) {
+        return {
+          today: 0,
+          last7Days: 0,
+          past30Days: 0,
+        };
+      }
+
+      orders.forEach((order) => {
+        const dateText = order.date;
+
+        // Parse the date (format: "Nov 10, 2025")
+        try {
+          const orderDate = new Date(dateText);
+          orderDate.setHours(0, 0, 0, 0);
+
+          // Count based on date ranges
+          if (orderDate.getTime() === today.getTime()) {
+            todayCount++;
+          }
+
+          if (orderDate >= sevenDaysAgo && orderDate <= today) {
+            last7DaysCount++;
+          }
+
+          if (orderDate >= thirtyDaysAgo && orderDate <= today) {
+            past30DaysCount++;
+          }
+        } catch (e) {
+          console.warn('Failed to parse date:', dateText);
+        }
+      });
+
+      return {
+        today: todayCount,
+        last7Days: last7DaysCount,
+        past30Days: past30DaysCount,
+      };
+    },
+
+    async init() {
+      // Load orders data from JSON file
+      const orders = await this.loadOrdersData();
+      this.updateCounts(orders);
+
+      // Watch for localStorage changes (from other tabs or the order pages)
+      window.addEventListener('storage', () => {
+        const ordersDataStr = localStorage.getItem('ordersData');
+        const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
+        this.updateCounts(orders);
+      });
+
+      // Also check periodically in case data is updated
+      setInterval(() => {
+        const ordersDataStr = localStorage.getItem('ordersData');
+        const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
+        this.updateCounts(orders);
+      }, 2000);
+    },
+
+    updateCounts(orders) {
+      const counts = this.getOrdersCount(orders);
+      this.todayCount = counts.today;
+      this.last7DaysCount = counts.last7Days;
+      this.past30DaysCount = counts.past30Days;
+    }
+  };
+});
+
 Alpine.start();
 
 // Init flatpickr
