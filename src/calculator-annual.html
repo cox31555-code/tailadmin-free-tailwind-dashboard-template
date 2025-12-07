@@ -11,7 +11,45 @@
   </head>
 
   <body
-    x-data="{ page: 'calculator', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-data="{
+      page: 'calculator',
+      'loaded': true,
+      'darkMode': false,
+      'stickyMenu': false,
+      'sidebarToggle': false,
+      'scrollTop': false,
+      basePrice: 250,
+      selectedMultipliers: [],
+      calculateTotal() {
+        let total = this.basePrice;
+        this.selectedMultipliers = [];
+
+        const multiplierData = [
+          { name: 'Age Multiplier', value: this.$refs.ageValue?.value },
+          { name: 'Vehicle Age', value: this.$refs.vehicleAgeValue?.value },
+          { name: 'Engine Size', value: this.$refs.engineSizeValue?.value },
+          { name: 'Vehicle Worth', value: this.$refs.vehicleWorthValue?.value },
+          { name: 'No Claims Bonus', value: this.$refs.noClaimBonusValue?.value },
+          { name: 'Mileage', value: this.$refs.mileageValue?.value },
+          { name: 'Modified Car', value: this.$refs.modCarValue?.value },
+          { name: 'Additional Driver Age', value: this.$refs.additionalAgeValue?.value },
+          { name: 'Location', value: this.$refs.locationValue?.value },
+          { name: 'Criminal Convictions', value: this.$refs.criminalValue?.value },
+          { name: 'Cancelled Insurance', value: this.$refs.cancelledInsValue?.value },
+          { name: 'Car Use', value: this.$refs.carUseValue?.value },
+          { name: 'Employment', value: this.$refs.employmentValue?.value }
+        ];
+
+        multiplierData.forEach(m => {
+          if (m.value && parseFloat(m.value) > 0) {
+            this.selectedMultipliers.push(m);
+            total *= parseFloat(m.value);
+          }
+        });
+
+        return Math.round(total * 100) / 100;
+      }
+    }"
     x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
