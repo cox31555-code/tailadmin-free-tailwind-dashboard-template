@@ -242,6 +242,99 @@ Alpine.data('ordersCounter', function() {
   };
 });
 
+/**
+ * Alpine.js component for revenue overview
+ */
+Alpine.data('revenueOverview', function() {
+  return {
+    totalRevenue: 0,
+    dailyRevenue: 0,
+    weeklyRevenue: 0,
+
+    formatCurrency(amount) {
+      return '£' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+
+    parsePrice(priceStr) {
+      // Remove £ symbol and convert to number
+      return parseFloat(priceStr.replace('£', '').replace('$', ''));
+    },
+
+    async loadOrdersData() {
+      try {
+        const ordersDataStr = localStorage.getItem('ordersData');
+        if (ordersDataStr) {
+          return JSON.parse(ordersDataStr);
+        }
+
+        const response = await fetch('./data/orders.json');
+        const orders = await response.json();
+        localStorage.setItem('ordersData', JSON.stringify(orders));
+        return orders;
+      } catch (error) {
+        console.warn('Failed to load orders data:', error);
+        return [];
+      }
+    },
+
+    calculateRevenue() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const sevenDaysAgo = new Date(today);
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+
+      let total = 0;
+      let daily = 0;
+      let weekly = 0;
+
+      // Get orders from localStorage or use empty array
+      const ordersDataStr = localStorage.getItem('ordersData');
+      const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
+
+      orders.forEach((order) => {
+        try {
+          const price = this.parsePrice(order.price);
+          total += price;
+
+          const orderDate = new Date(order.date);
+          orderDate.setHours(0, 0, 0, 0);
+
+          if (orderDate.getTime() === today.getTime()) {
+            daily += price;
+          }
+
+          if (orderDate >= sevenDaysAgo && orderDate <= today) {
+            weekly += price;
+          }
+        } catch (e) {
+          console.warn('Failed to parse order price:', order.price);
+        }
+      });
+
+      this.totalRevenue = total;
+      this.dailyRevenue = daily;
+      this.weeklyRevenue = weekly;
+    },
+
+    async init() {
+      // Load orders data and calculate revenue
+      await this.loadOrdersData();
+      this.calculateRevenue();
+
+      // Watch for localStorage changes
+      window.addEventListener('storage', () => {
+        this.calculateRevenue();
+      });
+
+      // Also check periodically in case data is updated
+      setInterval(() => {
+        this.calculateRevenue();
+      }, 2000);
+    }
+  };
+});
+
 Alpine.start();
 
 // Init flatpickr
