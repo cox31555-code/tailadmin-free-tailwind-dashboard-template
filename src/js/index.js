@@ -187,6 +187,33 @@ Alpine.data('ordersCounter', function() {
       }
     },
 
+    parseDate(dateStr) {
+      if (!dateStr) return null;
+
+      // Handle "Dec 07, 2024" format
+      try {
+        const parts = dateStr.trim().split(/\s+/);
+        if (parts.length === 3) {
+          const monthStr = parts[0];
+          const dayStr = parts[1].replace(',', '');
+          const yearStr = parts[2];
+
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const monthIndex = months.indexOf(monthStr);
+
+          if (monthIndex !== -1 && dayStr && yearStr) {
+            const date = new Date(yearStr, monthIndex, dayStr);
+            date.setHours(0, 0, 0, 0);
+            return date;
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to parse date:', dateStr, e);
+      }
+
+      return null;
+    },
+
     getOrdersCount(orders) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -210,25 +237,23 @@ Alpine.data('ordersCounter', function() {
       }
 
       orders.forEach((order) => {
-        const dateText = order.date;
+        const orderDate = this.parseDate(order.date);
 
-        try {
-          const orderDate = new Date(dateText);
-          orderDate.setHours(0, 0, 0, 0);
+        if (orderDate === null) {
+          console.warn('Could not parse order date:', order.date);
+          return;
+        }
 
-          if (orderDate.getTime() === today.getTime()) {
-            todayCount++;
-          }
+        if (orderDate.getTime() === today.getTime()) {
+          todayCount++;
+        }
 
-          if (orderDate >= sevenDaysAgo && orderDate <= today) {
-            last7DaysCount++;
-          }
+        if (orderDate >= sevenDaysAgo && orderDate <= today) {
+          last7DaysCount++;
+        }
 
-          if (orderDate >= thirtyDaysAgo && orderDate <= today) {
-            past30DaysCount++;
-          }
-        } catch (e) {
-          console.warn('Failed to parse date:', dateText);
+        if (orderDate >= thirtyDaysAgo && orderDate <= today) {
+          past30DaysCount++;
         }
       });
 
