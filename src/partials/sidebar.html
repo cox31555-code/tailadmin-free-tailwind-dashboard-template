@@ -709,7 +709,7 @@
               href="#"
               @click.prevent="selected = (selected === 'Payments' ? '':'Payments')"
               class="menu-item group"
-              :class="(selected === 'Payments') || (page === 'processor' || page === 'basePricing') ? 'menu-item-active' : 'menu-item-inactive'"
+              :class="(selected === 'Payments') || (page === 'processor' || page === 'basePricing' || page === 'calculator') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
                 :class="(selected === 'Payments') || (page === 'processor' || page === 'basePricing') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
