@@ -25,7 +25,7 @@
       if (dateCell) {
         const dateText = dateCell.textContent.trim();
         allOrders.push({
-          type: pageType,
+          type: 'annual',
           date: dateText,
           price: priceCell ? priceCell.textContent.trim() : '',
           email: emailCell ? emailCell.textContent.trim() : '',
