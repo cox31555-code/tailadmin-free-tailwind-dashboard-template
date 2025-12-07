@@ -222,14 +222,19 @@ Alpine.data('ordersCounter', function() {
             const rows = doc.querySelectorAll('table tbody tr');
             rows.forEach((row) => {
               const cells = row.querySelectorAll('td');
-              if (cells.length >= 3) {
-                const dateText = cells[0]?.textContent?.trim() || '';
+              if (cells.length >= 2) {
+                // Get date from first p tag in first cell
+                const dateElement = cells[0]?.querySelector('p:first-child');
+                const dateText = dateElement?.textContent?.trim() || '';
+                // Price is in second cell
+                const priceElement = cells[1]?.querySelector('p');
+                const priceText = priceElement?.textContent?.trim() || '£0.00';
+
                 if (dateText) {
                   allOrders.push({
                     date: dateText,
                     type: page.includes('annual') ? 'annual' : page.includes('temporary') ? 'temporary' : 'impound',
-                    price: cells[2]?.textContent?.trim() || '£0.00',
-                    vehicle: cells[1]?.textContent?.trim() || '',
+                    price: priceText,
                   });
                 }
               }
