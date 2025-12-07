@@ -8,13 +8,8 @@
       allOrders = JSON.parse(ordersDataStr);
     }
 
-    // Get the page type (annual, temporary, impound)
-    const pageType = document.body.getAttribute('x-data').includes("'annual'") ? 'annual' :
-                     document.body.getAttribute('x-data').includes("'temporary'") ? 'temporary' :
-                     document.body.getAttribute('x-data').includes("'impound'") ? 'impound' : 'annual';
-
-    // Filter out old data from this page type
-    allOrders = allOrders.filter(order => order.type !== pageType);
+    // Filter out old annual data
+    allOrders = allOrders.filter(order => order.type !== 'annual');
 
     // Add new orders from this page
     const tableRows = document.querySelectorAll('table tbody tr');
