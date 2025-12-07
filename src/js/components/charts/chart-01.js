@@ -1,12 +1,58 @@
 import ApexCharts from "apexcharts";
 
 // ===== chartOne
-const chart01 = () => {
+const chart01 = async () => {
+  // Load orders data
+  const loadOrdersData = async () => {
+    try {
+      const ordersDataStr = localStorage.getItem('ordersData');
+      if (ordersDataStr) {
+        return JSON.parse(ordersDataStr);
+      }
+
+      const response = await fetch('./data/orders.json');
+      const orders = await response.json();
+      localStorage.setItem('ordersData', JSON.stringify(orders));
+      return orders;
+    } catch (error) {
+      console.warn('Failed to load orders data:', error);
+      return [];
+    }
+  };
+
+  // Get current year
+  const currentYear = new Date().getFullYear();
+
+  // Count orders by month
+  const getMonthlyOrderCounts = async () => {
+    const orders = await loadOrdersData();
+    const monthlyCounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 12 months
+
+    orders.forEach((order) => {
+      try {
+        const orderDate = new Date(order.date);
+        const orderYear = orderDate.getFullYear();
+        const orderMonth = orderDate.getMonth();
+
+        // Count orders from current year
+        if (orderYear === currentYear) {
+          monthlyCounts[orderMonth]++;
+        }
+      } catch (e) {
+        console.warn('Failed to parse order date:', order.date);
+      }
+    });
+
+    return monthlyCounts;
+  };
+
+  const monthlySalesData = await getMonthlyOrderCounts();
+
   const chartOneOptions = {
     series: [
       {
-        name: "Sales",
-        data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
+        name: "Orders",
+        data: monthlySalesData,
       },
     ],
     colors: ["#465fff"],
