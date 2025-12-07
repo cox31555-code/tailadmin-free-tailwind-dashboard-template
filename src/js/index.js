@@ -96,25 +96,15 @@ Alpine.data('quotesCounter', function() {
     init() {
       this.updateCounts();
 
-      // Watch for table changes
-      const observer = new MutationObserver(() => {
+      // Watch for localStorage changes (from other tabs or the quotes page)
+      window.addEventListener('storage', () => {
         this.updateCounts();
       });
 
-      // Start observing the table for changes
-      const tableContainer = document.querySelector('table');
-      if (tableContainer) {
-        observer.observe(tableContainer, {
-          childList: true,
-          subtree: true,
-          characterData: true,
-        });
-      }
-
-      // Also check periodically in case table is loaded after this component initializes
-      setTimeout(() => {
+      // Also check periodically in case data is updated
+      setInterval(() => {
         this.updateCounts();
-      }, 1000);
+      }, 2000);
     },
 
     updateCounts() {
