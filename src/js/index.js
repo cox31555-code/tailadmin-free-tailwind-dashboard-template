@@ -486,11 +486,19 @@ Alpine.data('revenueOverview', function() {
     },
 
     async init() {
-      await this.calculateRevenue();
-
-      setInterval(async () => {
+      try {
         await this.calculateRevenue();
-      }, 5000);
+
+        setInterval(async () => {
+          try {
+            await this.calculateRevenue();
+          } catch (e) {
+            // Silently fail on refresh
+          }
+        }, 5000);
+      } catch (e) {
+        console.warn('RevenueOverview init error:', e);
+      }
     }
   };
 });
