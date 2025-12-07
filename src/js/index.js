@@ -332,19 +332,11 @@ Alpine.data('ordersCounter', function() {
       const orders = await this.loadOrdersData();
       this.updateCounts(orders);
 
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'ordersData') {
-          const ordersDataStr = localStorage.getItem('ordersData');
-          const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
-          this.updateCounts(orders);
-        }
-      });
-
-      setInterval(() => {
-        const ordersDataStr = localStorage.getItem('ordersData');
-        const orders = ordersDataStr ? JSON.parse(ordersDataStr) : [];
-        this.updateCounts(orders);
-      }, 3000);
+      // Periodically refresh orders from the HTML tables
+      setInterval(async () => {
+        const freshOrders = await this.loadOrdersData();
+        this.updateCounts(freshOrders);
+      }, 5000);
     },
 
     updateCounts(orders) {
