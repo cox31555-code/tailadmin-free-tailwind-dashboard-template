@@ -277,10 +277,10 @@ Alpine.data('ordersCounter', function() {
       }
 
       orders.forEach((order) => {
-        const orderDate = this.parseDate(order.date);
+        const orderDate = parseDate(order.date);
 
         if (orderDate === null) {
-          console.warn('Could not parse order date:', order.date);
+          console.warn('OrdersCounter: Could not parse order date:', order.date);
           return;
         }
 
