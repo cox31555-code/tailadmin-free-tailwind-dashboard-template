@@ -32,7 +32,6 @@ const chart02 = async () => {
     return dates;
   };
 
-  // Load orders data
   const loadOrdersData = async () => {
     try {
       const ordersDataStr = localStorage.getItem('ordersData');
@@ -40,12 +39,28 @@ const chart02 = async () => {
         return JSON.parse(ordersDataStr);
       }
 
-      const response = await fetch('./data/orders.json');
-      const orders = await response.json();
-      localStorage.setItem('ordersData', JSON.stringify(orders));
-      return orders;
+      const paths = ['/data/orders.json', './data/orders.json', 'data/orders.json'];
+      let response;
+      let lastError;
+
+      for (const path of paths) {
+        try {
+          response = await fetch(path, { cache: 'no-cache' });
+          if (response.ok) {
+            const orders = await response.json();
+            localStorage.setItem('ordersData', JSON.stringify(orders));
+            console.log('Chart-02: Orders loaded from', path);
+            return orders;
+          }
+        } catch (e) {
+          lastError = e;
+          continue;
+        }
+      }
+
+      throw lastError || new Error('All fetch paths failed');
     } catch (error) {
-      console.warn('Failed to load orders data:', error);
+      console.warn('Chart-02: Failed to load orders data:', error);
       return [];
     }
   };
