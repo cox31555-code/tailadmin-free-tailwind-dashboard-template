@@ -214,8 +214,42 @@ Alpine.data('ordersCounter', function() {
     },
 
     async loadOrdersData() {
-      const ordersDataStr = localStorage.getItem('ordersData');
-      return ordersDataStr ? JSON.parse(ordersDataStr) : [];
+      try {
+        const pages = ['/annual.html', '/temporary.html', '/impound.html'];
+        const allOrders = [];
+
+        for (const page of pages) {
+          try {
+            const response = await fetch(page, { cache: 'no-cache' });
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const rows = doc.querySelectorAll('table tbody tr');
+            rows.forEach((row) => {
+              const cells = row.querySelectorAll('td');
+              if (cells.length >= 3) {
+                const dateText = cells[0]?.textContent?.trim() || '';
+                if (dateText) {
+                  allOrders.push({
+                    date: dateText,
+                    type: page.includes('annual') ? 'annual' : page.includes('temporary') ? 'temporary' : 'impound',
+                    price: cells[2]?.textContent?.trim() || '£0.00',
+                    vehicle: cells[1]?.textContent?.trim() || '',
+                  });
+                }
+              }
+            });
+          } catch (e) {
+            console.warn(`Failed to fetch ${page}:`, e);
+          }
+        }
+
+        return allOrders;
+      } catch (error) {
+        console.warn('Failed to fetch orders tables:', error);
+        return [];
+      }
     },
 
     parseDate(dateStr) {
