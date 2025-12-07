@@ -123,15 +123,11 @@ Alpine.data('quotesCounter', function() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      console.log('QuotesCounter: Today is:', today.toISOString().split('T')[0]);
-
       const sevenDaysAgo = new Date(today);
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-      console.log('QuotesCounter: 7 days ago:', sevenDaysAgo.toISOString().split('T')[0]);
 
       const thirtyDaysAgo = new Date(today);
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
-      console.log('QuotesCounter: 30 days ago:', thirtyDaysAgo.toISOString().split('T')[0]);
 
       let todayCount = 0;
       let last7DaysCount = 0;
