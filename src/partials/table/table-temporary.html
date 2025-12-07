@@ -1,3 +1,63 @@
+<script>
+  // Store orders data in localStorage when page loads
+  function storeOrdersData() {
+    // Get all orders from localStorage or initialize
+    let allOrders = [];
+    const ordersDataStr = localStorage.getItem('ordersData');
+    if (ordersDataStr) {
+      allOrders = JSON.parse(ordersDataStr);
+    }
+
+    // Filter out old temporary data
+    allOrders = allOrders.filter(order => order.type !== 'temporary');
+
+    // Add new orders from this page
+    const tableRows = document.querySelectorAll('table tbody tr');
+
+    tableRows.forEach((row) => {
+      const dateCell = row.querySelector('td:first-child p:first-child');
+      const priceCell = row.querySelector('td:nth-child(2) p');
+      const emailCell = row.querySelector('td:nth-child(3) p');
+      const phoneCell = row.querySelector('td:nth-child(4) p');
+      const vehicleCell = row.querySelector('td:nth-child(5) p');
+      const paymentCell = row.querySelector('td:nth-child(6) span');
+
+      if (dateCell) {
+        const dateText = dateCell.textContent.trim();
+        allOrders.push({
+          type: 'temporary',
+          date: dateText,
+          price: priceCell ? priceCell.textContent.trim() : '',
+          email: emailCell ? emailCell.textContent.trim() : '',
+          phone: phoneCell ? phoneCell.textContent.trim() : '',
+          vehicle: vehicleCell ? vehicleCell.textContent.trim() : '',
+          payment: paymentCell ? paymentCell.textContent.trim() : ''
+        });
+      }
+    });
+
+    localStorage.setItem('ordersData', JSON.stringify(allOrders));
+  }
+
+  // Store data when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', storeOrdersData);
+  } else {
+    storeOrdersData();
+  }
+
+  // Also watch for mutations in case table changes
+  const tableContainer = document.querySelector('table');
+  if (tableContainer) {
+    const observer = new MutationObserver(storeOrdersData);
+    observer.observe(tableContainer, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+  }
+</script>
+
 <style>
   .table-scroller {
     position: relative;
