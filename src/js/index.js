@@ -101,22 +101,28 @@ Alpine.data('quotesCounter', function() {
       };
     },
 
-    init() {
-      this.updateCounts();
+    async init() {
+      // Load quotes data from JSON file
+      const quotes = await this.loadQuotesData();
+      this.updateCounts(quotes);
 
       // Watch for localStorage changes (from other tabs or the quotes page)
       window.addEventListener('storage', () => {
-        this.updateCounts();
+        const quotesDataStr = localStorage.getItem('quotesData');
+        const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
+        this.updateCounts(quotes);
       });
 
       // Also check periodically in case data is updated
       setInterval(() => {
-        this.updateCounts();
+        const quotesDataStr = localStorage.getItem('quotesData');
+        const quotes = quotesDataStr ? JSON.parse(quotesDataStr) : [];
+        this.updateCounts(quotes);
       }, 2000);
     },
 
-    updateCounts() {
-      const counts = this.getQuotesCount();
+    updateCounts(quotes) {
+      const counts = this.getQuotesCount(quotes);
       this.todayCount = counts.today;
       this.last7DaysCount = counts.last7Days;
       this.past30DaysCount = counts.past30Days;
