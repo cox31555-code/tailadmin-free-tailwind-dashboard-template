@@ -128,8 +128,15 @@ Alpine.data('quotesCounter', function() {
     },
 
     async init() {
-      const quotes = await this.loadQuotesData();
-      this.updateCounts(quotes);
+      console.log('QuotesCounter: init() called');
+      try {
+        const quotes = await this.loadQuotesData();
+        console.log('QuotesCounter: Loaded quotes:', quotes);
+        this.updateCounts(quotes);
+        console.log('QuotesCounter: Updated counts -', this.todayCount, this.last7DaysCount, this.past30DaysCount);
+      } catch (error) {
+        console.error('QuotesCounter: Error in init:', error);
+      }
 
       window.addEventListener('storage', (e) => {
         if (e.key === 'quotesData') {
