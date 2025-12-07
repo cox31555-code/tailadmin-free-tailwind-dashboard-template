@@ -133,10 +133,10 @@ Alpine.data('quotesCounter', function() {
       }
 
       quotes.forEach((quote) => {
-        const quoteDate = this.parseDate(quote.date);
+        const quoteDate = parseDate(quote.date);
 
         if (quoteDate === null) {
-          console.warn('Could not parse quote date:', quote.date);
+          console.warn('QuotesCounter: Could not parse quote date:', quote.date);
           return;
         }
 
