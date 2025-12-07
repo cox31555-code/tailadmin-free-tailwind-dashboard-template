@@ -264,12 +264,7 @@
                   <div class="space-y-3">
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
-                      <select x-model="mileage" @change="mileageValue = {
-                        '1-2k': '0.95',
-                        '3-4k': '1.05',
-                        '5-9k': '1.1',
-                        '10k+': '1.15'
-                      }[mileage] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      <select x-model="mileage" @change="mileageValue = {'1-2k': '0.95','3-4k': '1.05','5-9k': '1.1','10k+': '1.15'}[mileage] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="1-2k">1-2k Miles</option>
                         <option value="3-4k">3-4k Miles</option>
