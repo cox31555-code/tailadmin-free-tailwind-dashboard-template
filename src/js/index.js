@@ -375,8 +375,11 @@ Alpine.data('revenueOverview', function() {
           const price = this.parsePrice(order.price);
           total += price;
 
-          const orderDate = new Date(order.date);
-          orderDate.setHours(0, 0, 0, 0);
+          const orderDate = this.parseDate(order.date);
+          if (orderDate === null) {
+            console.warn('Could not parse order date:', order.date);
+            return;
+          }
 
           if (orderDate.getTime() === today.getTime()) {
             daily += price;
@@ -386,7 +389,7 @@ Alpine.data('revenueOverview', function() {
             weekly += price;
           }
         } catch (e) {
-          console.warn('Failed to parse order price:', order.price);
+          console.warn('Failed to process order:', order, e);
         }
       });
 
