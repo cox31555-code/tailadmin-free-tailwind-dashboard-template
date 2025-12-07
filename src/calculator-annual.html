@@ -337,13 +337,7 @@
                   <div class="space-y-3">
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Postcode</label>
-                      <select x-model="location" @change="locationValue = {
-                        'hs-bt': '0.9',
-                        'bn-wa': '0.35',
-                        'gu-vy': '1',
-                        'br-vc': '1.05',
-                        'default': '1'
-                      }[location] || ''" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                      <select x-model="location" @change="locationValue = {'hs-bt': '0.9','bn-wa': '0.35','gu-vy': '1','br-vc': '1.05','default': '1'}[location] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
                         <option value="">Choose an option</option>
                         <option value="hs-bt">HS-BT</option>
                         <option value="bn-wa">BN-WA</option>
