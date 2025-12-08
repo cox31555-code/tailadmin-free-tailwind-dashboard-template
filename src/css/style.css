@@ -325,6 +325,33 @@ layer(base);
   @apply border-brand-500 bg-brand-500;
 }
 
+/* Select dropdown styling */
+select,
+select option {
+  color: #101828;
+  background-color: white;
+}
+
+select:disabled,
+select:disabled option {
+  color: #98a2b3;
+  background-color: #f9fafb;
+  opacity: 0.6;
+}
+
+.dark select,
+.dark select option {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark select:disabled,
+.dark select:disabled option {
+  color: #667085;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0.5;
+}
+
 /* third-party libraries CSS */
 .apexcharts-legend-text {
   @apply text-gray-700! dark:text-gray-400!;
