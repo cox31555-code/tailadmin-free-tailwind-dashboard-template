@@ -326,30 +326,46 @@ layer(base);
 }
 
 /* Select dropdown styling */
-select,
+select {
+  color: #101828 !important;
+  background-color: white !important;
+}
+
 select option {
-  color: #101828;
-  background-color: white;
+  color: #101828 !important;
+  background-color: white !important;
 }
 
-select:disabled,
+select:disabled {
+  color: #98a2b3 !important;
+  background-color: #f9fafb !important;
+  opacity: 0.6 !important;
+}
+
 select:disabled option {
-  color: #98a2b3;
-  background-color: #f9fafb;
-  opacity: 0.6;
+  color: #98a2b3 !important;
+  background-color: #f9fafb !important;
 }
 
-.dark select,
+.dark select {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
 .dark select option {
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff !important;
+  background-color: #1d2939 !important;
 }
 
-.dark select:disabled,
+.dark select:disabled {
+  color: #667085 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  opacity: 0.5 !important;
+}
+
 .dark select:disabled option {
-  color: #667085;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0.5;
+  color: #667085 !important;
+  background-color: #1d2939 !important;
 }
 
 /* third-party libraries CSS */
