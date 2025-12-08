@@ -46,6 +46,57 @@
       carUseValue: '',
       employment: '',
       employmentValue: '',
+      editMode: {},
+      saveMessage: '',
+      showSaveMessage: false,
+      toggleEditMode(fieldName) {
+        this.editMode[fieldName] = !this.editMode[fieldName];
+      },
+      saveMultipliers() {
+        const data = {
+          basePrice: this.basePrice,
+          ageValue: this.ageValue,
+          vehicleAgeValue: this.vehicleAgeValue,
+          engineSizeValue: this.engineSizeValue,
+          vehicleWorthValue: this.vehicleWorthValue,
+          noClaimBonusValue: this.noClaimBonusValue,
+          mileageValue: this.mileageValue,
+          modCarValue: this.modCarValue,
+          additionalAgeValue: this.additionalAgeValue,
+          locationValue: this.locationValue,
+          criminalValue: this.criminalValue,
+          cancelledInsValue: this.cancelledInsValue,
+          carUseValue: this.carUseValue,
+          employmentValue: this.employmentValue
+        };
+        localStorage.setItem('annualMultipliers', JSON.stringify(data));
+        this.saveMessage = 'Changes saved successfully!';
+        this.showSaveMessage = true;
+        setTimeout(() => {
+          this.showSaveMessage = false;
+        }, 3000);
+      },
+      loadMultipliers() {
+        const saved = localStorage.getItem('annualMultipliers');
+        if (saved) {
+          const data = JSON.parse(saved);
+          this.basePrice = data.basePrice || 250;
+          this.ageValue = data.ageValue || '';
+          this.vehicleAgeValue = data.vehicleAgeValue || '';
+          this.engineSizeValue = data.engineSizeValue || '';
+          this.vehicleWorthValue = data.vehicleWorthValue || '';
+          this.noClaimBonusValue = data.noClaimBonusValue || '';
+          this.mileageValue = data.mileageValue || '';
+          this.modCarValue = data.modCarValue || '';
+          this.additionalAgeValue = data.additionalAgeValue || '';
+          this.locationValue = data.locationValue || '';
+          this.criminalValue = data.criminalValue || '';
+          this.cancelledInsValue = data.cancelledInsValue || '';
+          this.carUseValue = data.carUseValue || '';
+          this.employmentValue = data.employmentValue || '';
+          this.calculateTotal();
+        }
+      },
       calculateTotal() {
         let total = this.basePrice;
         this.selectedMultipliers = [];
