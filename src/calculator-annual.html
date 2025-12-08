@@ -297,10 +297,36 @@
                       <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Vehicle Age Multiplier</h3>
                       <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">VAM</p>
                     </div>
-                    <button @click="toggleEditMode('vehicleAgeValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
-                      <span x-show="!editMode['vehicleAgeValue']">Edit</span>
-                      <span x-show="editMode['vehicleAgeValue']">Done</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                      <template x-if="savingField['vehicleAgeValue']">
+                        <span class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                          <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Saving...
+                        </span>
+                      </template>
+                      <template x-if="!savingField['vehicleAgeValue'] && savedField['vehicleAgeValue']">
+                        <span class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                          </svg>
+                          Saved
+                        </span>
+                      </template>
+                      <template x-if="!savingField['vehicleAgeValue'] && !savedField['vehicleAgeValue']">
+                        <template x-if="editMode['vehicleAgeValue']">
+                          <button @click="saveFieldValue('vehicleAgeValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                            Save
+                          </button>
+                        </template>
+                        <template x-if="!editMode['vehicleAgeValue']">
+                          <button @click="toggleEditMode('vehicleAgeValue')" :disabled="!vehicleAge" :class="!vehicleAge ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                            Edit
+                          </button>
+                        </template>
+                      </template>
+                    </div>
                   </div>
                   <div class="space-y-3">
                     <div>
@@ -328,10 +354,36 @@
                       <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Engine Size Multiplier</h3>
                       <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ESM</p>
                     </div>
-                    <button @click="toggleEditMode('engineSizeValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
-                      <span x-show="!editMode['engineSizeValue']">Edit</span>
-                      <span x-show="editMode['engineSizeValue']">Done</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                      <template x-if="savingField['engineSizeValue']">
+                        <span class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                          <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Saving...
+                        </span>
+                      </template>
+                      <template x-if="!savingField['engineSizeValue'] && savedField['engineSizeValue']">
+                        <span class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                          <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                          </svg>
+                          Saved
+                        </span>
+                      </template>
+                      <template x-if="!savingField['engineSizeValue'] && !savedField['engineSizeValue']">
+                        <template x-if="editMode['engineSizeValue']">
+                          <button @click="saveFieldValue('engineSizeValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                            Save
+                          </button>
+                        </template>
+                        <template x-if="!editMode['engineSizeValue']">
+                          <button @click="toggleEditMode('engineSizeValue')" :disabled="!engineSize" :class="!engineSize ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                            Edit
+                          </button>
+                        </template>
+                      </template>
+                    </div>
                   </div>
                   <div class="space-y-3">
                     <div>
