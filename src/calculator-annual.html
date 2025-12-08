@@ -384,9 +384,15 @@
 
                 <!-- Mileage Multiplier -->
                 <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800/50 hover:shadow-md transition-shadow duration-300">
-                  <div class="mb-4">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Mileage Multiplier</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">MM</p>
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Mileage Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">MM</p>
+                    </div>
+                    <button @click="toggleEditMode('mileageValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                      <span x-show="!editMode['mileageValue']">Edit</span>
+                      <span x-show="editMode['mileageValue']">Done</span>
+                    </button>
                   </div>
                   <div class="space-y-3">
                     <div>
@@ -401,16 +407,22 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="mileageValue"  @input="calculateTotal()" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="mileageValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['mileageValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
                     </div>
                   </div>
                 </div>
 
                 <!-- Modified Car Multiplier -->
                 <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800/50 hover:shadow-md transition-shadow duration-300">
-                  <div class="mb-4">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Modified Car Multiplier</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">MCM</p>
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Modified Car Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">MCM</p>
+                    </div>
+                    <button @click="toggleEditMode('modCarValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                      <span x-show="!editMode['modCarValue']">Edit</span>
+                      <span x-show="editMode['modCarValue']">Done</span>
+                    </button>
                   </div>
                   <div class="space-y-3">
                     <div>
@@ -425,16 +437,22 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="modCarValue"  @input="calculateTotal()" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="modCarValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['modCarValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
                     </div>
                   </div>
                 </div>
 
                 <!-- Additional Driver Age Multiplier -->
                 <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800/50 hover:shadow-md transition-shadow duration-300">
-                  <div class="mb-4">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Additional Driver Age Multiplier</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ADAM</p>
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Additional Driver Age Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ADAM</p>
+                    </div>
+                    <button @click="toggleEditMode('additionalAgeValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                      <span x-show="!editMode['additionalAgeValue']">Edit</span>
+                      <span x-show="editMode['additionalAgeValue']">Done</span>
+                    </button>
                   </div>
                   <div class="space-y-3">
                     <div>
@@ -450,16 +468,22 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="additionalAgeValue"  @input="calculateTotal()" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="additionalAgeValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['additionalAgeValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
                     </div>
                   </div>
                 </div>
 
                 <!-- Location Multiplier -->
                 <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800/50 hover:shadow-md transition-shadow duration-300">
-                  <div class="mb-4">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Location Multiplier</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">LM</p>
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Location Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">LM</p>
+                    </div>
+                    <button @click="toggleEditMode('locationValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                      <span x-show="!editMode['locationValue']">Edit</span>
+                      <span x-show="editMode['locationValue']">Done</span>
+                    </button>
                   </div>
                   <div class="space-y-3">
                     <div>
@@ -475,7 +499,7 @@
                     </div>
                     <div>
                       <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
-                      <input type="text" x-model="locationValue"  @input="calculateTotal()" placeholder="0.00" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent" disabled />
+                      <input type="text" x-model="locationValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['locationValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-white/5 dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
                     </div>
                   </div>
                 </div>
