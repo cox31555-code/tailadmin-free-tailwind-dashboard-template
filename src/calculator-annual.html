@@ -47,12 +47,16 @@
       employment: '',
       employmentValue: '',
       editMode: {},
-      saveMessage: '',
-      showSaveMessage: false,
+      savingField: {},
+      savedField: {},
       toggleEditMode(fieldName) {
         this.editMode[fieldName] = !this.editMode[fieldName];
       },
-      saveMultipliers() {
+      async saveFieldValue(fieldName) {
+        this.savingField[fieldName] = true;
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
         const data = {
           basePrice: this.basePrice,
           ageValue: this.ageValue,
@@ -70,10 +74,13 @@
           employmentValue: this.employmentValue
         };
         localStorage.setItem('annualMultipliers', JSON.stringify(data));
-        this.saveMessage = 'Changes saved successfully!';
-        this.showSaveMessage = true;
+
+        this.savingField[fieldName] = false;
+        this.savedField[fieldName] = true;
+        this.editMode[fieldName] = false;
+
         setTimeout(() => {
-          this.showSaveMessage = false;
+          this.savedField[fieldName] = false;
         }, 3000);
       },
       loadMultipliers() {
