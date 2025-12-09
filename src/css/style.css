@@ -786,3 +786,12 @@ span.flatpickr-weekday,
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
+
+/* Mollie Logo Theme Optimization */
+.mollie-logo-fill {
+  fill: #101828;
+}
+
+.dark .mollie-logo-fill {
+  fill: #ffffff;
+}
