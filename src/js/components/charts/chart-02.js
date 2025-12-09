@@ -199,7 +199,8 @@ const chart02 = async () => {
       horizontalAlign: "left",
       fontFamily: "Outfit",
       markers: {
-        radius: 99,
+        radius: 4,
+        strokeWidth: 0,
       },
     },
     yaxis: {
