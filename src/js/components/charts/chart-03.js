@@ -262,12 +262,12 @@ Alpine.data('chartFilters', function() {
     },
 
     renderInitialChart() {
-      const currentYear = new Date().getFullYear();
-      const septemberStart = new Date(currentYear, 8, 1);
       const today = new Date();
+      const pastYear = new Date(today);
+      pastYear.setFullYear(pastYear.getFullYear() - 1);
 
-      const filteredSales = filterByDateRange(allSalesData, septemberStart, today);
-      const filteredQuotes = filterByDateRange(allQuotesData, septemberStart, today);
+      const filteredSales = filterByDateRange(allSalesData, pastYear, today);
+      const filteredQuotes = filterByDateRange(allQuotesData, pastYear, today);
 
       if (this.selected === 'overview') {
         renderChart(filteredSales, filteredQuotes);
@@ -308,16 +308,16 @@ Alpine.data('chartFilters', function() {
     initDatePicker() {
       const dateInput = document.querySelector('.chart-datepicker');
       if (dateInput) {
-        const currentYear = new Date().getFullYear();
-        const septemberStart = new Date(currentYear, 8, 1);
         const today = new Date();
+        const pastYear = new Date(today);
+        pastYear.setFullYear(pastYear.getFullYear() - 1);
 
         flatpickr(dateInput, {
           mode: "range",
           static: true,
           monthSelectorType: "static",
           dateFormat: "M j, Y",
-          defaultDate: [septemberStart, today],
+          defaultDate: [pastYear, today],
           prevArrow:
             '<svg class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.25 6L9 12.25L15.25 18.5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
           nextArrow:
