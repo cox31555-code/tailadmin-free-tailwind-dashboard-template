@@ -1,5 +1,5 @@
 <script>
-  // Customer data map with names and addresses derived from email prefixes
+  // Customer data map with names and addresses
   const customerDataMap = {
     'james.wilson@example.com': { name: 'James Wilson', address: '123 Oak Street, London, UK' },
     'nicole.roberts@example.com': { name: 'Nicole Roberts', address: '456 Maple Avenue, Manchester, UK' },
@@ -8,11 +8,18 @@
     'michael.green@example.com': { name: 'Michael Green', address: '654 Cedar Court, Glasgow, UK' },
     'sarah.clark@example.com': { name: 'Sarah Clark', address: '987 Birch Drive, Edinburgh, UK' },
     'john.miller@example.com': { name: 'John Miller', address: '147 Ash Street, Liverpool, UK' },
-    'emma.davis@example.com': { name: 'Emma Davis', address: '258 Walnut Avenue, Bristol, UK' }
+    'emma.davis@example.com': { name: 'Emma Davis', address: '258 Walnut Avenue, Bristol, UK' },
+    'jane.smith@example.com': { name: 'Jane Smith', address: '369 Hazel Court, Nottingham, UK' },
+    'john.doe@example.com': { name: 'John Doe', address: '753 Spruce Lane, Sheffield, UK' },
+    'david.johnson@example.com': { name: 'David Johnson', address: '456 Oak Park, Manchester, UK' },
+    'susan.brown@example.com': { name: 'Susan Brown', address: '789 Elm Street, London, UK' },
+    'mark.davis@example.com': { name: 'Mark Davis', address: '321 Pine Court, Leeds, UK' },
+    'lisa.wilson@example.com': { name: 'Lisa Wilson', address: '654 Birch Avenue, Glasgow, UK' }
   };
 
-  // Extract customer data from quotes
-  const quoteData = [
+  // All quote data from all sources
+  const allQuoteData = [
+    // From quotes.json
     { email: 'james.wilson@example.com', phone: '+44-7123-456789', vehicle: 'Toyota Camry' },
     { email: 'nicole.roberts@example.com', phone: '+44-7234-567890', vehicle: 'BMW X5' },
     { email: 'robert.taylor@example.com', phone: '+44-7345-678901', vehicle: 'Mercedes-Benz C-Class' },
@@ -20,21 +27,39 @@
     { email: 'michael.green@example.com', phone: '+44-7567-890123', vehicle: 'Honda Accord' },
     { email: 'sarah.clark@example.com', phone: '+44-7678-901234', vehicle: 'Volkswagen Passat' },
     { email: 'john.miller@example.com', phone: '+44-7789-012345', vehicle: 'Nissan Altima' },
-    { email: 'emma.davis@example.com', phone: '+44-7890-123456', vehicle: 'Ford Mustang' }
+    { email: 'emma.davis@example.com', phone: '+44-7890-123456', vehicle: 'Ford Mustang' },
+    // From annual table
+    { email: 'jane.smith@example.com', phone: '07987654321', vehicle: 'Honda Civic' },
+    { email: 'john.doe@example.com', phone: '07912345678', vehicle: 'Toyota Corolla' },
+    { email: 'david.johnson@example.com', phone: '07834567890', vehicle: 'Audi A4' },
+    { email: 'susan.brown@example.com', phone: '07756789012', vehicle: 'BMW 3 Series' },
+    // From temporary table
+    { email: 'mark.davis@example.com', phone: '07923456789', vehicle: 'Volkswagen Golf' },
+    { email: 'lisa.wilson@example.com', phone: '07845678901', vehicle: 'Mazda CX-5' },
+    // From impound table (additional entries)
+    { email: 'michael.green@example.com', phone: '+44-7567-890123', vehicle: 'Honda Accord' }
   ];
 
   function getUniqueCustomers() {
-    const uniqueEmails = [...new Set(quoteData.map(q => q.email))];
-    return uniqueEmails.map(email => {
-      const quote = quoteData.find(q => q.email === email);
-      const customer = customerDataMap[email] || { name: email.split('.').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' '), address: 'N/A' };
-      return {
-        name: customer.name,
-        email: email,
-        phone: quote.phone,
-        address: customer.address
-      };
+    // Create a map to store unique customers by email
+    const customerMap = new Map();
+
+    allQuoteData.forEach(quote => {
+      if (!customerMap.has(quote.email)) {
+        const customer = customerDataMap[quote.email] || {
+          name: quote.email.split('.').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' '),
+          address: 'N/A'
+        };
+        customerMap.set(quote.email, {
+          name: customer.name,
+          email: quote.email,
+          phone: quote.phone,
+          address: customer.address
+        });
+      }
     });
+
+    return Array.from(customerMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   }
 
   function exportToCSV() {
@@ -45,7 +70,7 @@
       ...customers.map(c => `"${c.name}","${c.email}","${c.phone}","${c.address}"`)
     ].join('\n');
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -59,7 +84,7 @@
   function exportToJSON() {
     const customers = getUniqueCustomers();
     const jsonContent = JSON.stringify(customers, null, 2);
-    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -125,6 +150,9 @@
       <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
         Customers List
       </h3>
+      <p class="text-theme-xs text-gray-500 dark:text-gray-400 mt-1">
+        Data from Quotes, Annual, Temporary & Impound policies
+      </p>
     </div>
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
