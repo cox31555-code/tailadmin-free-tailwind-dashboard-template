@@ -853,6 +853,101 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+/**
+ * Alpine.js component for sales counter (Annual, Temporary, Impound)
+ */
+Alpine.data('salesCounter', function() {
+  return {
+    totalCount: 0,
+
+    async init() {
+      try {
+        const pages = ['/annual.html', '/temporary.html', '/impound.html'];
+        let count = 0;
+
+        for (const page of pages) {
+          try {
+            const response = await fetch(page, { cache: 'no-cache' });
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const rows = doc.querySelectorAll('table tbody tr');
+            count += rows.length;
+          } catch (e) {
+            console.warn(`Failed to count ${page}:`, e);
+          }
+        }
+
+        this.totalCount = count;
+      } catch (e) {
+        console.warn('SalesCounter init error:', e);
+        this.totalCount = 0;
+      }
+    }
+  };
+});
+
+/**
+ * Alpine.js component for quotes counter with total
+ */
+Alpine.data('quotesCounter', function() {
+  return {
+    totalQuotes: 0,
+
+    async init() {
+      try {
+        const response = await fetch('/quotes.html', { cache: 'no-cache' });
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const rows = doc.querySelectorAll('table tbody tr');
+        this.totalQuotes = rows.length;
+      } catch (e) {
+        console.warn('QuotesCounter init error:', e);
+        this.totalQuotes = 0;
+      }
+    }
+  };
+});
+
+/**
+ * Alpine.js component for monthly average
+ */
+Alpine.data('monthlyAvg', function() {
+  return {
+    avgValue: 0,
+
+    async init() {
+      try {
+        const pages = ['/annual.html', '/temporary.html', '/impound.html', '/quotes.html'];
+        let totalCount = 0;
+
+        for (const page of pages) {
+          try {
+            const response = await fetch(page, { cache: 'no-cache' });
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const rows = doc.querySelectorAll('table tbody tr');
+            totalCount += rows.length;
+          } catch (e) {
+            console.warn(`Failed to count ${page}:`, e);
+          }
+        }
+
+        // Calculate monthly average (assuming 12 months per year)
+        this.avgValue = Math.ceil(totalCount / 12);
+      } catch (e) {
+        console.warn('MonthlyAvg init error:', e);
+        this.avgValue = 0;
+      }
+    }
+  };
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   const searchInput = document.getElementById("search-input");
   const searchButton = document.getElementById("search-button");
