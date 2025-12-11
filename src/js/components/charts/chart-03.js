@@ -261,12 +261,19 @@ Alpine.data('chartFilters', function() {
     },
 
     renderInitialChart() {
+      const currentYear = new Date().getFullYear();
+      const septemberStart = new Date(currentYear, 8, 1);
+      const today = new Date();
+
+      const filteredSales = filterByDateRange(allSalesData, septemberStart, today);
+      const filteredQuotes = filterByDateRange(allQuotesData, septemberStart, today);
+
       if (this.selected === 'overview') {
-        renderChart(allSalesData, allQuotesData);
+        renderChart(filteredSales, filteredQuotes);
       } else if (this.selected === 'sales') {
-        renderChart(allSalesData, []);
-      } else if (this.selected === 'revenue') {
-        renderChart([], allQuotesData);
+        renderChart(filteredSales, []);
+      } else if (this.selected === 'quotes') {
+        renderChart([], filteredQuotes);
       }
     },
 
