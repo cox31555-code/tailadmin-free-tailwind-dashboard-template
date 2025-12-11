@@ -33,7 +33,7 @@
 
 /* Action dropdown z-index fix - ensures dropdowns appear above pagination */
 .table-action-dropdown {
-  z-index: 50 !important;
+  z-index: var(--z-index-50) !important;
 }
 
 .table-scroller {
