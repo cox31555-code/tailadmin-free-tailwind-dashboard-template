@@ -1,0 +1,249 @@
+<script>
+  // Customer data map with names and addresses derived from email prefixes
+  const customerDataMap = {
+    'james.wilson@example.com': { name: 'James Wilson', address: '123 Oak Street, London, UK' },
+    'nicole.roberts@example.com': { name: 'Nicole Roberts', address: '456 Maple Avenue, Manchester, UK' },
+    'robert.taylor@example.com': { name: 'Robert Taylor', address: '789 Elm Road, Birmingham, UK' },
+    'patricia.anderson@example.com': { name: 'Patricia Anderson', address: '321 Pine Lane, Leeds, UK' },
+    'michael.green@example.com': { name: 'Michael Green', address: '654 Cedar Court, Glasgow, UK' },
+    'sarah.clark@example.com': { name: 'Sarah Clark', address: '987 Birch Drive, Edinburgh, UK' },
+    'john.miller@example.com': { name: 'John Miller', address: '147 Ash Street, Liverpool, UK' },
+    'emma.davis@example.com': { name: 'Emma Davis', address: '258 Walnut Avenue, Bristol, UK' }
+  };
+
+  // Extract customer data from quotes
+  const quoteData = [
+    { email: 'james.wilson@example.com', phone: '+44-7123-456789', vehicle: 'Toyota Camry' },
+    { email: 'nicole.roberts@example.com', phone: '+44-7234-567890', vehicle: 'BMW X5' },
+    { email: 'robert.taylor@example.com', phone: '+44-7345-678901', vehicle: 'Mercedes-Benz C-Class' },
+    { email: 'patricia.anderson@example.com', phone: '+44-7456-789012', vehicle: 'Audi A6' },
+    { email: 'michael.green@example.com', phone: '+44-7567-890123', vehicle: 'Honda Accord' },
+    { email: 'sarah.clark@example.com', phone: '+44-7678-901234', vehicle: 'Volkswagen Passat' },
+    { email: 'john.miller@example.com', phone: '+44-7789-012345', vehicle: 'Nissan Altima' },
+    { email: 'emma.davis@example.com', phone: '+44-7890-123456', vehicle: 'Ford Mustang' }
+  ];
+
+  function getUniqueCustomers() {
+    const uniqueEmails = [...new Set(quoteData.map(q => q.email))];
+    return uniqueEmails.map(email => {
+      const quote = quoteData.find(q => q.email === email);
+      const customer = customerDataMap[email] || { name: email.split('.').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' '), address: 'N/A' };
+      return {
+        name: customer.name,
+        email: email,
+        phone: quote.phone,
+        address: customer.address
+      };
+    });
+  }
+
+  function exportToCSV() {
+    const customers = getUniqueCustomers();
+    const headers = ['Name', 'Email', 'Phone', 'Address'];
+    const csvContent = [
+      headers.join(','),
+      ...customers.map(c => `"${c.name}","${c.email}","${c.phone}","${c.address}"`)
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'customer-data.csv';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+  function exportToJSON() {
+    const customers = getUniqueCustomers();
+    const jsonContent = JSON.stringify(customers, null, 2);
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'customer-data.json';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+  function populateCustomerTable() {
+    const customers = getUniqueCustomers();
+    const tbody = document.querySelector('table tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    customers.forEach(customer => {
+      const row = document.createElement('tr');
+      row.className = 'hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors';
+      row.innerHTML = `
+        <td class="px-5 py-4 sm:px-6">
+          <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+            ${customer.name}
+          </p>
+        </td>
+        <td class="px-5 py-3 sm:px-6">
+          <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+            ${customer.email}
+          </p>
+        </td>
+        <td class="px-5 py-3 sm:px-6">
+          <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+            ${customer.phone}
+          </p>
+        </td>
+        <td class="px-5 py-3 sm:px-6">
+          <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+            ${customer.address}
+          </p>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Populate table when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', populateCustomerTable);
+  } else {
+    populateCustomerTable();
+  }
+
+  // Make functions globally available
+  window.exportCustomersToCSV = exportToCSV;
+  window.exportCustomersToJSON = exportToJSON;
+</script>
+
+<div
+  class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
+>
+  <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <div>
+      <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
+        Customers List
+      </h3>
+    </div>
+
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
+      <button
+        onclick="window.exportCustomersToCSV()"
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 w-full sm:w-auto justify-center sm:justify-start"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-current"
+        >
+          <path
+            d="M12 2V14M12 14L7 9M12 14L17 9"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M3 18H21"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Export CSV
+      </button>
+
+      <button
+        onclick="window.exportCustomersToJSON()"
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 w-full sm:w-auto justify-center sm:justify-start"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-current"
+        >
+          <path
+            d="M12 2V14M12 14L7 9M12 14L17 9"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M3 18H21"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Export JSON
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-full overflow-x-auto table-scroller" id="tableScroller">
+    <table class="min-w-max sm:min-w-full table-auto overflow-visible">
+      <!-- table header start -->
+      <thead class="bg-gray-50 dark:bg-gray-800/50">
+        <tr class="border-b-2 border-gray-200 dark:border-gray-700">
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p
+              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+            >
+              Customer Name
+            </p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p
+              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+            >
+              Email
+            </p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p
+              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+            >
+              Phone Number
+            </p>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p
+              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+            >
+              Address
+            </p>
+          </th>
+        </tr>
+      </thead>
+      <!-- table header end -->
+
+      <!-- table body start -->
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-white/[0.03]">
+        <!-- Customer rows will be populated by JavaScript -->
+      </tbody>
+      <!-- table body end -->
+    </table>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-center gap-1 border-t border-gray-200 px-3 py-4 dark:border-gray-700 sm:px-6">
+    <button class="rounded-lg border border-gray-300 bg-white px-2 py-2 sm:px-4 text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+      Prev
+    </button>
+
+    <div class="flex items-center gap-0.5 sm:gap-1">
+      <button class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-brand-500 text-theme-xs sm:text-theme-sm font-medium text-white">
+        1
+      </button>
+    </div>
+
+    <button class="rounded-lg border border-gray-300 bg-white px-2 py-2 sm:px-4 text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+      Next
+    </button>
+  </div>
+</div>
