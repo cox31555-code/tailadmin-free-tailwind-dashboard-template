@@ -258,6 +258,7 @@ Alpine.data('chartFilters', function() {
       allSalesData = await loadSalesData();
       this.renderInitialChart();
       this.initDatePicker();
+      setTimeout(() => this.updateChart(), 100);
     },
 
     renderInitialChart() {
