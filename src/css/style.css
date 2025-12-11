@@ -335,13 +335,6 @@ layer(base);
   display: flex;
 }
 
-.tableCheckbox:checked ~ span span {
-  @apply opacity-100;
-}
-.tableCheckbox:checked ~ span {
-  @apply border-brand-500 bg-brand-500;
-}
-
 /* Select dropdown styling */
 select {
   color: var(--color-black) !important;
