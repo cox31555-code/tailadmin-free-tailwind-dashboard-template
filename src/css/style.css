@@ -380,7 +380,7 @@ select:disabled option {
 
 /* third-party libraries CSS */
 .apexcharts-legend-text {
-  @apply text-gray-700! dark:text-gray-400!;
+  @apply pl-5! text-gray-700! dark:text-gray-400!;
 }
 
 .apexcharts-text {
@@ -393,9 +393,6 @@ select:disabled option {
 
 .apexcharts-tooltip-marker {
   @apply mr-1.5! h-1.5! w-1.5!;
-}
-.apexcharts-legend-text {
-  @apply pl-5! text-gray-700! dark:text-gray-400!;
 }
 .apexcharts-tooltip-series-group {
   @apply p-0!;
