@@ -1,43 +1,4 @@
-<style>
-  .table-scroller {
-    position: relative;
-  }
-
-  .table-scroller::-webkit-scrollbar {
-    height: 12px;
-  }
-
-  .table-scroller::-webkit-scrollbar-track {
-    background: rgba(75, 85, 99, 0.1);
-    border-radius: 6px;
-    margin: 0 10px;
-  }
-
-  .table-scroller::-webkit-scrollbar-thumb {
-    background: rgba(59, 130, 246, 0.7);
-    border-radius: 6px;
-    transition: background 0.3s ease;
-  }
-
-  .table-scroller::-webkit-scrollbar-thumb:hover {
-    background: rgba(59, 130, 246, 0.95);
-  }
-
-  .table-scroller {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(59, 130, 246, 0.7) rgba(75, 85, 99, 0.1);
-  }
-
-  .dark .table-scroller::-webkit-scrollbar-track {
-    background: rgba(31, 41, 55, 0.1);
-  }
-
-  @media (max-width: 640px) {
-    .table-scroller {
-      height: 945px;
-    }
-  }
-</style>
+<link rel="stylesheet" href="../../css/table-shared.css">
 
 <div
   class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
