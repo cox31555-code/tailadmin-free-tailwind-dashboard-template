@@ -160,7 +160,7 @@ layer(base);
   --shadow-theme-xs: 0px 1px 2px 0px rgba(2, 13, 33, 0.05);
   --shadow-theme-xl: 0px 20px 24px -4px rgba(2, 13, 33, 0.08),
     0px 8px 8px -4px rgba(2, 13, 33, 0.03);
-  --shadow-datepicker: -5px 0 0 #151f2f, 5px 0 0 #151f2f;
+  --shadow-datepicker: -5px 0 0 #071428, 5px 0 0 #071428;
   --shadow-focus-ring: 0px 0px 0px 4px rgba(70, 95, 255, 0.12);
   --shadow-slider-navigation: 0px 1px 2px 0px rgba(2, 13, 33, 0.1),
     0px 1px 3px 0px rgba(2, 13, 33, 0.1);
