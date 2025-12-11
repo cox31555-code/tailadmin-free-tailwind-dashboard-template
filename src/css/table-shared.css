@@ -36,6 +36,16 @@
   z-index: 50 !important;
 }
 
+.table-scroller {
+  height: 1200px;
+}
+
+@media (max-width: 1024px) {
+  .table-scroller {
+    height: 1000px;
+  }
+}
+
 @media (max-width: 640px) {
   .table-scroller {
     height: 945px;
