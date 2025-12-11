@@ -48,7 +48,7 @@ layer(base);
   --color-brand-200: #a3e9ff;
   --color-brand-300: #5edbff;
   --color-brand-400: #0388FF;
-  --color-brand-500: #0388FF;
+  --color-brand-500: var(--color-brand-400);
   --color-brand-600: #0270cc;
   --color-brand-700: #0258a0;
   --color-brand-800: #034078;
@@ -68,7 +68,7 @@ layer(base);
   --color-blue-light-900: #0b4a6f;
   --color-blue-light-950: #062c41;
 
-  --color-blue-25: #f0f9ff;
+  --color-blue-25: var(--color-gray-50);
   --color-blue-50: #e0f2fe;
   --color-blue-100: #b9e6fe;
   --color-blue-200: #7cd4fd;
@@ -149,7 +149,7 @@ layer(base);
 
   --color-theme-pink-500: #ee46bc;
 
-  --color-theme-purple-500: #0388FF;
+  --color-theme-purple-500: var(--color-brand-500);
 
   --shadow-theme-md: 0px 4px 8px -2px rgba(2, 13, 33, 0.1),
     0px 2px 4px -2px rgba(2, 13, 33, 0.06);
