@@ -12,9 +12,9 @@
     </title>
   </head>
   <body
-    x-data="{ page: 'blank', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-data="{ page: 'blank', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
     x-init="
-         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
     :class="{'dark bg-gray-900': darkMode === true}"
   >
@@ -63,7 +63,7 @@
                   class="text-sm text-gray-500 dark:text-gray-400 sm:text-base"
                 >
                   Start putting content on grids or panels, you can also use
-                  different combinations of grids. Please check out the
+                  different combinations of grids.Please check out the
                   dashboard and other pages
                 </p>
               </div>
