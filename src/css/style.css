@@ -367,7 +367,7 @@ select:disabled option {
 
 .dark select option {
   color: #ffffff !important;
-  background-color: #1a2850 !important;
+  background-color: #0f1e35 !important;
 }
 
 .dark select:disabled {
@@ -378,7 +378,7 @@ select:disabled option {
 
 .dark select:disabled option {
   color: #667085 !important;
-  background-color: #1a2850 !important;
+  background-color: #0f1e35 !important;
 }
 
 /* third-party libraries CSS */
