@@ -273,7 +273,7 @@ Alpine.data('chartFilters', function() {
     async updateChart() {
       const dateInput = document.querySelector('.chart-datepicker');
       const dateValue = dateInput?.value || '';
-      
+
       let startDate = null;
       let endDate = null;
 
@@ -292,7 +292,7 @@ Alpine.data('chartFilters', function() {
         renderChart(filteredSales, filteredQuotes);
       } else if (this.selected === 'sales') {
         renderChart(filteredSales, []);
-      } else if (this.selected === 'revenue') {
+      } else if (this.selected === 'quotes') {
         renderChart([], filteredQuotes);
       }
     },
