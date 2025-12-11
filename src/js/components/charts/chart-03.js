@@ -1,4 +1,6 @@
 import ApexCharts from "apexcharts";
+import Alpine from "alpinejs";
+import flatpickr from "flatpickr";
 
 const parseDate = (dateStr) => {
   if (!dateStr) return null;
@@ -22,6 +24,20 @@ const parseDate = (dateStr) => {
     // Silently fail
   }
   return null;
+};
+
+const filterByDateRange = (data, startDate, endDate) => {
+  if (!startDate && !endDate) return data;
+  
+  return data.filter(item => {
+    const itemDate = parseDate(item.date);
+    if (!itemDate) return false;
+    
+    if (startDate && itemDate < startDate) return false;
+    if (endDate && itemDate > endDate) return false;
+    
+    return true;
+  });
 };
 
 const getMonthsData = (data) => {
@@ -113,14 +129,13 @@ const loadSalesData = async () => {
   }
 };
 
-const chart03 = async () => {
-  const [quotesData, salesData] = await Promise.all([
-    loadQuotesData(),
-    loadSalesData()
-  ]);
+let chartThreeInstance = null;
+let allQuotesData = [];
+let allSalesData = [];
 
-  const quotesMonthly = getMonthsData(quotesData);
+const renderChart = (salesData, quotesData) => {
   const salesMonthly = getMonthsData(salesData);
+  const quotesMonthly = getMonthsData(quotesData);
 
   const chartThreeOptions = {
     series: [
@@ -219,15 +234,100 @@ const chart03 = async () => {
     },
   };
 
-  const chartSelector = document.querySelectorAll("#chartThree");
-
-  if (chartSelector.length) {
-    const chartThree = new ApexCharts(
-      document.querySelector("#chartThree"),
-      chartThreeOptions,
-    );
-    chartThree.render();
+  if (chartThreeInstance) {
+    chartThreeInstance.updateOptions(chartThreeOptions, false, true);
+  } else {
+    const chartSelector = document.querySelectorAll("#chartThree");
+    if (chartSelector.length) {
+      chartThreeInstance = new ApexCharts(
+        document.querySelector("#chartThree"),
+        chartThreeOptions,
+      );
+      chartThreeInstance.render();
+    }
   }
+};
+
+Alpine.data('chartFilters', function() {
+  return {
+    selected: 'overview',
+    dateRange: null,
+
+    async init() {
+      allQuotesData = await loadQuotesData();
+      allSalesData = await loadSalesData();
+      this.renderInitialChart();
+      this.initDatePicker();
+    },
+
+    renderInitialChart() {
+      if (this.selected === 'overview') {
+        renderChart(allSalesData, allQuotesData);
+      } else if (this.selected === 'sales') {
+        renderChart(allSalesData, []);
+      } else if (this.selected === 'revenue') {
+        renderChart([], allQuotesData);
+      }
+    },
+
+    async updateChart() {
+      const dateInput = document.querySelector('.chart-datepicker');
+      const dateValue = dateInput?.value || '';
+      
+      let startDate = null;
+      let endDate = null;
+
+      if (dateValue) {
+        const parts = dateValue.split('-').map(d => d.trim());
+        if (parts.length === 2) {
+          startDate = parseDate(parts[0]);
+          endDate = parseDate(parts[1]);
+        }
+      }
+
+      let filteredSales = filterByDateRange(allSalesData, startDate, endDate);
+      let filteredQuotes = filterByDateRange(allQuotesData, startDate, endDate);
+
+      if (this.selected === 'overview') {
+        renderChart(filteredSales, filteredQuotes);
+      } else if (this.selected === 'sales') {
+        renderChart(filteredSales, []);
+      } else if (this.selected === 'revenue') {
+        renderChart([], filteredQuotes);
+      }
+    },
+
+    initDatePicker() {
+      const dateInput = document.querySelector('.chart-datepicker');
+      if (dateInput) {
+        flatpickr(dateInput, {
+          mode: "range",
+          static: true,
+          monthSelectorType: "static",
+          dateFormat: "M j, Y",
+          defaultDate: [new Date().setDate(new Date().getDate() - 6), new Date()],
+          prevArrow:
+            '<svg class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.25 6L9 12.25L15.25 18.5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+          nextArrow:
+            '<svg class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.75 19L15 12.75L8.75 6.5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+          onReady: (selectedDates, dateStr, instance) => {
+            instance.element.value = dateStr.replace("to", "-");
+            const customClass = instance.element.getAttribute("data-class");
+            if (customClass) {
+              instance.calendarContainer.classList.add(customClass);
+            }
+          },
+          onChange: (selectedDates, dateStr, instance) => {
+            instance.element.value = dateStr.replace("to", "-");
+          },
+        });
+      }
+    }
+  };
+});
+
+const chart03 = async () => {
+  // Chart is initialized via Alpine.js component
 };
 
 export default chart03;
