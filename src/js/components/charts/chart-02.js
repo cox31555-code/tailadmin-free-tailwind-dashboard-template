@@ -153,7 +153,7 @@ const chart02 = async () => {
 
   const chartTwoOptions = {
     series: series,
-    colors: ["#465fff", "#10B981", "#F59E0B"],
+    colors: ["#0388FF", "#10B981", "#F59E0B"],
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "bar",

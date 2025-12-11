@@ -102,7 +102,7 @@ const chart01 = async () => {
         data: monthlySalesData,
       },
     ],
-    colors: ["#465fff"],
+    colors: ["#0388FF"],
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "bar",

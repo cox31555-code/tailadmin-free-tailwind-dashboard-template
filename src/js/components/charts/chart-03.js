@@ -153,7 +153,7 @@ const renderChart = (salesData, quotesData) => {
       position: "top",
       horizontalAlign: "left",
     },
-    colors: ["#465FFF", "#9CB9FF"],
+    colors: ["#0388FF", "#5edbff"],
     chart: {
       fontFamily: "Outfit, sans-serif",
       height: 310,

@@ -41,18 +41,18 @@ layer(base);
   --color-white: #ffffff;
   --color-black: #101828;
 
-  --color-brand-25: #f2f7ff;
-  --color-brand-50: #ecf3ff;
-  --color-brand-100: #dde9ff;
-  --color-brand-200: #c2d6ff;
-  --color-brand-300: #9cb9ff;
+  --color-brand-25: #f0f9ff;
+  --color-brand-50: #ecf8ff;
+  --color-brand-100: #d1f3ff;
+  --color-brand-200: #a3e9ff;
+  --color-brand-300: #5edbff;
   --color-brand-400: #0388FF;
-  --color-brand-500: #465fff;
-  --color-brand-600: #3641f5;
-  --color-brand-700: #2a31d8;
-  --color-brand-800: #252dae;
-  --color-brand-900: #262e89;
-  --color-brand-950: #161950;
+  --color-brand-500: #0388FF;
+  --color-brand-600: #0270cc;
+  --color-brand-700: #0258a0;
+  --color-brand-800: #034078;
+  --color-brand-900: #032855;
+  --color-brand-950: #011833;
 
   --color-blue-light-25: #f5fbff;
   --color-blue-light-50: #f0f9ff;
@@ -148,7 +148,7 @@ layer(base);
 
   --color-theme-pink-500: #ee46bc;
 
-  --color-theme-purple-500: #3b82f6;
+  --color-theme-purple-500: #0388FF;
 
   --shadow-theme-md: 0px 4px 8px -2px rgba(16, 24, 40, 0.1),
     0px 2px 4px -2px rgba(16, 24, 40, 0.06);
