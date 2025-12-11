@@ -67,6 +67,19 @@ layer(base);
   --color-blue-light-900: #0b4a6f;
   --color-blue-light-950: #062c41;
 
+  --color-blue-25: #f0f9ff;
+  --color-blue-50: #e0f2fe;
+  --color-blue-100: #b9e6fe;
+  --color-blue-200: #7cd4fd;
+  --color-blue-300: #38bdf8;
+  --color-blue-400: #0ea5e9;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-blue-950: #0c2d6b;
+
   --color-gray-25: #fcfcfd;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f2f4f7;
