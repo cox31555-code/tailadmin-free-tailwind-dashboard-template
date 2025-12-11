@@ -28,7 +28,7 @@
     x-data="{
       page: 'promoCodes',
       'loaded': true,
-      'darkMode': false,
+      'darkMode': true,
       'stickyMenu': false,
       'sidebarToggle': false,
       'scrollTop': false,
@@ -67,7 +67,7 @@
       }
     }"
     x-init="
-         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
     :class="{'dark bg-gray-900': darkMode === true}"
   >
