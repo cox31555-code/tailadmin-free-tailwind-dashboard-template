@@ -213,11 +213,11 @@ layer(base);
 }
 
 @utility menu-item-icon-active {
-  @apply fill-brand-500 dark:fill-brand-400;
+  @apply fill-brand-500 stroke-brand-500 dark:fill-brand-400 dark:stroke-brand-400;
 }
 
 @utility menu-item-icon-inactive {
-  @apply fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300;
+  @apply fill-gray-500 stroke-gray-500 group-hover:fill-gray-700 group-hover:stroke-gray-700 dark:fill-gray-400 dark:stroke-gray-400 dark:group-hover:fill-gray-300 dark:group-hover:stroke-gray-300;
 }
 
 @utility menu-item-arrow {
