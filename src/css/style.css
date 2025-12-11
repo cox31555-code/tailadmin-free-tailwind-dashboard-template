@@ -791,3 +791,10 @@ span.flatpickr-weekday,
 .dark .mollie-logo-fill {
   fill: #ffffff;
 }
+
+/* SVG Menu Icon Styling */
+.svg-menu-icon {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
