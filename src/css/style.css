@@ -341,33 +341,33 @@ layer(base);
 
 /* Select dropdown styling */
 select {
-  color: #101828 !important;
-  background-color: white !important;
+  color: var(--color-black) !important;
+  background-color: var(--color-white) !important;
 }
 
 select option {
-  color: #101828 !important;
-  background-color: white !important;
+  color: var(--color-black) !important;
+  background-color: var(--color-white) !important;
 }
 
 select:disabled {
-  color: #98a2b3 !important;
-  background-color: #f9fafb !important;
+  color: var(--color-gray-400) !important;
+  background-color: var(--color-gray-50) !important;
   opacity: 0.6 !important;
 }
 
 select:disabled option {
-  color: #98a2b3 !important;
-  background-color: #f9fafb !important;
+  color: var(--color-gray-400) !important;
+  background-color: var(--color-gray-50) !important;
 }
 
 .dark select {
-  color: #ffffff !important;
+  color: var(--color-white) !important;
   background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
 .dark select option {
-  color: #ffffff !important;
+  color: var(--color-white) !important;
   background-color: #0f1e35 !important;
 }
 
