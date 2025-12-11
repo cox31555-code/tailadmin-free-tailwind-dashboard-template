@@ -612,10 +612,10 @@
               href="#"
               @click.prevent="selected = (selected === 'Payments' ? '':'Payments')"
               class="menu-item group"
-              :class="(selected === 'Payments') || (page === 'processor' || page === 'basePricing' || page === 'calculator') ? 'menu-item-active' : 'menu-item-inactive'"
+              :class="(selected === 'Payments') || (page === 'processor' || page === 'basePricing') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Payments') || (page === 'processor' || page === 'basePricing' || page === 'calculator') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                :class="(selected === 'Payments') || (page === 'processor' || page === 'basePricing') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
                 width="20"
                 height="20"
                 viewBox="0 0 24 24"
@@ -675,7 +675,7 @@
                   <a
                     href="calculator.html"
                     class="menu-dropdown-item group"
-                    :class="page === 'calculator' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    :class="page === 'basePricing' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
                   >
                     Base Pricing
                   </a>
