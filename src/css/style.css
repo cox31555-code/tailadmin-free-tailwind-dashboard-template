@@ -774,15 +774,6 @@ span.flatpickr-weekday,
   @apply border-brand-500 dark:border-brand-500 border-[6px];
 }
 
-.taskCheckbox:checked ~ .box span {
-  @apply opacity-100;
-}
-.taskCheckbox:checked ~ p {
-  @apply text-gray-400 line-through;
-}
-.taskCheckbox:checked ~ .box {
-  @apply border-brand-500 bg-brand-500 dark:border-brand-500;
-}
 
 .task {
   transition: all 0.2s ease; /* Smooth transition for visual effects */
