@@ -796,9 +796,7 @@ span.flatpickr-weekday,
 
 .task.is-dragging {
   border-radius: 0.75rem;
-  box-shadow:
-    0px 1px 3px 0px rgba(16, 24, 40, 0.1),
-    0px 1px 2px 0px rgba(16, 24, 40, 0.06);
+  box-shadow: var(--shadow-theme-sm);
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
