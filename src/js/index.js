@@ -15,36 +15,24 @@ import map01 from "./components/map-01";
 import "./components/calendar-init.js";
 import "./components/image-resize";
 
+import { 
+  getLondonNow, 
+  getLondonToday, 
+  parseDateAsLondon,
+  getDateRange,
+  formatDateForDisplay,
+  convertToLondonTime,
+  getDateDifference
+} from "./utils/londonTime.js";
+
 Alpine.plugin(persist);
 window.Alpine = Alpine;
 
 /**
- * Shared utility function to parse dates in "Mon DD, YYYY" format
+ * Shared utility function to parse dates in "Mon DD, YYYY" format in London timezone
  */
 const parseDate = (dateStr) => {
-  if (!dateStr) return null;
-
-  try {
-    const parts = dateStr.trim().split(/\s+/);
-    if (parts.length === 3) {
-      const monthStr = parts[0];
-      const dayStr = parts[1].replace(',', '');
-      const yearStr = parts[2];
-
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const monthIndex = months.indexOf(monthStr);
-
-      if (monthIndex !== -1 && dayStr && yearStr) {
-        const date = new Date(yearStr, monthIndex, dayStr);
-        date.setHours(0, 0, 0, 0);
-        return date;
-      }
-    }
-  } catch (e) {
-    // Silently fail
-  }
-
-  return null;
+  return parseDateAsLondon(dateStr);
 };
 
 /**
@@ -96,41 +84,15 @@ Alpine.data('quotesCounter', function() {
     },
 
     parseDate(dateStr) {
-      if (!dateStr) return null;
-
-      // Handle "Dec 07, 2024" format
-      try {
-        const parts = dateStr.trim().split(/\s+/);
-        if (parts.length === 3) {
-          const monthStr = parts[0];
-          const dayStr = parts[1].replace(',', '');
-          const yearStr = parts[2];
-
-          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          const monthIndex = months.indexOf(monthStr);
-
-          if (monthIndex !== -1 && dayStr && yearStr) {
-            const date = new Date(yearStr, monthIndex, dayStr);
-            date.setHours(0, 0, 0, 0);
-            return date;
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to parse date:', dateStr, e);
-      }
-
-      return null;
+      return parseDateAsLondon(dateStr);
     },
 
     getQuotesCount(quotes) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const sevenDaysAgo = new Date(today);
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-
-      const thirtyDaysAgo = new Date(today);
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+      const ranges = {
+        today: getDateRange('today'),
+        last7Days: getDateRange('last7days'),
+        last30Days: getDateRange('last30days')
+      };
 
       let todayCount = 0;
       let last7DaysCount = 0;
@@ -152,15 +114,15 @@ Alpine.data('quotesCounter', function() {
           return;
         }
 
-        if (quoteDate.getTime() === today.getTime()) {
+        if (quoteDate >= ranges.today.start && quoteDate <= ranges.today.end) {
           todayCount++;
         }
 
-        if (quoteDate >= sevenDaysAgo && quoteDate <= today) {
+        if (quoteDate >= ranges.last7Days.start && quoteDate <= ranges.last7Days.end) {
           last7DaysCount++;
         }
 
-        if (quoteDate >= thirtyDaysAgo && quoteDate <= today) {
+        if (quoteDate >= ranges.last30Days.start && quoteDate <= ranges.last30Days.end) {
           past30DaysCount++;
         }
       });
@@ -258,41 +220,15 @@ Alpine.data('ordersCounter', function() {
     },
 
     parseDate(dateStr) {
-      if (!dateStr) return null;
-
-      // Handle "Dec 07, 2024" format
-      try {
-        const parts = dateStr.trim().split(/\s+/);
-        if (parts.length === 3) {
-          const monthStr = parts[0];
-          const dayStr = parts[1].replace(',', '');
-          const yearStr = parts[2];
-
-          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          const monthIndex = months.indexOf(monthStr);
-
-          if (monthIndex !== -1 && dayStr && yearStr) {
-            const date = new Date(yearStr, monthIndex, dayStr);
-            date.setHours(0, 0, 0, 0);
-            return date;
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to parse date:', dateStr, e);
-      }
-
-      return null;
+      return parseDateAsLondon(dateStr);
     },
 
     getOrdersCount(orders) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const sevenDaysAgo = new Date(today);
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-
-      const thirtyDaysAgo = new Date(today);
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+      const ranges = {
+        today: getDateRange('today'),
+        last7Days: getDateRange('last7days'),
+        last30Days: getDateRange('last30days')
+      };
 
       let todayCount = 0;
       let last7DaysCount = 0;
@@ -314,15 +250,15 @@ Alpine.data('ordersCounter', function() {
           return;
         }
 
-        if (orderDate.getTime() === today.getTime()) {
+        if (orderDate >= ranges.today.start && orderDate <= ranges.today.end) {
           todayCount++;
         }
 
-        if (orderDate >= sevenDaysAgo && orderDate <= today) {
+        if (orderDate >= ranges.last7Days.start && orderDate <= ranges.last7Days.end) {
           last7DaysCount++;
         }
 
-        if (orderDate >= thirtyDaysAgo && orderDate <= today) {
+        if (orderDate >= ranges.last30Days.start && orderDate <= ranges.last30Days.end) {
           past30DaysCount++;
         }
       });
@@ -380,30 +316,7 @@ Alpine.data('revenueOverview', function() {
     },
 
     parseDate(dateStr) {
-      if (!dateStr) return null;
-
-      // Handle "Dec 07, 2024" format
-      try {
-        const parts = dateStr.trim().split(/\s+/);
-        if (parts.length === 3) {
-          const monthStr = parts[0];
-          const dayStr = parts[1].replace(',', '');
-          const yearStr = parts[2];
-
-          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          const monthIndex = months.indexOf(monthStr);
-
-          if (monthIndex !== -1 && dayStr && yearStr) {
-            const date = new Date(yearStr, monthIndex, dayStr);
-            date.setHours(0, 0, 0, 0);
-            return date;
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to parse date:', dateStr, e);
-      }
-
-      return null;
+      return parseDateAsLondon(dateStr);
     },
 
     async loadOrdersData() {
@@ -446,11 +359,10 @@ Alpine.data('revenueOverview', function() {
     },
 
     async calculateRevenue() {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const sevenDaysAgo = new Date(today);
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+      const ranges = {
+        today: getDateRange('today'),
+        last7Days: getDateRange('last7days')
+      };
 
       let total = 0;
       let daily = 0;
@@ -468,11 +380,11 @@ Alpine.data('revenueOverview', function() {
             return;
           }
 
-          if (orderDate.getTime() === today.getTime()) {
+          if (orderDate >= ranges.today.start && orderDate <= ranges.today.end) {
             daily += price;
           }
 
-          if (orderDate >= sevenDaysAgo && orderDate <= today) {
+          if (orderDate >= ranges.last7Days.start && orderDate <= ranges.last7Days.end) {
             weekly += price;
           }
         } catch (e) {
@@ -532,44 +444,8 @@ Alpine.data('recentItems', function() {
 
     parseDateTime(dateStr) {
       if (!dateStr) return new Date(0);
-      try {
-        const parts = dateStr.trim().split(/\s+/);
-        if (parts.length >= 3) {
-          const monthStr = parts[0];
-          const dayStr = parts[1].replace(',', '');
-          const yearStr = parts[2];
-
-          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          const monthIndex = months.indexOf(monthStr);
-
-          if (monthIndex !== -1 && dayStr && yearStr) {
-            const date = new Date(yearStr, monthIndex, dayStr);
-
-            if (parts.length > 3) {
-              const timeStr = parts.slice(3).join(' ');
-              const timeParts = timeStr.match(/(\d+):(\d+)\s*(AM|PM)?/i);
-              if (timeParts) {
-                let hours = parseInt(timeParts[1]);
-                const minutes = parseInt(timeParts[2]);
-                const period = timeParts[3];
-
-                if (period && period.toUpperCase() === 'PM' && hours !== 12) {
-                  hours += 12;
-                } else if (period && period.toUpperCase() === 'AM' && hours === 12) {
-                  hours = 0;
-                }
-
-                date.setHours(hours, minutes, 0, 0);
-              }
-            }
-
-            return date;
-          }
-        }
-      } catch (e) {
-        // Silently fail
-      }
-      return new Date(0);
+      const parsedDate = parseDateAsLondon(dateStr);
+      return parsedDate || new Date(0);
     },
 
     async loadQuotesData() {
@@ -768,13 +644,14 @@ Alpine.data('recentItems', function() {
 
 Alpine.start();
 
-// Init flatpickr
+// Init flatpickr with London timezone date range
+const range = getDateRange('last7days');
 flatpickr(".datepicker", {
   mode: "range",
   static: true,
   monthSelectorType: "static",
   dateFormat: "M j, Y",
-  defaultDate: [new Date().setDate(new Date().getDate() - 6), new Date()],
+  defaultDate: [range.start, range.end],
   prevArrow:
     '<svg class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.25 6L9 12.25L15.25 18.5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   nextArrow:
@@ -825,7 +702,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Get the current year
 const year = document.getElementById("year");
 if (year) {
-  year.textContent = new Date().getFullYear();
+  year.textContent = getLondonNow().getFullYear();
 }
 
 // For Copy//
