@@ -13,26 +13,17 @@ export function initLoadingHandler() {
     return;
   }
 
-  // Initialize Alpine reference if available
-  const initAlpineLoading = () => {
-    if (window.Alpine && window.Alpine.__data) {
-      // Alpine is available, we'll set loading via Alpine events
-      document.addEventListener('click', handleLinkClick);
-    }
-  };
-
   // Handle link clicks for navigation
   const handleLinkClick = (event) => {
     const link = event.target.closest('a[href]');
-    
+
     if (!link) return;
 
     const href = link.getAttribute('href');
-    
+
     // Skip if:
     // - href is empty or just '#'
     // - href starts with '#' (internal anchor)
-    // - href is for the current page
     // - link has target="_blank" or target="_parent"
     // - it's an external link (starts with http)
     if (
@@ -55,54 +46,27 @@ export function initLoadingHandler() {
       return;
     }
 
-    // Show loading overlay by setting Alpine data
+    // Show loading overlay by dispatching Alpine event
     showLoading();
   };
 
   /**
    * Show loading overlay
-   * Updates Alpine.js state to display the preloader
+   * Sets the isLoading state to true via Alpine
    */
   const showLoading = () => {
     // Find the body element with Alpine data
     const body = document.querySelector('body[x-data]');
-    if (body && body.__x) {
-      // Direct Alpine component update
+    if (body && body.__x && body.__x.$data) {
       body.__x.$data.isLoading = true;
     }
   };
 
-  /**
-   * Hide loading overlay when page loads
-   */
-  const hideLoading = () => {
-    const body = document.querySelector('body[x-data]');
-    if (body && body.__x) {
-      body.__x.$data.isLoading = false;
-    }
-  };
+  // Attach click handler to document (event delegation)
+  document.addEventListener('click', handleLinkClick, true);
 
-  // Hide loading when page fully loads
-  const handlePageLoad = () => {
-    hideLoading();
-  };
-
-  // Set up event listeners
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', handlePageLoad);
-  } else {
-    // Page already loaded
-    hideLoading();
-  }
-
-  // Attach click handler to document
-  document.addEventListener('click', handleLinkClick);
-
-  // Handle page unload
-  window.addEventListener('beforeunload', () => {
-    // Show loading when user navigates away
-    showLoading();
-  });
+  // Show loading on page unload/navigation
+  window.addEventListener('beforeunload', showLoading);
 }
 
 // Initialize when module is imported
