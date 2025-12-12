@@ -1,57 +1,53 @@
 <script>
-  // Critical: Apply dark mode class immediately from localStorage before Alpine.js initializes
-  // This prevents the "white flash" on page navigation when dark mode is enabled
+  // CRITICAL: Synchronous dark mode initialization BEFORE any rendering
+  // Prevents white flash by applying dark class before content renders
   (function() {
-    // Initialize dark mode on page load
-    function initDarkMode() {
-      try {
-        // Read darkMode preference from localStorage (defaults to true if not set)
-        var isDark = JSON.parse(localStorage.getItem('darkMode') ?? 'true');
+    // 1. IMMEDIATE: Apply dark class synchronously from localStorage
+    try {
+      var isDark = JSON.parse(localStorage.getItem('darkMode') ?? 'true');
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) {
+      // Fallback to dark mode if localStorage fails
+      document.documentElement.classList.add('dark');
+    }
 
-        // Apply or remove dark class based on preference
+    // 2. IMMEDIATE: Show content now that dark class is applied
+    // Remove the hide-during-init style if it exists
+    var hideStyle = document.querySelector('style[data-hide-during-init]');
+    if (hideStyle) {
+      hideStyle.parentNode.removeChild(hideStyle);
+    }
+
+    // 3. Add transition class after initial render
+    document.documentElement.classList.add('theme-transition');
+
+    // 4. Listen for storage changes from OTHER TABS
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'darkMode') {
+        var isDark = JSON.parse(e.newValue ?? 'true');
         if (isDark) {
           document.documentElement.classList.add('dark');
         } else {
           document.documentElement.classList.remove('dark');
         }
-      } catch (e) {
-        // Fallback: Apply dark mode by default in case of any errors
-        document.documentElement.classList.add('dark');
-      }
-    }
-
-    // Add smooth transition class for theme switching
-    try {
-      document.documentElement.classList.add('theme-transition');
-    } catch (e) {}
-
-    // Initialize on page load
-    initDarkMode();
-
-    // Listen for storage changes (from other tabs or Alpine.js updates)
-    window.addEventListener('storage', function(e) {
-      if (e.key === 'darkMode') {
-        initDarkMode();
       }
     });
 
-    // Also watch for direct class changes from Alpine.js
-    // Create a MutationObserver to catch manual class updates
+    // 5. Watch for class mutations and sync back to localStorage
+    // This handles direct class manipulation and ensures localStorage is always in sync
     try {
-      var observer = new MutationObserver(function(mutations) {
+      new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
           if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-            // Re-sync localStorage if dark class was manually added/removed
             var hasDarkClass = document.documentElement.classList.contains('dark');
-            var storedValue = JSON.parse(localStorage.getItem('darkMode') ?? 'true');
-            if (hasDarkClass !== storedValue) {
-              localStorage.setItem('darkMode', JSON.stringify(hasDarkClass));
-            }
+            localStorage.setItem('darkMode', JSON.stringify(hasDarkClass));
           }
         });
-      });
-
-      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    } catch (e) {}
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    } catch (e) {
+      // MutationObserver not supported, fallback already handled
+    }
   })();
 </script>
