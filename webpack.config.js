@@ -8,6 +8,26 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 const { BetaAnalyticsDataClient } = require("@google-analytics/data");
 const { GoogleAuth } = require("google-auth-library");
 
+// ============================================
+// London Timezone Utility Functions
+// ============================================
+/**
+ * Get current date in London timezone
+ */
+const getLondonDate = () => {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/London' }));
+};
+
+/**
+ * Get a date string in YYYY-MM-DD format from a London timezone date
+ */
+const formatDateAsString = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 // Load GA credentials from JSON file
 let gaCredentials = null;
 const credentialsPath = path.join(__dirname, "ga-credentials.json");
