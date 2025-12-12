@@ -9,6 +9,26 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// ============================================
+// London Timezone Utility Functions
+// ============================================
+/**
+ * Get current time in London timezone as ISO string
+ */
+const getLondonNowISO = () => {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/London' })).toISOString();
+};
+
+/**
+ * Convert a Date to London timezone representation and return as ISO string
+ */
+const convertToLondonTimeISO = (date) => {
+  if (!date || !(date instanceof Date)) {
+    return new Date().toISOString();
+  }
+  return new Date(date.toLocaleString('en-US', { timeZone: 'Europe/London' })).toISOString();
+};
+
 // Serve static files from build directory
 app.use(express.static(path.join(__dirname, 'build')));
 
