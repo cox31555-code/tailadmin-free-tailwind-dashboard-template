@@ -1,29 +1,10 @@
 import ApexCharts from "apexcharts";
 import Alpine from "alpinejs";
 import flatpickr from "flatpickr";
+import { parseDateAsLondon, getLondonNow, convertToLondonTime } from "../utils/londonTime.js";
 
 const parseDate = (dateStr) => {
-  if (!dateStr) return null;
-  try {
-    const parts = dateStr.trim().split(/\s+/);
-    if (parts.length >= 3) {
-      const monthStr = parts[0];
-      const dayStr = parts[1].replace(',', '');
-      const yearStr = parts[2];
-
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const monthIndex = months.indexOf(monthStr);
-
-      if (monthIndex !== -1 && dayStr && yearStr) {
-        const date = new Date(yearStr, monthIndex, dayStr);
-        date.setHours(0, 0, 0, 0);
-        return date;
-      }
-    }
-  } catch (e) {
-    // Silently fail
-  }
-  return null;
+  return parseDateAsLondon(dateStr);
 };
 
 const filterByDateRange = (data, startDate, endDate) => {
@@ -262,7 +243,7 @@ Alpine.data('chartFilters', function() {
     },
 
     renderInitialChart() {
-      const today = new Date();
+      const today = getLondonNow();
       const pastYear = new Date(today);
       pastYear.setFullYear(pastYear.getFullYear() - 1);
 
@@ -308,7 +289,7 @@ Alpine.data('chartFilters', function() {
     initDatePicker() {
       const dateInput = document.querySelector('.chart-datepicker');
       if (dateInput) {
-        const today = new Date();
+        const today = getLondonNow();
         const pastYear = new Date(today);
         pastYear.setFullYear(pastYear.getFullYear() - 1);
 
