@@ -157,8 +157,8 @@ app.post('/api/webhook/crisp', (req, res) => {
         session_id: data.session_id || data.id || `session_${Date.now()}`,
         visitor: data.visitor || { name: 'Unknown', email: data.email || '' },
         state: data.state || 'unresolved',
-        created_at: data.created_at || new Date().toISOString(),
-        updated_at: data.updated_at || new Date().toISOString(),
+        created_at: data.created_at || getLondonNowISO(),
+        updated_at: data.updated_at || getLondonNowISO(),
         messages: data.messages || [],
         unread: data.unread || { operator: 0, visitor: 0 },
         assigned_user_id: data.assigned_user_id || null
