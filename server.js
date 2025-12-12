@@ -50,27 +50,27 @@ const mockConversations = [
       email: 'john@example.com'
     },
     state: 'active',
-    created_at: new Date(Date.now() - 3600000),
+    created_at: new Date(getLondonNow().getTime() - 3600000),
     messages: [
       {
         id: 'msg_001',
         from: 'visitor',
         content: 'Hello, I need help with my insurance claim',
-        timestamp: new Date(Date.now() - 600000),
+        timestamp: new Date(getLondonNow().getTime() - 600000),
         author: 'John Doe'
       },
       {
         id: 'msg_002',
         from: 'operator',
         content: 'Hi John! I\'d be happy to help. Can you provide your policy number?',
-        timestamp: new Date(Date.now() - 300000),
+        timestamp: new Date(getLondonNow().getTime() - 300000),
         author: 'Support Agent'
       },
       {
         id: 'msg_003',
         from: 'visitor',
         content: 'Sure, it\'s LP-2024-001234',
-        timestamp: new Date(Date.now() - 60000),
+        timestamp: new Date(getLondonNow().getTime() - 60000),
         author: 'John Doe'
       }
     ]
@@ -82,20 +82,20 @@ const mockConversations = [
       email: 'sarah@example.com'
     },
     state: 'active',
-    created_at: new Date(Date.now() - 7200000),
+    created_at: new Date(getLondonNow().getTime() - 7200000),
     messages: [
       {
         id: 'msg_101',
         from: 'visitor',
         content: 'When will my claim be processed?',
-        timestamp: new Date(Date.now() - 1800000),
+        timestamp: new Date(getLondonNow().getTime() - 1800000),
         author: 'Sarah Smith'
       },
       {
         id: 'msg_102',
         from: 'operator',
         content: 'Claims typically take 5-7 business days. I\'ll check your status.',
-        timestamp: new Date(Date.now() - 900000),
+        timestamp: new Date(getLondonNow().getTime() - 900000),
         author: 'Support Agent'
       }
     ]
