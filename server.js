@@ -8,6 +8,36 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// ============================================
+// London Timezone Utility Functions
+// ============================================
+/**
+ * Get current time in London timezone
+ * Returns a Date object representing the current London time
+ */
+const getLondonNow = () => {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/London' }));
+};
+
+/**
+ * Convert a Date to London timezone representation
+ */
+const convertToLondonTime = (date) => {
+  if (!date || !(date instanceof Date)) {
+    return null;
+  }
+  return new Date(date.toLocaleString('en-US', { timeZone: 'Europe/London' }));
+};
+
+/**
+ * Get today's date at midnight in London timezone
+ */
+const getLondonToday = () => {
+  const now = getLondonNow();
+  now.setHours(0, 0, 0, 0);
+  return now;
+};
+
 // Placeholder for Zapier MCP integration
 // In a production environment, these would call the actual Zapier MCP endpoints
 // For now, we'll provide sample data structure that matches what Zapier returns
