@@ -667,26 +667,47 @@ Alpine.data('recentItems', function() {
 Alpine.start();
 
 // Synchronize dark mode class with document element for smooth transitions
+// Use multiple mechanisms to ensure immediate, reliable updates
 document.addEventListener('alpine:initialized', () => {
   try {
     const body = document.querySelector('body[x-data]');
     if (body && body.__x && body.__x.$data) {
-      // Watch for darkMode changes in Alpine.js
+      // Method 1: Primary watcher for darkMode state changes
       body.__x.$watch('darkMode', (newValue) => {
-        // Sync to document element class
-        if (newValue) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-        // Ensure localStorage is also in sync
-        localStorage.setItem('darkMode', JSON.stringify(newValue));
+        updateDarkMode(newValue);
       });
+
+      // Method 2: Direct attribute observer on body for immediate class changes
+      new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'class') {
+            const hasDarkClass = document.documentElement.classList.contains('dark');
+            const currentAlpineValue = body.__x.$data.darkMode;
+            // If Alpine state doesn't match DOM, sync it
+            if (hasDarkClass !== currentAlpineValue) {
+              body.__x.$data.darkMode = hasDarkClass;
+            }
+          }
+        });
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     }
   } catch (e) {
     console.warn('Dark mode watcher initialization error:', e);
   }
 });
+
+// Unified function to update dark mode everywhere
+function updateDarkMode(isDark) {
+  // IMMEDIATE: Update document class synchronously
+  if (isDark) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+
+  // Update localStorage to persist preference
+  localStorage.setItem('darkMode', JSON.stringify(isDark));
+}
 
 // Init flatpickr with London timezone date range
 const range = getDateRange('last7days');
