@@ -151,7 +151,6 @@
          darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
          loadMultipliers();"
-    :class="{'dark bg-gray-900': darkMode === true}"
   >
     <!-- ===== Preloader Start ===== -->
     <include src="./partials/preloader.html"></include>
