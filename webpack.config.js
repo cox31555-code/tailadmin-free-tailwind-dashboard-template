@@ -185,11 +185,12 @@ module.exports = {
             throw rtError;
           }
 
-          // Get 30-day date range
-          const thirtyDaysAgo = new Date();
+          // Get 30-day date range in London timezone
+          const londonToday = getLondonDate();
+          const thirtyDaysAgo = new Date(londonToday);
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-          const startDate = thirtyDaysAgo.toISOString().split("T")[0];
-          const endDate = new Date().toISOString().split("T")[0];
+          const startDate = formatDateAsString(thirtyDaysAgo);
+          const endDate = formatDateAsString(londonToday);
 
           // Get daily data for trend chart (last 30 days)
           const dailyResponse = await analyticsDataClient.runReport({
