@@ -82,11 +82,11 @@ app.post('/api/webhook/crisp', (req, res) => {
           id: `msg_${Date.now()}`,
           from: 'operator',
           content: data.message,
-          timestamp: new Date().toISOString(),
+          timestamp: getLondonNowISO(),
           author: data.operator || 'Support Agent'
         };
         conversation.messages.push(newMessage);
-        conversation.updated_at = new Date().toISOString();
+        conversation.updated_at = getLondonNowISO();
         saveConversations(conversations);
         console.log(`Message sent to conversation ${data.session_id}`);
         res.json({ success: true, message: 'Message sent' });
