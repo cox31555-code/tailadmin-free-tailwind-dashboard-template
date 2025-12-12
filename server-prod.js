@@ -115,10 +115,10 @@ app.post('/api/webhook/crisp', (req, res) => {
         conversation.notes.push({
           id: `note_${Date.now()}`,
           content: data.note,
-          timestamp: new Date().toISOString(),
+          timestamp: getLondonNowISO(),
           author: data.operator || 'Support Agent'
         });
-        conversation.updated_at = new Date().toISOString();
+        conversation.updated_at = getLondonNowISO();
         saveConversations(conversations);
         console.log(`Note added to conversation ${data.session_id}`);
         res.json({ success: true, message: 'Note added' });
