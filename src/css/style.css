@@ -303,6 +303,15 @@ layer(base);
     @apply bg-gray-900 text-white;
   }
 
+  /* Body background color responds to dark mode on html element */
+  .dark body {
+    @apply bg-gray-900;
+  }
+
+  html:not(.dark) body {
+    @apply bg-gray-50;
+  }
+
   /* Content area backgrounds */
   main {
     @apply bg-white dark:bg-gray-900;
