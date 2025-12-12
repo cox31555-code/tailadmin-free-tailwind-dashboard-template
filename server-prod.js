@@ -239,8 +239,8 @@ app.post('/api/test/webhook', (req, res) => {
             email: data.email || 'test@example.com'
           },
           state: data.status || 'unresolved',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          created_at: getLondonNowISO(),
+          updated_at: getLondonNowISO(),
           messages: [],
           unread: { operator: 0, visitor: 0 }
         };
@@ -253,11 +253,11 @@ app.post('/api/test/webhook', (req, res) => {
           id: `msg_${Date.now()}`,
           from: 'operator',
           content: data.message,
-          timestamp: new Date().toISOString(),
+          timestamp: getLondonNowISO(),
           author: data.operator || 'Support Agent'
         };
         updatedConversation.messages.push(newMessage);
-        updatedConversation.updated_at = new Date().toISOString();
+        updatedConversation.updated_at = getLondonNowISO();
         saveConversations(conversations);
       }
     }
