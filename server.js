@@ -152,11 +152,11 @@ app.post('/api/crisp/send-message', async (req, res) => {
         id: `msg_${Date.now()}`,
         from: 'operator',
         content: content,
-        timestamp: new Date(),
+        timestamp: getLondonNow(),
         author: 'Support Agent'
       };
       conversation.messages.push(newMessage);
-      
+
       // Also track in webhooks map for real-time updates
       if (!webhookMessages.has(session_id)) {
         webhookMessages.set(session_id, []);
