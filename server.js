@@ -227,7 +227,7 @@ app.post('/api/crisp/webhook', (req, res) => {
         id: `webhook_msg_${Date.now()}`,
         from: message.from || 'visitor',
         content: message.content || message.messageContent,
-        timestamp: new Date(message.timestamp),
+        timestamp: message.timestamp ? convertToLondonTime(new Date(message.timestamp)) : getLondonNow(),
         author: message.author || message.senderName || 'Visitor'
       });
     }
