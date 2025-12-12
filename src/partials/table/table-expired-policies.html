@@ -11,9 +11,7 @@
       { type: 'Impound', name: 'Robert Lee', price: '$175.00', email: 'robert.lee@example.com', phone: '07978901234', vehicle: 'Toyota Corolla', policyStart: 'Dec 10, 2024', policyEnd: 'Jan 10, 2024 11:59 PM' }
     ],
     isExpired(dateStr) {
-      const policyEndDate = new Date(dateStr);
-      const currentDate = new Date();
-      return policyEndDate < currentDate;
+      return window.londonTime.isExpired(dateStr);
     },
     getExpiredPolicies() {
       return this.policies.filter(policy => this.isExpired(policy.policyEnd));
