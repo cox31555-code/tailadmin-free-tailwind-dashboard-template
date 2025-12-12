@@ -292,14 +292,6 @@ layer(base);
     @apply relative text-base font-normal font-outfit z-1 bg-gray-50;
   }
 
-  /* Smooth theme transitions */
-  html.theme-transition,
-  html.theme-transition *,
-  html.theme-transition *::before,
-  html.theme-transition *::after {
-    @apply transition-colors duration-200 !important;
-  }
-
   /* Ensure explicit light mode backgrounds */
   html:not(.dark) {
     color-scheme: light;
@@ -315,6 +307,12 @@ layer(base);
   main {
     @apply bg-white dark:bg-gray-900;
   }
+}
+
+/* Smooth theme transitions */
+html.theme-transition,
+html.theme-transition * {
+  transition: background-color 200ms, color 200ms, border-color 200ms, box-shadow 200ms;
 }
 
 @layer utilities {
