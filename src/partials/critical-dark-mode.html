@@ -2,17 +2,56 @@
   // Critical: Apply dark mode class immediately from localStorage before Alpine.js initializes
   // This prevents the "white flash" on page navigation when dark mode is enabled
   (function() {
-    try {
-      // Read darkMode preference from localStorage (defaults to true if not set)
-      var isDark = JSON.parse(localStorage.getItem('darkMode') ?? 'true');
-      
-      // Apply dark class to document element before any other scripts run
-      if (isDark) {
+    // Initialize dark mode on page load
+    function initDarkMode() {
+      try {
+        // Read darkMode preference from localStorage (defaults to true if not set)
+        var isDark = JSON.parse(localStorage.getItem('darkMode') ?? 'true');
+
+        // Apply or remove dark class based on preference
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {
+        // Fallback: Apply dark mode by default in case of any errors
         document.documentElement.classList.add('dark');
       }
-    } catch (e) {
-      // Fallback: Apply dark mode by default in case of any errors
-      document.documentElement.classList.add('dark');
     }
+
+    // Add smooth transition class for theme switching
+    try {
+      document.documentElement.classList.add('theme-transition');
+    } catch (e) {}
+
+    // Initialize on page load
+    initDarkMode();
+
+    // Listen for storage changes (from other tabs or Alpine.js updates)
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'darkMode') {
+        initDarkMode();
+      }
+    });
+
+    // Also watch for direct class changes from Alpine.js
+    // Create a MutationObserver to catch manual class updates
+    try {
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            // Re-sync localStorage if dark class was manually added/removed
+            var hasDarkClass = document.documentElement.classList.contains('dark');
+            var storedValue = JSON.parse(localStorage.getItem('darkMode') ?? 'true');
+            if (hasDarkClass !== storedValue) {
+              localStorage.setItem('darkMode', JSON.stringify(hasDarkClass));
+            }
+          }
+        });
+      });
+
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    } catch (e) {}
   })();
 </script>
