@@ -13,17 +13,10 @@
       document.documentElement.classList.add('dark');
     }
 
-    // 2. IMMEDIATE: Show content now that dark class is applied
-    // Remove the hide-during-init style if it exists
-    var hideStyle = document.querySelector('style[data-hide-during-init]');
-    if (hideStyle) {
-      hideStyle.parentNode.removeChild(hideStyle);
-    }
-
-    // 3. Add transition class after initial render
+    // 2. Add transition class after initial render
     document.documentElement.classList.add('theme-transition');
 
-    // 4. Listen for storage changes from OTHER TABS
+    // 3. Listen for storage changes from OTHER TABS
     window.addEventListener('storage', function(e) {
       if (e.key === 'darkMode') {
         var isDark = JSON.parse(e.newValue ?? 'true');
@@ -35,7 +28,7 @@
       }
     });
 
-    // 5. Watch for class mutations and sync back to localStorage
+    // 4. Watch for class mutations and sync back to localStorage
     // This handles direct class manipulation and ensures localStorage is always in sync
     try {
       new MutationObserver(function(mutations) {
