@@ -99,7 +99,7 @@ app.post('/api/webhook/crisp', (req, res) => {
 
       if (conversation) {
         conversation.state = data.status;
-        conversation.updated_at = new Date().toISOString();
+        conversation.updated_at = getLondonNowISO();
         saveConversations(conversations);
         console.log(`Status updated to ${data.status} for conversation ${data.session_id}`);
         res.json({ success: true, message: 'Status updated' });
