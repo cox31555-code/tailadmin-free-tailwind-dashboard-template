@@ -1,38 +1,17 @@
 import ApexCharts from "apexcharts";
+import { parseDateAsLondon, getLondonToday } from "../utils/londonTime.js";
 
 // ===== chartTwo - Bar Chart for Product Types
 const chart02 = async () => {
   const parseDate = (dateStr) => {
-    if (!dateStr) return null;
-
-    try {
-      const parts = dateStr.trim().split(/\s+/);
-      if (parts.length === 3) {
-        const monthStr = parts[0];
-        const dayStr = parts[1].replace(',', '');
-        const yearStr = parts[2];
-
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const monthIndex = months.indexOf(monthStr);
-
-        if (monthIndex !== -1 && dayStr && yearStr) {
-          const date = new Date(yearStr, monthIndex, dayStr);
-          date.setHours(0, 0, 0, 0);
-          return date;
-        }
-      }
-    } catch (e) {
-      console.warn('Chart-02: Failed to parse date:', dateStr, e);
-    }
-
-    return null;
+    return parseDateAsLondon(dateStr);
   };
 
-  // Generate last 7 days labels (simple day names only)
+  // Generate last 7 days labels (simple day names only) in London timezone
   const getLast7Days = () => {
     const days = [];
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const today = new Date();
+    const today = getLondonToday();
 
     for (let i = 6; i >= 0; i--) {
       const date = new Date(today);
@@ -43,10 +22,10 @@ const chart02 = async () => {
     return days;
   };
 
-  // Get last 7 days with full dates
+  // Get last 7 days with full dates in London timezone
   const getLast7DaysWithDates = () => {
     const dates = [];
-    const today = new Date();
+    const today = getLondonToday();
 
     for (let i = 6; i >= 0; i--) {
       const date = new Date(today);
