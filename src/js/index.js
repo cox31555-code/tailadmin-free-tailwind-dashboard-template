@@ -15,18 +15,39 @@ import map01 from "./components/map-01";
 import "./components/calendar-init.js";
 import "./components/image-resize";
 
-import { 
-  getLondonNow, 
-  getLondonToday, 
+import {
+  getLondonNow,
+  getLondonToday,
   parseDateAsLondon,
   getDateRange,
   formatDateForDisplay,
   convertToLondonTime,
-  getDateDifference
+  getDateDifference,
+  isExpired,
+  compareLondonDates,
+  getDateArray,
+  getStartOfDay,
+  getEndOfDay
 } from "./utils/londonTime.js";
 
 Alpine.plugin(persist);
 window.Alpine = Alpine;
+
+// Expose London timezone utilities globally for use in HTML templates
+window.londonTime = {
+  getLondonNow,
+  getLondonToday,
+  parseDateAsLondon,
+  getDateRange,
+  formatDateForDisplay,
+  convertToLondonTime,
+  getDateDifference,
+  isExpired,
+  compareLondonDates,
+  getDateArray,
+  getStartOfDay,
+  getEndOfDay
+};
 
 /**
  * Shared utility function to parse dates in "Mon DD, YYYY" format in London timezone
