@@ -675,6 +675,8 @@ document.addEventListener('alpine:initialized', () => {
       // Method 1: Primary watcher for darkMode state changes
       body.__x.$watch('darkMode', (newValue) => {
         updateDarkMode(newValue);
+        // Force CSS recalculation by triggering reflow
+        void document.documentElement.offsetHeight;
       });
 
       // Method 2: Direct attribute observer on body for immediate class changes
