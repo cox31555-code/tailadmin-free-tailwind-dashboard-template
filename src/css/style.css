@@ -315,6 +315,26 @@ html.theme-transition * {
   transition: background-color 200ms, color 200ms, border-color 200ms, box-shadow 200ms;
 }
 
+/* Fallback: Use system preference if dark class is not yet applied */
+@media (prefers-color-scheme: dark) {
+  html {
+    @apply bg-gray-900 text-white;
+  }
+  html body {
+    @apply bg-gray-900 text-white;
+  }
+}
+
+/* Ensure major content containers have proper backgrounds */
+html.dark main,
+html.dark main {
+  @apply bg-gray-900;
+}
+
+html:not(.dark) main {
+  @apply bg-white;
+}
+
 @layer utilities {
   /* For Remove Date Icon */
   input[type="date"]::-webkit-inner-spin-button,
