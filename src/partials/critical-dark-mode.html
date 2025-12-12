@@ -1,0 +1,18 @@
+<script>
+  // Critical: Apply dark mode class immediately from localStorage before Alpine.js initializes
+  // This prevents the "white flash" on page navigation when dark mode is enabled
+  (function() {
+    try {
+      // Read darkMode preference from localStorage (defaults to true if not set)
+      var isDark = JSON.parse(localStorage.getItem('darkMode') ?? 'true');
+      
+      // Apply dark class to document element before any other scripts run
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) {
+      // Fallback: Apply dark mode by default in case of any errors
+      document.documentElement.classList.add('dark');
+    }
+  })();
+</script>
