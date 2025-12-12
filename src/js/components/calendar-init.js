@@ -3,6 +3,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { getLondonNow, convertToLondonTime } from "../utils/londonTime.js";
 
 /*========Calender Js=========*/
 /*==========================*/
@@ -12,9 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (calendarWrapper) {
     /*=================*/
-    //  Calender Date variable
+    //  Calender Date variable - using London timezone
     /*=================*/
-    const newDate = new Date();
+    const newDate = getLondonNow();
     const getDynamicMonth = () => {
       const month = newDate.getMonth() + 1;
       return month < 10 ? `0${month}` : `${month}`;
