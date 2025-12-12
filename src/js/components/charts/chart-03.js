@@ -1,7 +1,7 @@
 import ApexCharts from "apexcharts";
 import Alpine from "alpinejs";
 import flatpickr from "flatpickr";
-import { parseDateAsLondon, getLondonNow, convertToLondonTime } from "../utils/londonTime.js";
+import { parseDateAsLondon, getLondonNow, convertToLondonTime } from "../../utils/londonTime.js";
 
 const parseDate = (dateStr) => {
   return parseDateAsLondon(dateStr);
