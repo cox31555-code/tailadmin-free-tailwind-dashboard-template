@@ -666,6 +666,28 @@ Alpine.data('recentItems', function() {
 
 Alpine.start();
 
+// Synchronize dark mode class with document element for smooth transitions
+document.addEventListener('alpine:initialized', () => {
+  try {
+    const body = document.querySelector('body[x-data]');
+    if (body && body.__x && body.__x.$data) {
+      // Watch for darkMode changes in Alpine.js
+      body.__x.$watch('darkMode', (newValue) => {
+        // Sync to document element class
+        if (newValue) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        // Ensure localStorage is also in sync
+        localStorage.setItem('darkMode', JSON.stringify(newValue));
+      });
+    }
+  } catch (e) {
+    console.warn('Dark mode watcher initialization error:', e);
+  }
+});
+
 // Init flatpickr with London timezone date range
 const range = getDateRange('last7days');
 flatpickr(".datepicker", {
