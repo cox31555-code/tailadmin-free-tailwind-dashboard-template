@@ -264,7 +264,18 @@
   x-data="{
     filterPanelOpen: false,
     searchQuery: '',
-    filterPayment: 'all'
+    filterPayment: 'all',
+    sortColumn: 'date',
+    sortDirection: 'asc',
+    handleSort(columnName) {
+      if (this.sortColumn === columnName) {
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortColumn = columnName;
+        this.sortDirection = 'asc';
+      }
+      performSort(this.sortColumn, this.sortDirection);
+    }
   }"
   @click.outside="filterPanelOpen = false"
   class="overflow-visible rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
