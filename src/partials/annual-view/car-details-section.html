@@ -61,12 +61,17 @@
       </label>
       <div class="sm:col-span-2">
         <p x-show="!editMode['carDetails']" class="text-sm text-gray-800 dark:text-white/90" x-text="alarm"></p>
-        <input
+        <select
           x-show="editMode['carDetails']"
           x-model="alarm"
-          type="text"
-          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
-        />
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Factory Fitted Thatcham Approved Alarm/Immobiliser">Factory Fitted Thatcham Approved Alarm/Immobiliser</option>
+          <option value="Factory Fitted Thatcham Approved Alarm">Factory Fitted Thatcham Approved Alarm</option>
+          <option value="Factory Fitted Non-Thatcham Alarm/Immobiliser">Factory Fitted Non-Thatcham Alarm/Immobiliser</option>
+          <option value="Factory Fitted Non-Thatcham Alarm">Factory Fitted Non-Thatcham Alarm</option>
+          <option value="Factory Fitted">Factory Fitted</option>
+          <option value="None">None</option>
+        </select>
       </div>
     </div>
     
@@ -274,12 +279,14 @@
       </label>
       <div class="sm:col-span-2">
         <p x-show="!editMode['carUsageSection']" class="text-sm text-gray-800 dark:text-white/90" x-text="carUsage"></p>
-        <input
+        <select
           x-show="editMode['carUsageSection']"
           x-model="carUsage"
-          type="text"
-          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
-        />
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Social use only">Social use only</option>
+          <option value="Social and commuting">Social and commuting</option>
+          <option value="Social, commuting and business">Social, commuting and business</option>
+        </select>
       </div>
     </div>
     
