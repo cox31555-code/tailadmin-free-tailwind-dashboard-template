@@ -1,0 +1,309 @@
+<div class="space-y-5">
+  <!-- Kanban Header & Controls -->
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <!-- Title Row -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white/90">Task Board</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <span x-text="tasks.length"></span> total tasks across 
+          <span x-text="columns.length"></span> columns
+        </p>
+      </div>
+      
+      <div class="flex items-center gap-2 flex-wrap">
+        <button 
+          @click="openAddTaskModal()"
+          class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Add Task
+        </button>
+        
+        <button 
+          @click="openColumnModal()"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add Column
+        </button>
+      </div>
+    </div>
+    
+    <!-- Filters & Search -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+      <!-- Search -->
+      <div class="lg:col-span-2">
+        <div class="relative">
+          <input
+            type="text"
+            x-model="searchQuery"
+            placeholder="Search tasks..."
+            class="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+          />
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Priority Filter -->
+      <div>
+        <select
+          x-model="filterPriority"
+          class="w-full rounded-lg border border-gray-300 bg-white py-2 px-4 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        >
+          <option value="all">All Priorities</option>
+          <option value="high">High Priority</option>
+          <option value="medium">Medium Priority</option>
+          <option value="low">Low Priority</option>
+        </select>
+      </div>
+      
+      <!-- Assignee Filter -->
+      <div>
+        <select
+          x-model="filterAssignee"
+          class="w-full rounded-lg border border-gray-300 bg-white py-2 px-4 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        >
+          <option value="all">All Assignees</option>
+          <template x-for="assignee in getUniqueAssignees()" :key="assignee">
+            <option :value="assignee" x-text="assignee"></option>
+          </template>
+        </select>
+      </div>
+      
+      <!-- Sort By -->
+      <div>
+        <select
+          x-model="sortBy"
+          class="w-full rounded-lg border border-gray-300 bg-white py-2 px-4 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        >
+          <option value="created">Newest First</option>
+          <option value="updated">Recently Updated</option>
+          <option value="dueDate">Due Date</option>
+          <option value="priority">Priority</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Active Filters Display -->
+    <div x-show="searchQuery || filterPriority !== 'all' || filterAssignee !== 'all'" class="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+      <span class="text-xs text-gray-500 dark:text-gray-400">Active filters:</span>
+      <div class="flex flex-wrap gap-2">
+        <span x-show="searchQuery" class="inline-flex items-center gap-1 rounded-full bg-brand-100 px-2 py-1 text-xs text-brand-700 dark:bg-brand-900/20 dark:text-brand-400">
+          Search: <span x-text="searchQuery"></span>
+          <button @click="searchQuery = ''" class="hover:text-brand-900 dark:hover:text-brand-300">×</button>
+        </span>
+        <span x-show="filterPriority !== 'all'" class="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-700 dark:bg-orange-900/20 dark:text-orange-400">
+          Priority: <span x-text="filterPriority"></span>
+          <button @click="filterPriority = 'all'" class="hover:text-orange-900 dark:hover:text-orange-300">×</button>
+        </span>
+        <span x-show="filterAssignee !== 'all'" class="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2 py-1 text-xs text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">
+          Assignee: <span x-text="filterAssignee"></span>
+          <button @click="filterAssignee = 'all'" class="hover:text-purple-900 dark:hover:text-purple-300">×</button>
+        </span>
+        <button @click="clearFilters()" class="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 underline">
+          Clear all
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Kanban Columns -->
+  <div class="flex gap-4 overflow-x-auto pb-4 min-h-[600px]" style="scroll-snap-type: x proximity;">
+    <template x-for="column in columns" :key="column.id">
+      <div 
+        class="flex-shrink-0 w-80"
+        style="scroll-snap-align: start;"
+        @dragover="allowDrop($event)"
+        @drop="drop(column.id)"
+      >
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] h-full flex flex-col">
+          <!-- Column Header -->
+          <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <div 
+                  class="w-3 h-3 rounded-full"
+                  :style="{ backgroundColor: column.color }"
+                ></div>
+                <h3 class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="column.name"></h3>
+                <span 
+                  class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium"
+                  :class="column.limit && getTasksForColumn(column.id).length >= column.limit ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'"
+                  x-text="getTasksForColumn(column.id).length"
+                ></span>
+                <span x-show="column.limit" class="text-xs text-gray-400" x-text="'/ ' + column.limit"></span>
+              </div>
+              
+              <div class="flex items-center gap-1">
+                <button 
+                  @click="openAddTaskModal(column.id)"
+                  class="p-1 text-gray-400 hover:text-brand-500 dark:hover:text-brand-400"
+                  title="Add task to this column"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+                <button 
+                  @click="openColumnModal(column.id)"
+                  class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  title="Edit column"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Column Content (Tasks) -->
+          <div class="flex-1 p-3 space-y-3 overflow-y-auto">
+            <template x-for="task in getTasksForColumn(column.id)" :key="task.id">
+              <div 
+                draggable="true"
+                @dragstart="startDrag(task.id, column.id)"
+                class="group bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg p-3 cursor-move hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all"
+                :class="draggedTaskId === task.id ? 'opacity-50' : ''"
+              >
+                <!-- Task Header -->
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <h4 class="text-sm font-medium text-gray-800 dark:text-white/90 flex-1 line-clamp-2" x-text="task.title"></h4>
+                  <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div x-data="{ showMenu: false }" class="relative">
+                      <button 
+                        @click="showMenu = !showMenu"
+                        class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded"
+                      >
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                        </svg>
+                      </button>
+                      
+                      <div 
+                        x-show="showMenu"
+                        @click.away="showMenu = false"
+                        x-transition
+                        class="absolute right-0 mt-1 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-10"
+                      >
+                        <button 
+                          @click="openEditTaskModal(task.id); showMenu = false"
+                          class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 rounded-t-lg"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit
+                        </button>
+                        <button 
+                          @click="duplicateTask(task.id); showMenu = false"
+                          class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                          Duplicate
+                        </button>
+                        <button 
+                          @click="deleteTask(task.id); showMenu = false"
+                          class="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/10 rounded-b-lg"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Task Description -->
+                <p x-show="task.description" class="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2" x-text="task.description"></p>
+                
+                <!-- Task Labels -->
+                <div x-show="task.labels && task.labels.length > 0" class="flex flex-wrap gap-1 mb-3">
+                  <template x-for="label in task.labels" :key="label">
+                    <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400" x-text="label"></span>
+                  </template>
+                </div>
+                
+                <!-- Task Meta -->
+                <div class="flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-2">
+                    <!-- Priority Badge -->
+                    <span 
+                      class="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium capitalize"
+                      :class="getPriorityColor(task.priority)"
+                      x-text="task.priority"
+                    ></span>
+                    
+                    <!-- Due Date -->
+                    <div x-show="task.dueDate" class="flex items-center gap-1"
+                         :class="{
+                           'text-red-600 dark:text-red-400': getDueDateStatus(task.dueDate) === 'overdue',
+                           'text-orange-600 dark:text-orange-400': getDueDateStatus(task.dueDate) === 'urgent',
+                           'text-yellow-600 dark:text-yellow-500': getDueDateStatus(task.dueDate) === 'soon',
+                           'text-gray-500 dark:text-gray-400': getDueDateStatus(task.dueDate) === 'normal'
+                         }">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span x-text="formatDueDate(task.dueDate)"></span>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-center gap-2">
+                    <!-- Attachments -->
+                    <div x-show="task.attachments > 0" class="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                      </svg>
+                      <span x-text="task.attachments"></span>
+                    </div>
+                    
+                    <!-- Comments -->
+                    <div x-show="task.comments > 0" class="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      <span x-text="task.comments"></span>
+                    </div>
+                    
+                    <!-- Assignee Avatar -->
+                    <img 
+                      x-show="task.assigneeAvatar"
+                      :src="task.assigneeAvatar"
+                      :alt="task.assignee"
+                      :title="task.assignee"
+                      class="w-6 h-6 rounded-full border-2 border-white dark:border-gray-800"
+                    />
+                  </div>
+                </div>
+              </div>
+            </template>
+            
+            <!-- Empty State -->
+            <div x-show="getTasksForColumn(column.id).length === 0" class="flex flex-col items-center justify-center py-8 text-center">
+              <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+              <p class="text-sm text-gray-500 dark:text-gray-400">No tasks</p>
+              <button 
+                @click="openAddTaskModal(column.id)"
+                class="mt-2 text-xs text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300"
+              >
+                + Add a task
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</div>
