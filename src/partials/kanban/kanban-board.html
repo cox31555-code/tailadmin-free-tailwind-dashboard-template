@@ -173,7 +173,11 @@
               >
                 <!-- Task Header -->
                 <div class="flex items-start justify-between gap-2 mb-2">
-                  <h4 class="text-sm font-medium text-gray-800 dark:text-white/90 flex-1 line-clamp-2" x-text="task.title"></h4>
+                  <h4
+                    @click="openTaskDetail(task.id)"
+                    class="text-sm font-medium text-gray-800 dark:text-white/90 flex-1 line-clamp-2 cursor-pointer hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                    x-text="task.title"
+                  ></h4>
                   <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                     <div x-data="{ showMenu: false }" class="relative">
                       <button 
