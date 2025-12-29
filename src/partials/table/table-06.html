@@ -185,6 +185,14 @@
     return { total, active, expiringSoon };
   }
 
+  // Update stats counts in Alpine state
+  function updateStatsCounts() {
+    const counts = calculatePolicyCounts();
+    // This will be called from Alpine context via event or direct method
+    const event = new CustomEvent('update-stats', { detail: counts });
+    document.dispatchEvent(event);
+  }
+
   // Extract and normalize values for sorting
   function getSortValue(cell, columnName) {
     let value = cell.textContent.trim();
