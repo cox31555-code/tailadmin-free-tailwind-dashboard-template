@@ -806,12 +806,16 @@
       </label>
       <div class="sm:col-span-2">
         <p x-show="!editMode['carStorage']" class="text-sm text-gray-800 dark:text-white/90" x-text="daytimeStorage"></p>
-        <input
+        <select
           x-show="editMode['carStorage']"
           x-model="daytimeStorage"
-          type="text"
-          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
-        />
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="At home">At home</option>
+          <option value="Office or factory car park">Office or factory car park</option>
+          <option value="Open public car park">Open public car park</option>
+          <option value="Secure public car park">Secure public car park</option>
+          <option value="Street away from home">Street away from home</option>
+        </select>
       </div>
     </div>
     
@@ -821,12 +825,20 @@
       </label>
       <div class="sm:col-span-2">
         <p x-show="!editMode['carStorage']" class="text-sm text-gray-800 dark:text-white/90" x-text="nighttimeStorage"></p>
-        <input
+        <select
           x-show="editMode['carStorage']"
           x-model="nighttimeStorage"
-          type="text"
-          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
-        />
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Drive">Drive</option>
+          <option value="Street outside home">Street outside home</option>
+          <option value="Locked garage">Locked garage</option>
+          <option value="Unlocked garage">Unlocked garage</option>
+          <option value="Street away from home">Street away from home</option>
+          <option value="Locked compound">Locked compound</option>
+          <option value="Public car park">Public car park</option>
+          <option value="Work car park">Work car park</option>
+          <option value="Private property">Private property</option>
+        </select>
       </div>
     </div>
     
