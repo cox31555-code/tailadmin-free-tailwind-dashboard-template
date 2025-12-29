@@ -569,6 +569,7 @@
           activeProcessorId: 'stripe',
           editMode: false,
           showSecretKey: false,
+          postalCodeApiKey: '',
           
           processors: [
             {
@@ -625,6 +626,7 @@
             if (saved) {
               const data = JSON.parse(saved);
               this.activeProcessorId = data.activeProcessorId || 'stripe';
+              this.postalCodeApiKey = data.postalCodeApiKey || '';
               if (data.processors) {
                 this.processors = data.processors;
               }
@@ -731,10 +733,16 @@
               console.log('Webhook URL copied to clipboard');
             });
           },
-          
+
+          savePostalCodeApiKey() {
+            this.saveToLocalStorage();
+            console.log('Postal code API key saved');
+          },
+
           saveToLocalStorage() {
             const data = {
               activeProcessorId: this.activeProcessorId,
+              postalCodeApiKey: this.postalCodeApiKey,
               processors: this.processors
             };
             localStorage.setItem('processorSettings', JSON.stringify(data));
