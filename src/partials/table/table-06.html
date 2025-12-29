@@ -338,8 +338,20 @@
     filterPanelOpen: false,
     searchQuery: '',
     filterPayment: 'all',
-    sortColumn: 'date',
+    sortColumn: 'name',
     sortDirection: 'asc',
+    policyCounts: { total: 0, active: 0, expiringSoon: 0 },
+    init() {
+      // Initialize stats on page load
+      this.updatePolicyCounts();
+      // Listen for stats updates from filter/search
+      document.addEventListener('update-stats', (e) => {
+        this.policyCounts = e.detail;
+      });
+    },
+    updatePolicyCounts() {
+      this.policyCounts = calculatePolicyCounts();
+    },
     handleSort(columnName) {
       if (this.sortColumn === columnName) {
         this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
