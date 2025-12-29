@@ -11,7 +11,7 @@
     // Filter out old annual data
     allOrders = allOrders.filter(order => order.type !== 'annual');
 
-    // Add new orders from this page (new column structure with merged customer cell)
+    // Add new orders from this page (new column structure with merged customer cell + due date)
     const tableRows = document.querySelectorAll('table tbody tr');
 
     tableRows.forEach((row) => {
@@ -25,7 +25,8 @@
       const paymentCell = cells[4];        // Payment
       const policyStartCell = cells[5];    // Policy Start
       const policyEndCell = cells[6];      // Policy End
-      // Status column removed (index 7 is now Actions)
+      const dueDateCell = cells[7];        // Due Date (new)
+      // Actions is now at index 8
 
       if (customerCell) {
         // Extract name and email from merged customer cell
@@ -41,7 +42,8 @@
           price: priceCell ? priceCell.textContent.trim() : '',
           payment: paymentCell ? paymentCell.textContent.trim() : '',
           policyStart: policyStartCell ? policyStartCell.textContent.trim() : '',
-          policyEnd: policyEndCell ? policyEndCell.querySelector('p:first-child')?.textContent.trim() : ''
+          policyEnd: policyEndCell ? policyEndCell.querySelector('p:first-child')?.textContent.trim() : '',
+          dueDate: dueDateCell ? dueDateCell.querySelector('p:first-child')?.textContent.trim() : ''
         });
       }
     });
@@ -104,7 +106,7 @@
   function exportAnnualPoliciesToCSV() {
     const table = document.querySelector('table');
     const tbody = table.querySelector('tbody');
-    const headers = ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End'];
+    const headers = ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End', 'Next Due Date'];
     const rows = [];
 
     rows.push(headers.join(','));
@@ -123,11 +125,11 @@
       rowData.push(`"${nameParagraph ? nameParagraph.textContent.trim() : ''}"`);
       rowData.push(`"${emailParagraph ? emailParagraph.textContent.trim() : ''}"`);
 
-      // Extract other columns (indices 1-6, skip Actions at index 7)
-      for (let i = 1; i <= 6; i++) {
+      // Extract other columns (indices 1-7, skip Actions at index 8)
+      for (let i = 1; i <= 7; i++) {
         let cellText = '';
-        if (i === 6) {
-          // Policy End - extract just the date from the progress bar container
+        if (i === 6 || i === 7) {
+          // Policy End and Due Date - extract just the date from the progress bar container
           const dateP = cells[i]?.querySelector('p:first-child');
           cellText = dateP ? dateP.textContent.trim() : '';
         } else {
@@ -231,9 +233,9 @@
       // Strip currency symbol and convert to number
       value = cell.textContent.trim();
       return parseFloat(value.replace(/[£$,]/g, '')) || 0;
-    } else if (columnName === 'policystart' || columnName === 'policyend') {
-      // Parse dates - for policyend, extract from first paragraph
-      if (columnName === 'policyend') {
+    } else if (columnName === 'policystart' || columnName === 'policyend' || columnName === 'duedate') {
+      // Parse dates - for policyend and duedate, extract from first paragraph
+      if (columnName === 'policyend' || columnName === 'duedate') {
         const dateP = cell.querySelector('p:first-child');
         value = dateP ? dateP.textContent.trim() : '';
       } else {
@@ -256,7 +258,7 @@
     const visibleRows = rows.filter(row => row.style.display !== 'none');
     const hiddenRows = rows.filter(row => row.style.display === 'none');
 
-    // Column index mapping (new order after merging customer column)
+    // Column index mapping (new order after merging customer column + adding due date)
     const columnMap = {
       'name': 0,        // Customer (merged name + email)
       'phone': 1,       // Phone
@@ -264,7 +266,8 @@
       'price': 3,       // Price
       'payment': 4,     // Payment
       'policystart': 5, // Policy Start
-      'policyend': 6    // Policy End
+      'policyend': 6,   // Policy End
+      'duedate': 7      // Due Date (new)
     };
 
     const cellIndex = columnMap[sortColumn];
@@ -446,6 +449,42 @@
       const days = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
       if (days <= 30) return 'text-orange-600 dark:text-orange-400';
       return 'text-green-600 dark:text-green-400';
+    },
+    getPaymentProgress(dueDate) {
+      // For monthly payments, show progress from last payment to due date
+      // Assume last payment was 30 days before due date
+      const due = new Date(dueDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const lastPayment = new Date(due);
+      lastPayment.setDate(lastPayment.getDate() - 30);
+      
+      const totalDays = Math.max(1, (due - lastPayment) / (1000 * 60 * 60 * 24));
+      const daysElapsed = (today - lastPayment) / (1000 * 60 * 60 * 24);
+      return Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100));
+    },
+    getDaysUntilDue(dueDate) {
+      const due = new Date(dueDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const days = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+      return days > 0 ? `${days}d` : (days === 0 ? 'Today' : 'Overdue');
+    },
+    getPaymentDueColor(dueDate) {
+      const due = new Date(dueDate);
+      const today = new Date();
+      const days = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+      if (days <= 0) return 'bg-red-500'; // Overdue
+      if (days <= 7) return 'bg-orange-500'; // Due soon
+      return 'bg-blue-500'; // On track
+    },
+    getPaymentDueTextColor(dueDate) {
+      const due = new Date(dueDate);
+      const today = new Date();
+      const days = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+      if (days <= 0) return 'text-red-600 dark:text-red-400'; // Overdue
+      if (days <= 7) return 'text-orange-600 dark:text-orange-400'; // Due soon
+      return 'text-blue-600 dark:text-blue-400'; // On track
     }
   }"
   @click.outside="filterPanelOpen = false"
@@ -686,6 +725,16 @@
               </span>
             </div>
           </th>
+          <!-- Due Header (NEW) -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('duedate')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Next Due</p>
+              <span x-show="sortColumn === 'duedate'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
           <!-- Actions Header (NOT sortable) -->
           <th class="px-5 py-3.5 text-left sm:px-6">
             <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Actions</p>
@@ -695,7 +744,7 @@
       <!-- table header end -->
       <!-- table body start -->
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-white/[0.03]">
-        <!-- Row 1: Jane Smith - Active -->
+        <!-- Row 1: Jane Smith - Monthly - Active -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -738,6 +787,25 @@
             </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 10, 2026</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-300"
+                    :class="getPaymentDueColor('Jan 10, 2026')"
+                    :style="`width: ${getPaymentProgress('Jan 10, 2026')}%`"
+                  ></div>
+                </div>
+                <span 
+                  class="text-theme-xs font-medium whitespace-nowrap"
+                  :class="getPaymentDueTextColor('Jan 10, 2026')"
+                  x-text="getDaysUntilDue('Jan 10, 2026')"
+                ></span>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
               <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">Actions<svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg></button>
               <div x-show="actionsOpen" x-transition
@@ -747,7 +815,7 @@
             </div>
           </td>
         </tr>
-        <!-- Row 2: John Doe - Active -->
+        <!-- Row 2: John Doe - One-time - Active -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -790,6 +858,9 @@
             </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-400 text-theme-xs italic dark:text-gray-500">N/A</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
               <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">Actions<svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg></button>
               <div x-show="actionsOpen" x-transition
@@ -799,7 +870,7 @@
             </div>
           </td>
         </tr>
-        <!-- Row 3: Sarah Wilson - Active -->
+        <!-- Row 3: Sarah Wilson - Monthly - Active -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -842,6 +913,25 @@
             </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 01, 2026</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-300"
+                    :class="getPaymentDueColor('Jan 01, 2026')"
+                    :style="`width: ${getPaymentProgress('Jan 01, 2026')}%`"
+                  ></div>
+                </div>
+                <span 
+                  class="text-theme-xs font-medium whitespace-nowrap"
+                  :class="getPaymentDueTextColor('Jan 01, 2026')"
+                  x-text="getDaysUntilDue('Jan 01, 2026')"
+                ></span>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
               <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">Actions<svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg></button>
               <div x-show="actionsOpen" x-transition
@@ -851,7 +941,7 @@
             </div>
           </td>
         </tr>
-        <!-- Row 4: Michael J - EXPIRED (will be removed by Alpine) -->
+        <!-- Row 4: Michael J - One-time - EXPIRED (will be removed by Alpine) -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -886,6 +976,9 @@
             </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-400 text-theme-xs italic dark:text-gray-500">N/A</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
               <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">Actions<svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg></button>
               <div x-show="actionsOpen" x-transition
@@ -895,7 +988,7 @@
             </div>
           </td>
         </tr>
-        <!-- Row 5: Emily Brown - Active -->
+        <!-- Row 5: Emily Brown - Monthly - Active -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -938,6 +1031,24 @@
             </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Dec 16, 2025</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-300"
+                    :class="getPaymentDueColor('Dec 16, 2025')"
+                    :style="`width: ${getPaymentProgress('Dec 16, 2025')}%`"
+                  ></div>
+                </div>
+                <span 
+                  class="text-theme-xs font-medium whitespace-nowrap text-red-600 dark:text-red-400"
+                  x-text="getDaysUntilDue('Dec 16, 2025')"
+                ></span>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
               <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">Actions<svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg></button>
               <div x-show="actionsOpen" x-transition
@@ -947,7 +1058,7 @@
             </div>
           </td>
         </tr>
-        <!-- Row 6: David M - EXPIRED (will be removed by Alpine) -->
+        <!-- Row 6: David M - One-time - EXPIRED (will be removed by Alpine) -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -982,6 +1093,9 @@
             </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-400 text-theme-xs italic dark:text-gray-500">N/A</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
               <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">Actions<svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg></button>
               <div x-show="actionsOpen" x-transition
@@ -991,7 +1105,7 @@
             </div>
           </td>
         </tr>
-        <!-- Row 7: Lisa Anderson - EXPIRED (will be removed by Alpine) -->
+        <!-- Row 7: Lisa Anderson - Monthly - EXPIRED (will be removed by Alpine) -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -1024,6 +1138,9 @@
                 <span class="text-theme-xs font-medium whitespace-nowrap text-red-600 dark:text-red-400">0d</span>
               </div>
             </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-400 text-theme-xs italic dark:text-gray-500">N/A</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
