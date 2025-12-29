@@ -90,6 +90,39 @@
         <p class="text-xs font-medium text-gray-400 mb-1">Total Price</p>
         <p class="text-base font-semibold text-white/90" x-text="policyPrice"></p>
       </div>
+
+      <!-- Payment Type -->
+      <div class="p-4 rounded-lg" style="background-color: #010a1b;">
+        <p class="text-xs font-medium text-gray-400 mb-1">Payment Type</p>
+        <p class="text-base font-semibold text-white/90" x-text="paymentType"></p>
+      </div>
+    </div>
+
+    <!-- Monthly Payment Breakdown (shown only if Monthly) -->
+    <div x-show="paymentType === 'Monthly'" class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
+      <h3 class="text-sm font-semibold text-gray-800 dark:text-white/90 mb-4">Payment Schedule</h3>
+
+      <!-- Deposit -->
+      <div class="mb-4 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/30">
+        <div class="flex justify-between items-center">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-400">Deposit (Initial Payment)</span>
+          <span class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="depositAmount"></span>
+        </div>
+        <div class="text-xs text-gray-500 dark:text-gray-500 mt-1" x-text="new Date(policyStart).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></div>
+      </div>
+
+      <!-- Monthly Payments -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <template x-for="(payment, index) in monthlyPayments" :key="index">
+          <div class="p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'Payment ' + (index + 1)"></span>
+              <span class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="payment.amount"></span>
+            </div>
+            <div class="text-xs text-gray-500 dark:text-gray-500 mt-1" x-text="new Date(payment.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></div>
+          </div>
+        </template>
+      </div>
     </div>
   </div>
 </div>
