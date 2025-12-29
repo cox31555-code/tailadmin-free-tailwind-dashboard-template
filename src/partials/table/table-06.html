@@ -130,6 +130,79 @@
   // Make export function globally available
   window.exportAnnualPoliciesToCSV = exportAnnualPoliciesToCSV;
 
+  // Extract and normalize values for sorting
+  function getSortValue(cell, columnName) {
+    let value = cell.textContent.trim();
+
+    // Handle different column types
+    if (columnName === 'date') {
+      // Extract date from first paragraph (e.g., "Nov 10, 2025")
+      const dateText = cell.querySelector('p:first-child')?.textContent.trim() || value;
+      return new Date(dateText).getTime();
+    } else if (columnName === 'price') {
+      // Strip currency symbol and convert to number
+      return parseFloat(value.replace(/[£$,]/g, '')) || 0;
+    } else if (columnName === 'policyend') {
+      // Parse policy end date
+      return new Date(value).getTime();
+    } else {
+      // Text columns: return lowercase for case-insensitive sorting
+      return value.toLowerCase();
+    }
+  }
+
+  // Sort the table
+  function performSort(sortColumn, sortDirection) {
+    const tbody = document.querySelector('table tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    // Separate visible and hidden rows
+    const visibleRows = rows.filter(row => row.style.display !== 'none');
+    const hiddenRows = rows.filter(row => row.style.display === 'none');
+
+    // Column index mapping
+    const columnMap = {
+      'date': 0,
+      'price': 1,
+      'email': 2,
+      'phone': 3,
+      'vehicle': 4,
+      'payment': 5,
+      'policyend': 6
+    };
+
+    const cellIndex = columnMap[sortColumn];
+
+    // Sort visible rows
+    visibleRows.sort((a, b) => {
+      const cellA = a.querySelectorAll('td')[cellIndex];
+      const cellB = b.querySelectorAll('td')[cellIndex];
+
+      let valueA = getSortValue(cellA, sortColumn);
+      let valueB = getSortValue(cellB, sortColumn);
+
+      // Handle numeric comparison
+      if (typeof valueA === 'number' && typeof valueB === 'number') {
+        return sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
+      }
+
+      // Handle string comparison
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return sortDirection === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      }
+
+      return 0;
+    });
+
+    // Rebuild tbody with sorted visible rows followed by hidden rows
+    tbody.innerHTML = '';
+    [...visibleRows, ...hiddenRows].forEach(row => {
+      tbody.appendChild(row);
+    });
+  }
+
   // Setup table filtering with Alpine.js integration
   function setupTableFiltering() {
     // Watch for changes in Alpine data
