@@ -130,6 +130,58 @@
   // Make export function globally available
   window.exportAnnualPoliciesToCSV = exportAnnualPoliciesToCSV;
 
+  // Helper function: Extract customer name from email
+  function extractCustomerName(email) {
+    if (!email) return 'Unknown';
+    const localPart = email.split('@')[0];
+    const parts = localPart.split('.');
+    return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+  }
+
+  // Helper function: Determine if policy is expiring soon (within 30 days)
+  function isExpiringsSoon(policyEndDate, daysThreshold = 30) {
+    try {
+      const endDate = new Date(policyEndDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const daysUntilExpiry = Math.floor((endDate - today) / (1000 * 60 * 60 * 24));
+      return daysUntilExpiry <= daysThreshold && daysUntilExpiry > 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Helper function: Get policy status (Active or Expiring Soon)
+  function getStatus(policyEndDate) {
+    try {
+      const endDate = new Date(policyEndDate);
+      const today = new Date();
+      if (endDate < today) return 'Expired';
+      if (isExpiringsSoon(policyEndDate)) return 'Expiring Soon';
+      return 'Active';
+    } catch (e) {
+      return 'Unknown';
+    }
+  }
+
+  // Helper function: Calculate policy counts from visible rows
+  function calculatePolicyCounts() {
+    const rows = document.querySelectorAll('table tbody tr');
+    let total = 0, active = 0, expiringSoon = 0;
+
+    rows.forEach(row => {
+      if (row.style.display === 'none') return; // Skip hidden rows
+      total++;
+      // Status is in column 8 (0-indexed)
+      const statusCell = row.querySelectorAll('td')[8];
+      const status = statusCell ? statusCell.textContent.trim() : '';
+      if (status === 'Active') active++;
+      if (status === 'Expiring Soon') expiringSoon++;
+    });
+
+    return { total, active, expiringSoon };
+  }
+
   // Extract and normalize values for sorting
   function getSortValue(cell, columnName) {
     let value = cell.textContent.trim();
