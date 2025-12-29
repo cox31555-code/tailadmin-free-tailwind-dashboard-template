@@ -795,6 +795,49 @@
           month: 'short',
           year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
         });
+      },
+
+      // Time Tracking Methods
+      startTimer(taskId) {
+        const task = this.tasks.find(t => t.id === taskId);
+        if (task && !task.timerRunning) {
+          task.timerRunning = true;
+          task.timerStartedAt = new Date().toISOString();
+          this.saveKanbanData();
+        }
+      },
+
+      stopTimer(taskId) {
+        const task = this.tasks.find(t => t.id === taskId);
+        if (task && task.timerRunning) {
+          const duration = Math.floor((new Date() - new Date(task.timerStartedAt)) / 1000);
+
+          if (!task.timeLogs) task.timeLogs = [];
+          task.timeLogs.push({
+            id: Date.now().toString(),
+            startedAt: task.timerStartedAt,
+            endedAt: new Date().toISOString(),
+            duration,
+            note: ''
+          });
+
+          task.totalTimeSpent = (task.totalTimeSpent || 0) + duration;
+          task.timerRunning = false;
+          task.timerStartedAt = null;
+          task.updatedAt = new Date().toISOString();
+          this.saveKanbanData();
+        }
+      },
+
+      formatDuration(seconds) {
+        if (!seconds) return '0h 0m';
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+
+        if (hours > 0) {
+          return `${hours}h ${minutes}m`;
+        }
+        return `${minutes}m`;
       }
     }"
     x-init="
