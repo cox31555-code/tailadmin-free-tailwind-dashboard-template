@@ -1,0 +1,114 @@
+<!-- Column Settings Modal -->
+<div
+  x-show="showColumnModal"
+  x-transition:enter="transition ease-out duration-200"
+  x-transition:enter-start="opacity-0"
+  x-transition:enter-end="opacity-100"
+  x-transition:leave="transition ease-in duration-150"
+  x-transition:leave-start="opacity-100"
+  x-transition:leave-end="opacity-0"
+  class="fixed inset-0 z-99999 flex items-center justify-center bg-black/50 px-4"
+  @click.self="showColumnModal = false"
+>
+  <div
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 scale-95"
+    x-transition:enter-end="opacity-100 scale-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 scale-100"
+    x-transition:leave-end="opacity-0 scale-95"
+    class="w-full max-w-lg rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+  >
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-xl font-bold text-gray-800 dark:text-white/90" x-text="editingColumnId ? 'Edit Column' : 'Add New Column'"></h3>
+      <button
+        @click="showColumnModal = false"
+        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <form @submit.prevent="saveColumn()" class="space-y-5">
+      <!-- Column Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Column Name <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          x-model="newColumn.name"
+          required
+          placeholder="e.g., In Development"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        />
+      </div>
+
+      <!-- Column Color -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Column Color
+        </label>
+        <div class="flex items-center gap-3">
+          <input
+            type="color"
+            x-model="newColumn.color"
+            class="h-10 w-20 rounded border border-gray-300 dark:border-gray-700"
+          />
+          <input
+            type="text"
+            x-model="newColumn.color"
+            placeholder="#3B82F6"
+            class="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+          />
+        </div>
+      </div>
+
+      <!-- WIP Limit -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Work In Progress (WIP) Limit
+        </label>
+        <input
+          type="number"
+          x-model.number="newColumn.limit"
+          min="0"
+          placeholder="Leave empty for no limit"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        />
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Set a maximum number of tasks allowed in this column</p>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-800">
+        <button
+          x-show="editingColumnId"
+          type="button"
+          @click="deleteColumn(editingColumnId); showColumnModal = false"
+          class="rounded-lg border border-red-300 bg-white px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-700 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-red-900/10"
+        >
+          Delete Column
+        </button>
+        <div class="flex items-center gap-3" :class="!editingColumnId ? 'ml-auto' : ''">
+          <button
+            type="button"
+            @click="showColumnModal = false"
+            class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
+          >
+            <span x-text="editingColumnId ? 'Update Column' : 'Create Column'"></span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
