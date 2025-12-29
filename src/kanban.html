@@ -291,6 +291,9 @@
         this.$nextTick(() => {
           this.initSortable();
         });
+
+        // Dispatch event for calendar sync
+        window.dispatchEvent(new CustomEvent('kanban:boardSwitched', { detail: { boardId } }));
       },
 
       openBoardModal(boardId = null) {
