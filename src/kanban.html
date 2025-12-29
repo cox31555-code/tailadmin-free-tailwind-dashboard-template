@@ -842,6 +842,106 @@
           return `${hours}h ${minutes}m`;
         }
         return `${minutes}m`;
+      },
+
+      // Bulk Operations Methods
+      toggleBulkMode() {
+        this.bulkMode = !this.bulkMode;
+        if (!this.bulkMode) {
+          this.selectedTasks = [];
+        }
+      },
+
+      toggleTaskSelection(taskId) {
+        const index = this.selectedTasks.indexOf(taskId);
+        if (index > -1) {
+          this.selectedTasks.splice(index, 1);
+        } else {
+          this.selectedTasks.push(taskId);
+        }
+      },
+
+      selectAllInColumn(columnId) {
+        const columnTaskIds = this.getTasksForColumn(columnId).map(t => t.id);
+        // Toggle: if all are selected, deselect all; otherwise select all
+        const allSelected = columnTaskIds.every(id => this.selectedTasks.includes(id));
+
+        if (allSelected) {
+          this.selectedTasks = this.selectedTasks.filter(id => !columnTaskIds.includes(id));
+        } else {
+          const newSelections = columnTaskIds.filter(id => !this.selectedTasks.includes(id));
+          this.selectedTasks.push(...newSelections);
+        }
+      },
+
+      bulkMoveToColumn(columnId) {
+        if (!this.selectedTasks.length) return;
+
+        this.selectedTasks.forEach(taskId => {
+          const task = this.tasks.find(t => t.id === taskId);
+          if (task) {
+            task.column = columnId;
+            task.updatedAt = new Date().toISOString();
+
+            // Dispatch event for calendar sync
+            window.dispatchEvent(new CustomEvent('kanban:taskUpdated', { detail: task }));
+          }
+        });
+
+        this.saveKanbanData();
+        this.selectedTasks = [];
+        this.bulkMode = false;
+      },
+
+      bulkDelete() {
+        if (!this.selectedTasks.length) return;
+
+        if (confirm(`Delete ${this.selectedTasks.length} task(s)? This action cannot be undone.`)) {
+          this.selectedTasks.forEach(taskId => {
+            // Dispatch event for calendar sync
+            window.dispatchEvent(new CustomEvent('kanban:taskDeleted', { detail: { id: taskId } }));
+          });
+
+          this.tasks = this.tasks.filter(t => !this.selectedTasks.includes(t.id));
+          this.saveKanbanData();
+          this.selectedTasks = [];
+          this.bulkMode = false;
+        }
+      },
+
+      bulkAssign(assignee) {
+        if (!this.selectedTasks.length || !assignee) return;
+
+        this.selectedTasks.forEach(taskId => {
+          const task = this.tasks.find(t => t.id === taskId);
+          if (task) {
+            task.assignee = assignee;
+            task.assigneeAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(assignee)}&background=3B82F6&color=fff`;
+            task.updatedAt = new Date().toISOString();
+
+            // Dispatch event for calendar sync
+            window.dispatchEvent(new CustomEvent('kanban:taskUpdated', { detail: task }));
+          }
+        });
+
+        this.saveKanbanData();
+      },
+
+      bulkSetPriority(priority) {
+        if (!this.selectedTasks.length || !priority) return;
+
+        this.selectedTasks.forEach(taskId => {
+          const task = this.tasks.find(t => t.id === taskId);
+          if (task) {
+            task.priority = priority;
+            task.updatedAt = new Date().toISOString();
+
+            // Dispatch event for calendar sync
+            window.dispatchEvent(new CustomEvent('kanban:taskUpdated', { detail: task }));
+          }
+        });
+
+        this.saveKanbanData();
       }
     }"
     x-init="
