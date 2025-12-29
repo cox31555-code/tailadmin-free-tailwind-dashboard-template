@@ -94,7 +94,7 @@
   function exportAnnualPoliciesToCSV() {
     const table = document.querySelector('table');
     const tbody = table.querySelector('tbody');
-    const headers = ['Date', 'Price', 'Email', 'Phone', 'Vehicle', 'Payment', 'Policy End'];
+    const headers = ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End', 'Status'];
     const rows = [];
 
     rows.push(headers.join(','));
@@ -106,8 +106,8 @@
       const cells = row.querySelectorAll('td');
       const rowData = [];
 
-      // Extract data from cells
-      for (let i = 0; i < 7; i++) {
+      // Extract data from first 9 columns (skip Actions column at index 9)
+      for (let i = 0; i < 9; i++) {
         let cellText = cells[i] ? cells[i].textContent.trim() : '';
         // Remove extra whitespace and newlines
         cellText = cellText.replace(/\s+/g, ' ').trim();
