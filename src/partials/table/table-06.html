@@ -188,16 +188,16 @@
   // Helper function: Calculate policy counts from visible rows (ONLY Active & Expiring Soon)
   function calculatePolicyCounts() {
     const rows = document.querySelectorAll('table tbody tr');
-    let total = 0, active = 0, expiringSoon = 0;
+    let total = 0, active = 0, expiringSoon = 0, nextDue = 0;
 
     rows.forEach(row => {
       if (row.style.display === 'none') return; // Skip hidden rows
-      
+
       // Get policy end date to determine status
       const policyEndCell = row.querySelectorAll('td')[6];
       const dateP = policyEndCell?.querySelector('p:first-child');
       const policyEndDate = dateP ? dateP.textContent.trim() : '';
-      
+
       if (policyEndDate) {
         const status = getStatus(policyEndDate);
         if (status !== 'Expired') { // Only count non-expired
@@ -206,9 +206,26 @@
           if (status === 'Expiring Soon') expiringSoon++;
         }
       }
+
+      // Count next due payments (monthly policies with upcoming due dates)
+      const dueDateCell = row.querySelectorAll('td')[7];
+      const dueDateP = dueDateCell?.querySelector('p:first-child');
+      const dueDate = dueDateP ? dueDateP.textContent.trim() : '';
+
+      if (dueDate && dueDate !== 'N/A') {
+        const due = new Date(dueDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const daysUntilDue = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+
+        // Count payments due within next 7 days
+        if (daysUntilDue >= 0 && daysUntilDue <= 7) {
+          nextDue++;
+        }
+      }
     });
 
-    return { total, active, expiringSoon };
+    return { total, active, expiringSoon, nextDue };
   }
 
   // Update stats counts in Alpine state
@@ -382,7 +399,7 @@
     filterPayment: 'all',
     sortColumn: 'name',
     sortDirection: 'asc',
-    policyCounts: { total: 0, active: 0, expiringSoon: 0 },
+    policyCounts: { total: 0, active: 0, expiringSoon: 0, nextDue: 0 },
     init() {
       // Remove expired policies from DOM on page load
       this.removeExpiredPolicies();
@@ -509,6 +526,11 @@
         <span class="inline-flex items-center gap-1.5 rounded-md border border-orange-200 dark:border-orange-500/20 bg-orange-50 dark:bg-orange-500/10 px-3 py-1.5 text-theme-xs">
           <span class="text-orange-700 dark:text-orange-400">Expiring:</span>
           <span class="font-semibold text-orange-900 dark:text-orange-300" x-text="policyCounts.expiringSoon"></span>
+        </span>
+
+        <span class="inline-flex items-center gap-1.5 rounded-md border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 text-theme-xs">
+          <span class="text-blue-700 dark:text-blue-400">Next Due:</span>
+          <span class="font-semibold text-blue-900 dark:text-blue-300" x-text="policyCounts.nextDue"></span>
         </span>
       </div>
 
