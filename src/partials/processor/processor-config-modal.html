@@ -1,0 +1,239 @@
+<!-- Processor Configuration Modal -->
+<div
+  x-show="configModal.open"
+  class="fixed inset-0 flex items-end sm:items-center justify-center sm:p-5 z-99999"
+  x-cloak
+>
+  <div
+    class="modal-close-btn fixed inset-0 h-full w-full"
+    style="background-color: rgb(10 12 18 / 83%); backdrop-filter: blur(1px)"
+    @click="configModal.open = false"
+  ></div>
+  
+  <div
+    @click.outside="configModal.open = false"
+    class="no-scrollbar relative w-full max-w-[800px] h-screen sm:h-auto sm:max-h-[90vh] sm:rounded-3xl rounded-t-3xl overflow-y-auto bg-white dark:bg-gray-900 sm:p-8 lg:p-11 p-4"
+  >
+    <!-- Close Button -->
+    <button
+      @click="configModal.open = false"
+      class="transition-color absolute right-4 top-4 sm:right-5 sm:top-5 z-999 flex h-10 sm:h-11 w-10 sm:w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300"
+    >
+      <svg
+        class="fill-current"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+          fill=""
+        />
+      </svg>
+    </button>
+
+    <!-- Header -->
+    <div class="pr-8 sm:pr-0 mb-6 sm:mb-8">
+      <div class="flex items-center gap-3 mb-2">
+        <div
+          :class="configModal.logoClass"
+          class="flex h-12 w-12 items-center justify-center rounded-lg"
+        >
+          <div x-html="configModal.logoSvg" class="w-6 h-6"></div>
+        </div>
+        <div>
+          <h4 class="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white/90" x-text="configModal.name + ' Configuration'"></h4>
+          <p class="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+            Configure API credentials and settings for this processor
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Configuration Form -->
+    <form class="flex flex-col space-y-6" @submit.prevent="saveConfig">
+      <!-- API Credentials Section -->
+      <div class="space-y-4">
+        <h5 class="text-base font-semibold text-gray-800 dark:text-white/90 flex items-center gap-2">
+          <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+          </svg>
+          API Credentials
+        </h5>
+
+        <!-- API Key / Publishable Key -->
+        <div>
+          <label class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
+            <span x-text="configModal.processorId === 'paytiko' ? 'API Key' : 'Publishable Key'"></span>
+          </label>
+          <input
+            type="text"
+            x-model="configModal.publishableKey"
+            placeholder="pk_live_..."
+            class="h-10 sm:h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+          />
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            This key is used for client-side operations
+          </p>
+        </div>
+
+        <!-- Secret Key -->
+        <div>
+          <label class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
+            Secret Key
+          </label>
+          <div class="relative">
+            <input
+              :type="configModal.showSecret ? 'text' : 'password'"
+              x-model="configModal.secretKey"
+              :placeholder="configModal.processorId === 'paytiko' ? 'sk_...' : (configModal.processorId.startsWith('mollie') ? 'live_...' : 'sk_live_...')"
+              class="h-10 sm:h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 pr-11 text-xs sm:text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+            />
+            <button
+              type="button"
+              @click="configModal.showSecret = !configModal.showSecret"
+              class="absolute top-1/2 right-3 sm:right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+            >
+              <svg
+                x-show="!configModal.showSecret"
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <svg
+                x-show="configModal.showSecret"
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+              </svg>
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Keep this key secure and never share it publicly
+          </p>
+        </div>
+      </div>
+
+      <!-- Environment Settings -->
+      <div class="space-y-4">
+        <h5 class="text-base font-semibold text-gray-800 dark:text-white/90 flex items-center gap-2">
+          <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Settings
+        </h5>
+
+        <!-- Environment Toggle -->
+        <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+          <div class="flex-1">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Environment Mode
+            </label>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              Switch between test and live modes
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-medium" :class="configModal.isLiveMode ? 'text-gray-400' : 'text-brand-600 dark:text-brand-400'">
+              Test
+            </span>
+            <button
+              type="button"
+              @click="configModal.isLiveMode = !configModal.isLiveMode"
+              :class="configModal.isLiveMode ? 'bg-brand-500' : 'bg-gray-300 dark:bg-gray-600'"
+              class="relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            >
+              <span
+                :class="configModal.isLiveMode ? 'translate-x-5' : 'translate-x-0.5'"
+                class="inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out mt-0.5"
+              ></span>
+            </button>
+            <span class="text-sm font-medium" :class="configModal.isLiveMode ? 'text-brand-600 dark:text-brand-400' : 'text-gray-400'">
+              Live
+            </span>
+          </div>
+        </div>
+
+        <!-- Webhook URL (Read-only) -->
+        <div>
+          <label class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
+            Webhook URL
+          </label>
+          <div class="flex gap-2">
+            <input
+              type="text"
+              :value="'https://yourdomain.com/webhooks/' + configModal.processorId"
+              readonly
+              class="h-10 sm:h-11 w-full appearance-none rounded-lg border border-gray-300 bg-gray-50 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+            />
+            <button
+              type="button"
+              @click="copyWebhookUrl"
+              class="flex-shrink-0 inline-flex items-center justify-center h-10 sm:h-11 w-10 sm:w-11 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+              title="Copy webhook URL"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Configure this URL in your processor's webhook settings
+          </p>
+        </div>
+
+        <!-- Currency Support -->
+        <div>
+          <label class="mb-1.5 block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
+            Supported Currencies
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <template x-for="currency in ['GBP', 'USD', 'EUR', 'CAD', 'AUD', 'JPY']" :key="currency">
+              <label class="flex items-center gap-2 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-brand-300 dark:hover:border-brand-600 cursor-pointer transition-colors">
+                <input
+                  type="checkbox"
+                  :value="currency"
+                  x-model="configModal.currencies"
+                  class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-800"
+                />
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300" x-text="currency"></span>
+              </label>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col-reverse sm:flex-row items-center gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button
+          @click="configModal.open = false"
+          type="button"
+          class="flex w-full sm:w-auto justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-xs sm:text-sm font-medium text-white hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Save Configuration
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
