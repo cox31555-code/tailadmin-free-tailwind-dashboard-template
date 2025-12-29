@@ -116,8 +116,58 @@
       
       // Contact
       email: 'adamjaff@protonmail.com',
+      phoneNumber: '+44 7700 900000',
       canProvidersContact: 'No',
-      
+
+      // Payment details
+      paymentType: 'Monthly',
+      depositAmount: '£247.50',
+      monthlyAmount: '£100.00',
+      monthlyPayments: [
+        { date: '2025-02-14', amount: '£100.00' },
+        { date: '2025-03-14', amount: '£100.00' },
+        { date: '2025-04-14', amount: '£100.00' },
+        { date: '2025-05-14', amount: '£100.00' },
+        { date: '2025-06-14', amount: '£100.00' },
+        { date: '2025-07-14', amount: '£100.00' },
+        { date: '2025-08-14', amount: '£100.00' },
+        { date: '2025-09-14', amount: '£100.00' },
+        { date: '2025-10-14', amount: '£100.00' },
+        { date: '2025-11-14', amount: '£100.00' },
+        { date: '2025-12-14', amount: '£100.00' }
+      ],
+
+      // DVLA conditions details
+      dvlaConditionType: 'DVLA aware - 2 year restricted Licence',
+
+      // Claims details (conditional on claimsLast5Years != 'None')
+      hasDetailedClaims: false,
+      claimIncidentType: 'Accident',
+      claimFault: 'Both parties',
+      claimDriver: 'Policyholder',
+      claimInjuries: 'No',
+      claimDay: '12',
+      claimMonth: '12',
+      claimYear: '2020',
+      claimDamageType: 'Damaged - Amount Known',
+      claimAgainstPolicy: 'Yes',
+      claimNCDaffected: 'No',
+
+      // Motoring convictions details (conditional on motoringConvictionsLast5Years != 'None')
+      hasDetailedConvictions: false,
+      convictionLocation: 'England, Scotland or Wales (Great Britain)',
+      convictionType: 'DR - Drink',
+      convictionCode: 'DR10 – Driving with alcohol level above limit',
+      convictionDay: '12',
+      convictionMonth: '12',
+      convictionYear: '2019',
+      convictionPenaltyPoints: 'Yes',
+      convictionPointsAmount: '12',
+      convictionFine: 'Yes',
+      convictionFineAmount: '£121',
+      convictionBan: 'No',
+      convictionBanMonths: '0',
+
       // Methods
       init() {
         this.loadPolicyData();
