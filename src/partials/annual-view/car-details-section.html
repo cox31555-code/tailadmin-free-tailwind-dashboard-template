@@ -433,7 +433,7 @@
         Current market value
       </label>
       <div class="sm:col-span-2">
-        <p x-show="!editMode['carValue']" class="text-sm text-gray-800 dark:text-white/90" x-text="'£' + marketValue"></p>
+        <p x-show="!editMode['carValue']" class="text-sm text-gray-800 dark:text-white/90" x-text="'£' + (marketValue ? Number(marketValue).toLocaleString('en-GB') : '0')"></p>
         <div x-show="editMode['carValue']" class="relative">
           <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400 pointer-events-none">£</span>
           <input
