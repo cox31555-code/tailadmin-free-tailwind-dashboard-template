@@ -1,0 +1,460 @@
+<!-- About You Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">About You</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['aboutYou']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('aboutYou')"
+        x-show="!editMode['aboutYou']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['aboutYou']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('aboutYou')"
+          :disabled="savingField['aboutYou']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['aboutYou']">Save</span>
+          <span x-show="savingField['aboutYou']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('aboutYou')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Full name
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['aboutYou']" class="text-sm text-gray-800 dark:text-white/90" x-text="customerName"></p>
+        <input
+          x-show="editMode['aboutYou']"
+          x-model="customerName"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Date of birth
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['aboutYou']" class="text-sm text-gray-800 dark:text-white/90" x-text="dob"></p>
+        <input
+          x-show="editMode['aboutYou']"
+          x-model="dob"
+          type="text"
+          placeholder="DD/MM/YYYY"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Relationship status
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['aboutYou']" class="text-sm text-gray-800 dark:text-white/90" x-text="relationshipStatus"></p>
+        <select
+          x-show="editMode['aboutYou']"
+          x-model="relationshipStatus"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Single">Single</option>
+          <option value="Married">Married</option>
+          <option value="Civil Partnership">Civil Partnership</option>
+          <option value="Divorced">Divorced</option>
+          <option value="Widowed">Widowed</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Your Household Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Your Household</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['household']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('household')"
+        x-show="!editMode['household']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['household']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('household')"
+          :disabled="savingField['household']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['household']">Save</span>
+          <span x-show="savingField['household']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('household')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Home address
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="homeAddress"></p>
+        <input
+          x-show="editMode['household']"
+          x-model="homeAddress"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        City
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="city"></p>
+        <input
+          x-show="editMode['household']"
+          x-model="city"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        County
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="county"></p>
+        <input
+          x-show="editMode['household']"
+          x-model="county"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Postcode
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="postcode"></p>
+        <input
+          x-show="editMode['household']"
+          x-model="postcode"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Homeowner?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="homeowner"></p>
+        <select
+          x-show="editMode['household']"
+          x-model="homeowner"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Children under 16?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="childrenUnder16"></p>
+        <select
+          x-show="editMode['household']"
+          x-model="childrenUnder16"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Lived in UK since birth?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="livedInUKSinceBirth"></p>
+        <select
+          x-show="editMode['household']"
+          x-model="livedInUKSinceBirth"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Your Employment Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Your Employment</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['employment']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('employment')"
+        x-show="!editMode['employment']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['employment']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('employment')"
+          :disabled="savingField['employment']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['employment']">Save</span>
+          <span x-show="savingField['employment']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('employment')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Employment status
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['employment']" class="text-sm text-gray-800 dark:text-white/90" x-text="employmentStatus"></p>
+        <select
+          x-show="editMode['employment']"
+          x-model="employmentStatus"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Employed">Employed</option>
+          <option value="Self-employed">Self-employed</option>
+          <option value="Unemployed">Unemployed</option>
+          <option value="Retired">Retired</option>
+          <option value="Student">Student</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Occupation
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['employment']" class="text-sm text-gray-800 dark:text-white/90" x-text="occupation"></p>
+        <input
+          x-show="editMode['employment']"
+          x-model="occupation"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Industry
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['employment']" class="text-sm text-gray-800 dark:text-white/90" x-text="industry"></p>
+        <input
+          x-show="editMode['employment']"
+          x-model="industry"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Your Licence Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Your Licence</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['licence']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('licence')"
+        x-show="!editMode['licence']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['licence']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('licence')"
+          :disabled="savingField['licence']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['licence']">Save</span>
+          <span x-show="savingField['licence']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('licence')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Licence type
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="licenceType"></p>
+        <input
+          x-show="editMode['licence']"
+          x-model="licenceType"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Years held
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="yearsHeld"></p>
+        <input
+          x-show="editMode['licence']"
+          x-model="yearsHeld"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Additional qualifications?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="additionalQualifications"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="additionalQualifications"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        DVLA conditions?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="dvlaConditions"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="dvlaConditions"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Insurance denied?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="insuranceDenied"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="insuranceDenied"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Non-motoring convictions?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="nonMotoringConvictions"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="nonMotoringConvictions"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
