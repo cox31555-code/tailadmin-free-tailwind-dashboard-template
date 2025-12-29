@@ -424,7 +424,29 @@
         </select>
       </div>
     </div>
-    
+
+    <!-- DVLA Condition Type (shown when DVLA conditions = Yes) -->
+    <div x-show="dvlaConditions === 'Yes'" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        DVLA condition type
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="dvlaConditionType"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="dvlaConditionType"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Please select...">Please select...</option>
+          <option value="DVLA aware - No restrictions">DVLA aware - No restrictions</option>
+          <option value="DVLA aware - 1 year restricted Licence">DVLA aware - 1 year restricted Licence</option>
+          <option value="DVLA aware - 2 year restricted Licence">DVLA aware - 2 year restricted Licence</option>
+          <option value="DVLA aware - 3 year restricted Licence">DVLA aware - 3 year restricted Licence</option>
+          <option value="DVLA aware - 5 year restricted Licence">DVLA aware - 5 year restricted Licence</option>
+          <option value="DVLA unaware">DVLA unaware</option>
+        </select>
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
         Insurance denied?
