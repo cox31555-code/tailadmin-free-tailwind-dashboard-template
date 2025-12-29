@@ -488,17 +488,13 @@
     }
   }"
   @click.outside="filterPanelOpen = false"
-  class="overflow-visible rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
+  class="overflow-visible rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]"
 >
   <!-- Table Header with Compact Inline Stats -->
   <div class="flex flex-col gap-3 px-5 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
     <!-- Header Row with Stats -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-      <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-        <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
-          Annual Policies List
-        </h3>
-        
+      <div class="flex items-center gap-3">
         <!-- Compact Inline Stats Badges -->
         <div class="flex flex-wrap items-center gap-2">
           <span class="inline-flex items-center gap-1.5 rounded-md border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 px-2.5 py-1 text-theme-xs">
@@ -527,7 +523,7 @@
         @input="filterAndSearchTable(searchQuery, filterPayment)"
         type="text"
         placeholder="Search by name, email, vehicle..."
-        class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-xs sm:text-theme-sm font-medium text-gray-800 placeholder:text-gray-500 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:placeholder:text-gray-500 dark:hover:border-gray-600 dark:focus:border-brand-600 w-full sm:w-96"
+        class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-xs sm:text-theme-sm font-medium text-gray-800 placeholder:text-gray-500 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500 dark:hover:border-gray-600 dark:focus:border-brand-600 w-full"
       />
 
       <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
@@ -535,7 +531,7 @@
         <div class="relative">
           <button
             @click="filterPanelOpen = !filterPanelOpen"
-            class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 w-full sm:w-auto justify-center sm:justify-start"
+            class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 w-full sm:w-auto justify-center sm:justify-start"
           >
             <svg
               class="stroke-current fill-white dark:fill-gray-800"
@@ -616,7 +612,7 @@
         <!-- Export button -->
         <button
           onclick="window.exportAnnualPoliciesToCSV()"
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 w-full sm:w-auto justify-center sm:justify-start"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 w-full sm:w-auto justify-center sm:justify-start"
         >
           <svg
             class="stroke-current fill-none"
@@ -653,7 +649,7 @@
   <div class="max-w-full overflow-x-auto table-scroller" id="tableScroller">
     <table class="min-w-max sm:min-w-full table-auto overflow-visible">
       <!-- table header start -->
-      <thead class="bg-gray-50 dark:bg-gray-800/50">
+      <thead class="bg-gray-50 dark:bg-[#010a1b]">
         <tr class="border-b-2 border-gray-200 dark:border-gray-700">
           <!-- Customer Header (merged name + email) -->
           <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('name')">
@@ -743,7 +739,7 @@
       </thead>
       <!-- table header end -->
       <!-- table body start -->
-      <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-white/[0.03]">
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-[#030e21]">
         <!-- Row 1: Jane Smith - Monthly - Active -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
