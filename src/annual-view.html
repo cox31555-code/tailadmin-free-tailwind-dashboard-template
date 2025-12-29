@@ -228,14 +228,15 @@
           'aboutYou': ['customerName', 'dob', 'relationshipStatus'],
           'household': ['homeAddress', 'city', 'county', 'postcode', 'homeowner', 'childrenUnder16', 'livedInUKSinceBirth'],
           'employment': ['employmentStatus', 'occupation', 'industry'],
-          'licence': ['licenceType', 'yearsHeld', 'additionalQualifications', 'dvlaConditions', 'insuranceDenied', 'nonMotoringConvictions'],
-          'claims': ['claimsLast5Years', 'motoringConvictionsLast5Years'],
+          'licence': ['licenceType', 'yearsHeld', 'additionalQualifications', 'dvlaConditions', 'dvlaConditionType', 'insuranceDenied', 'nonMotoringConvictions'],
+          'claims': ['claimsLast5Years', 'hasDetailedClaims', 'claimIncidentType', 'claimFault', 'claimDriver', 'claimInjuries', 'claimDay', 'claimMonth', 'claimYear', 'claimDamageType', 'claimAgainstPolicy', 'claimNCDaffected'],
+          'convictions': ['motoringConvictionsLast5Years', 'hasDetailedConvictions', 'convictionLocation', 'convictionType', 'convictionCode', 'convictionDay', 'convictionMonth', 'convictionYear', 'convictionPenaltyPoints', 'convictionPointsAmount', 'convictionFine', 'convictionFineAmount', 'convictionBan', 'convictionBanMonths'],
           'additionalDrivers': ['additionalDrivers'],
           'carOwner': ['mainDriver', 'registeredKeeper', 'legalOwner'],
           'cover': ['coverType', 'voluntaryExcess', 'paymentPreference', 'policyStartDate'],
           'ncd': ['noClaimsYears', 'noClaimsSource', 'protectedNoClaimsDiscount'],
           'additionalProducts': ['personalAccidentCover', 'courtesyCar', 'breakdownCover', 'motorLegalProtection'],
-          'contact': ['email', 'canProvidersContact']
+          'contact': ['email', 'phoneNumber', 'canProvidersContact']
         };
         return sectionMap[sectionName] || [];
       },
