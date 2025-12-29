@@ -497,6 +497,31 @@
       
       printPolicy() {
         window.print();
+      },
+
+      addDriver() {
+        this.additionalDriversList.push({
+          fullName: '',
+          dob: '',
+          relationshipStatus: 'Single',
+          relationshipToPolicyholder: '',
+          employmentStatus: 'Employed',
+          occupation: '',
+          industry: '',
+          licenceType: 'Full UK Car Licence',
+          yearsHeld: '0',
+          additionalQualifications: 'No',
+          dvlaConditions: 'No',
+          dvlaConditionType: '',
+          insuranceDenied: 'No',
+          nonMotoringConvictions: 'No',
+          claimsLast5Years: 'None',
+          motoringConvictions: 'None'
+        });
+      },
+
+      removeDriver(index) {
+        this.additionalDriversList.splice(index, 1);
       }
     }"
     x-init="
