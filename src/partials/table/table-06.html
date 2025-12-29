@@ -211,15 +211,18 @@
     const visibleRows = rows.filter(row => row.style.display !== 'none');
     const hiddenRows = rows.filter(row => row.style.display === 'none');
 
-    // Column index mapping
+    // Column index mapping (new order)
     const columnMap = {
-      'date': 0,
-      'price': 1,
-      'email': 2,
-      'phone': 3,
-      'vehicle': 4,
-      'payment': 5,
-      'policyend': 6
+      'name': 0,        // Customer Name
+      'email': 1,       // Email
+      'phone': 2,       // Phone
+      'vehicle': 3,     // Vehicle
+      'price': 4,       // Price
+      'payment': 5,     // Payment
+      'policystart': 6, // Policy Start
+      'policyend': 7    // Policy End
+      // status: 8 (not sortable)
+      // actions: 9 (not sortable)
     };
 
     const cellIndex = columnMap[sortColumn];
