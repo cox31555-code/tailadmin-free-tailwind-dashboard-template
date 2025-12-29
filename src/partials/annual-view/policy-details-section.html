@@ -314,59 +314,7 @@
 </div>
 
 <!-- Additional Drivers Section -->
-<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
-    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Additional Drivers</h2>
-    <div class="flex items-center gap-2">
-      <span 
-        x-show="savedField['additionalDrivers']"
-        x-transition
-        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-        Saved
-      </span>
-      <button 
-        @click="toggleEditMode('additionalDrivers')"
-        x-show="!editMode['additionalDrivers']"
-        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
-        Edit
-      </button>
-      <div x-show="editMode['additionalDrivers']" class="flex items-center gap-2">
-        <button 
-          @click="saveSection('additionalDrivers')"
-          :disabled="savingField['additionalDrivers']"
-          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
-          <span x-show="!savingField['additionalDrivers']">Save</span>
-          <span x-show="savingField['additionalDrivers']">Saving...</span>
-        </button>
-        <button 
-          @click="cancelEdit('additionalDrivers')"
-          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <div class="p-5 sm:p-6">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
-        Additional drivers
-      </label>
-      <div class="sm:col-span-2">
-        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="additionalDrivers"></p>
-        <textarea
-          x-show="editMode['additionalDrivers']"
-          x-model="additionalDrivers"
-          rows="3"
-          class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
-        ></textarea>
-      </div>
-    </div>
-  </div>
-</div>
+<include src="./additional-drivers-section.html" />
 
 <!-- Car Owner Section -->
 <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
