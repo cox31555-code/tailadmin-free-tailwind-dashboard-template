@@ -48,7 +48,11 @@
       filterPriority: 'all',
       filterAssignee: 'all',
       sortBy: 'created',
-      
+
+      // Bulk Operations
+      bulkMode: false,
+      selectedTasks: [],
+
       // Computed: Get active board
       get activeBoard() {
         return this.boards.find(b => b.id === this.activeBoardId) || null;
