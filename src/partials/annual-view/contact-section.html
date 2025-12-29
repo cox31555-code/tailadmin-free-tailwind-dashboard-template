@@ -52,7 +52,24 @@
         />
       </div>
     </div>
-    
+
+    <!-- Phone Number -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Phone number
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['contact']" class="text-sm text-gray-800 dark:text-white/90" x-text="phoneNumber"></p>
+        <input
+          x-show="editMode['contact']"
+          x-model="phoneNumber"
+          type="tel"
+          placeholder="+44 7700 900000"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+
     <!-- Can Providers Contact You -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
