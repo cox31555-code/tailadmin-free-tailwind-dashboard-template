@@ -12,7 +12,10 @@
       </div>
       
       <div class="flex items-center gap-2 flex-wrap">
-        <button 
+        <!-- Board Selector -->
+        <include src="./partials/kanban/board-selector.html" />
+
+        <button
           @click="openAddTaskModal()"
           class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -20,8 +23,8 @@
           </svg>
           Add Task
         </button>
-        
-        <button 
+
+        <button
           @click="openColumnModal()"
           class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
