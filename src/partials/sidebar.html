@@ -386,6 +386,37 @@
           </li>
           <!-- Menu Item Quotes -->
 
+          <!-- Menu Item Kanban -->
+          <li>
+            <a
+              href="kanban.html"
+              class="menu-item group"
+              :class="page === 'kanban' ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="page === 'kanban' ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="svg-menu-icon"
+              >
+                <rect x="3" y="3" width="7" height="18" rx="1" fill="none"></rect>
+                <rect x="14" y="3" width="7" height="10" rx="1" fill="none"></rect>
+                <rect x="14" y="17" width="7" height="4" rx="1" fill="none"></rect>
+              </svg>
+
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'lg:hidden' : ''"
+              >
+                Kanban
+              </span>
+            </a>
+          </li>
+          <!-- Menu Item Kanban -->
+
           <!-- Menu Item Contact -->
           <li>
             <a
