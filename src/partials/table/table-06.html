@@ -422,54 +422,96 @@
       <!-- table header start -->
       <thead class="bg-gray-50 dark:bg-gray-800/50">
         <tr class="border-b-2 border-gray-200 dark:border-gray-700">
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Date & Time
-            </p>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('date')">
+            <div class="flex items-center gap-2">
+              <p
+                class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+              >
+                Date & Time
+              </p>
+              <span x-show="sortColumn === 'date'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
           </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Price
-            </p>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('price')">
+            <div class="flex items-center gap-2">
+              <p
+                class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+              >
+                Price
+              </p>
+              <span x-show="sortColumn === 'price'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
           </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Email
-            </p>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('email')">
+            <div class="flex items-center gap-2">
+              <p
+                class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+              >
+                Email
+              </p>
+              <span x-show="sortColumn === 'email'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
           </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Phone
-            </p>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('phone')">
+            <div class="flex items-center gap-2">
+              <p
+                class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+              >
+                Phone
+              </p>
+              <span x-show="sortColumn === 'phone'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
           </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Vehicle
-            </p>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('vehicle')">
+            <div class="flex items-center gap-2">
+              <p
+                class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+              >
+                Vehicle
+              </p>
+              <span x-show="sortColumn === 'vehicle'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
           </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Payment
-            </p>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('payment')">
+            <div class="flex items-center gap-2">
+              <p
+                class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+              >
+                Payment
+              </p>
+              <span x-show="sortColumn === 'payment'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
           </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Policy End
-            </p>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('policyend')">
+            <div class="flex items-center gap-2">
+              <p
+                class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
+              >
+                Policy End
+              </p>
+              <span x-show="sortColumn === 'policyend'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
           </th>
           <th class="px-5 py-3.5 text-left sm:px-6">
             <p
