@@ -233,6 +233,65 @@
               </div>
             </div>
             
+            <!-- Time Tracking -->
+            <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/30">
+              <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Time Tracking
+              </h4>
+
+              <!-- Time Summary -->
+              <div class="flex items-center justify-between mb-3 pb-3 border-b border-gray-200 dark:border-gray-700">
+                <span class="text-sm text-gray-600 dark:text-gray-400">Total Time</span>
+                <span class="text-sm font-bold text-brand-600 dark:text-brand-400" x-text="formatDuration(viewingTask.totalTimeSpent || 0)"></span>
+              </div>
+
+              <div class="flex items-center justify-between mb-3" x-show="viewingTask.estimatedHours">
+                <span class="text-sm text-gray-600 dark:text-gray-400">Estimated</span>
+                <span class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="(viewingTask.estimatedHours || 0) + 'h'"></span>
+              </div>
+
+              <!-- Timer Controls -->
+              <div class="flex gap-2">
+                <button
+                  x-show="!viewingTask.timerRunning"
+                  @click="startTimer(viewingTask.id)"
+                  class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                  </svg>
+                  Start
+                </button>
+
+                <button
+                  x-show="viewingTask.timerRunning"
+                  @click="stopTimer(viewingTask.id)"
+                  class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" />
+                  </svg>
+                  Stop
+                </button>
+              </div>
+
+              <!-- Time Logs -->
+              <div x-show="viewingTask.timeLogs && viewingTask.timeLogs.length > 0" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <h5 class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Recent Sessions</h5>
+                <div class="space-y-2 max-h-32 overflow-y-auto">
+                  <template x-for="log in (viewingTask.timeLogs || []).slice(-5).reverse()" :key="log.id">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-gray-600 dark:text-gray-400" x-text="formatCommentDate(log.endedAt)"></span>
+                      <span class="font-medium text-gray-800 dark:text-white/90" x-text="formatDuration(log.duration)"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+
             <!-- Actions -->
             <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/30">
               <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Actions</h4>
