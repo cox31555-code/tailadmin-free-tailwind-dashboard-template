@@ -75,7 +75,7 @@
         matchesSearch = rowText.includes(searchLower);
       }
 
-      // Check payment filter
+      // Check payment filter (now at index 5 in new column order)
       if (filterPayment !== 'all') {
         const paymentCell = cells[5];
         const paymentText = paymentCell ? paymentCell.textContent.toLowerCase().trim() : '';
@@ -85,6 +85,9 @@
       // Show or hide row
       row.style.display = matchesSearch && matchesFilter ? '' : 'none';
     });
+
+    // Update statistics counts after filtering
+    updateStatsCounts();
   }
 
   // Export to CSV function
