@@ -167,20 +167,22 @@
       // Payment details
       paymentType: 'Monthly',
       depositAmount: '£247.50',
+      depositPaid: true,
       monthlyAmount: '£100.00',
       monthlyPayments: [
-        { date: '2025-02-14', amount: '£100.00' },
-        { date: '2025-03-14', amount: '£100.00' },
-        { date: '2025-04-14', amount: '£100.00' },
-        { date: '2025-05-14', amount: '£100.00' },
-        { date: '2025-06-14', amount: '£100.00' },
-        { date: '2025-07-14', amount: '£100.00' },
-        { date: '2025-08-14', amount: '£100.00' },
-        { date: '2025-09-14', amount: '£100.00' },
-        { date: '2025-10-14', amount: '£100.00' },
-        { date: '2025-11-14', amount: '£100.00' },
-        { date: '2025-12-14', amount: '£100.00' }
+        { date: '2025-02-14', amount: '£100.00', paid: false },
+        { date: '2025-03-14', amount: '£100.00', paid: false },
+        { date: '2025-04-14', amount: '£100.00', paid: false },
+        { date: '2025-05-14', amount: '£100.00', paid: false },
+        { date: '2025-06-14', amount: '£100.00', paid: false },
+        { date: '2025-07-14', amount: '£100.00', paid: false },
+        { date: '2025-08-14', amount: '£100.00', paid: false },
+        { date: '2025-09-14', amount: '£100.00', paid: false },
+        { date: '2025-10-14', amount: '£100.00', paid: false },
+        { date: '2025-11-14', amount: '£100.00', paid: false },
+        { date: '2025-12-14', amount: '£100.00', paid: false }
       ],
+      paymentScheduleExpanded: false,
 
       // DVLA conditions details
       dvlaConditionType: 'DVLA aware - 2 year restricted Licence',
@@ -281,7 +283,8 @@
           'cover': ['coverType', 'voluntaryExcess', 'paymentPreference', 'policyStartDate'],
           'ncd': ['noClaimsYears', 'noClaimsSource', 'protectedNoClaimsDiscount'],
           'additionalProducts': ['personalAccidentCover', 'courtesyCar', 'breakdownCover', 'motorLegalProtection'],
-          'contact': ['email', 'phoneNumber', 'canProvidersContact']
+          'contact': ['email', 'phoneNumber', 'canProvidersContact'],
+          'payments': ['depositPaid', 'monthlyPayments']
         };
         return sectionMap[sectionName] || [];
       },
@@ -393,8 +396,10 @@
           canProvidersContact: this.canProvidersContact,
           paymentType: this.paymentType,
           depositAmount: this.depositAmount,
+          depositPaid: this.depositPaid,
           monthlyAmount: this.monthlyAmount,
           monthlyPayments: this.monthlyPayments,
+          paymentScheduleExpanded: this.paymentScheduleExpanded,
           dvlaConditionType: this.dvlaConditionType,
           hasDetailedClaims: this.hasDetailedClaims,
           claimIncidentType: this.claimIncidentType,
@@ -429,6 +434,46 @@
         const diffTime = end - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays > 0 ? diffDays : 0;
+      },
+
+      getDaysUntilPolicyStart() {
+        const start = new Date(this.policyStart);
+        const today = new Date();
+        const diffTime = start - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      },
+
+      getDaysUntilPolicyEnd() {
+        const end = new Date(this.policyEnd);
+        const today = new Date();
+        const diffTime = end - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      },
+
+      getNextDuePayment() {
+        const today = new Date();
+        for (let payment of this.monthlyPayments) {
+          if (!payment.paid) {
+            const paymentDate = new Date(payment.date);
+            const diffTime = paymentDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return {
+              ...payment,
+              daysUntil: diffDays
+            };
+          }
+        }
+        return null;
+      },
+
+      getPaidPaymentsCount() {
+        return this.monthlyPayments.filter(p => p.paid).length;
+      },
+
+      togglePaymentSchedule() {
+        this.paymentScheduleExpanded = !this.paymentScheduleExpanded;
       },
       
       downloadAllPDFs() {
