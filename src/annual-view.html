@@ -294,6 +294,12 @@
           this.customerName = `${this.title} ${this.firstName} ${this.surname}`;
         }
 
+        // Sync homeAddress and city from manual entry fields if saving household
+        if (sectionName === 'household') {
+          this.homeAddress = this.addressLine1 || this.homeAddress;
+          this.city = this.townCity || this.city;
+        }
+
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1500));
 
