@@ -187,15 +187,14 @@
     let value = cell.textContent.trim();
 
     // Handle different column types
-    if (columnName === 'date') {
-      // Extract date from first paragraph (e.g., "Nov 10, 2025")
-      const dateText = cell.querySelector('p:first-child')?.textContent.trim() || value;
-      return new Date(dateText).getTime();
+    if (columnName === 'name') {
+      // Customer name - case insensitive alphabetic sort
+      return value.toLowerCase();
     } else if (columnName === 'price') {
       // Strip currency symbol and convert to number
       return parseFloat(value.replace(/[£$,]/g, '')) || 0;
-    } else if (columnName === 'policyend') {
-      // Parse policy end date
+    } else if (columnName === 'policystart' || columnName === 'policyend') {
+      // Parse dates
       return new Date(value).getTime();
     } else {
       // Text columns: return lowercase for case-insensitive sorting
