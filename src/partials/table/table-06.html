@@ -56,6 +56,94 @@
       characterData: true,
     });
   }
+
+  // Search and filter functionality
+  let searchDebounceTimer;
+  function filterAndSearchTable(searchQuery = '', filterPayment = 'all') {
+    const tbody = document.querySelector('table tbody');
+    const rows = tbody.querySelectorAll('tr');
+    const searchLower = searchQuery.toLowerCase();
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      let matchesSearch = true;
+      let matchesFilter = true;
+
+      // Check search query
+      if (searchLower) {
+        const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+        matchesSearch = rowText.includes(searchLower);
+      }
+
+      // Check payment filter
+      if (filterPayment !== 'all') {
+        const paymentCell = cells[5];
+        const paymentText = paymentCell ? paymentCell.textContent.toLowerCase().trim() : '';
+        matchesFilter = paymentText === filterPayment.toLowerCase();
+      }
+
+      // Show or hide row
+      row.style.display = matchesSearch && matchesFilter ? '' : 'none';
+    });
+  }
+
+  // Export to CSV function
+  function exportAnnualPoliciesToCSV() {
+    const table = document.querySelector('table');
+    const tbody = table.querySelector('tbody');
+    const headers = ['Date', 'Price', 'Email', 'Phone', 'Vehicle', 'Payment', 'Policy End'];
+    const rows = [];
+
+    rows.push(headers.join(','));
+
+    tbody.querySelectorAll('tr').forEach(row => {
+      // Skip hidden rows
+      if (row.style.display === 'none') return;
+
+      const cells = row.querySelectorAll('td');
+      const rowData = [];
+
+      // Extract data from cells
+      for (let i = 0; i < 7; i++) {
+        let cellText = cells[i] ? cells[i].textContent.trim() : '';
+        // Remove extra whitespace and newlines
+        cellText = cellText.replace(/\s+/g, ' ').trim();
+        // Quote fields for CSV
+        rowData.push(`"${cellText}"`);
+      }
+
+      rows.push(rowData.join(','));
+    });
+
+    const csvContent = rows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'annual-policies.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // Make export function globally available
+  window.exportAnnualPoliciesToCSV = exportAnnualPoliciesToCSV;
+
+  // Setup table filtering with Alpine.js integration
+  function setupTableFiltering() {
+    // Watch for changes in Alpine data
+    document.addEventListener('search-input-change', (e) => {
+      filterAndSearchTable(e.detail.searchQuery, e.detail.filterPayment);
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupTableFiltering);
+  } else {
+    setupTableFiltering();
+  }
 </script>
 
 <style>
