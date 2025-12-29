@@ -277,6 +277,139 @@ document.addEventListener("DOMContentLoaded", function () {
     /*=====================*/
     calendar.render();
 
+    /*=====================*/
+    // Kanban Integration
+    /*=====================*/
+    // Load Kanban tasks as calendar events
+    function loadKanbanEvents() {
+      try {
+        const raw = localStorage.getItem('kanban_boards');
+        const activeId = localStorage.getItem('kanban_activeBoard');
+        if (!raw || !activeId) return [];
+
+        const boards = JSON.parse(raw);
+        const activeBoard = boards.find(b => b.id === activeId);
+        if (!activeBoard) return [];
+
+        return activeBoard.tasks
+          .filter(task => task.dueDate)
+          .map(task => ({
+            id: `kanban-${task.id}`,
+            title: `[Kanban] ${task.title}`,
+            start: task.dueDate,
+            end: task.dueDate,
+            allDay: true,
+            backgroundColor: getPriorityColor(task.priority),
+            borderColor: getPriorityColor(task.priority),
+            extendedProps: {
+              kanbanTaskId: task.id,
+              priority: task.priority,
+              column: task.column,
+              assignee: task.assignee,
+              description: task.description
+            }
+          }));
+      } catch (e) {
+        console.warn('Failed to load Kanban events', e);
+        return [];
+      }
+    }
+
+    function getPriorityColor(priority) {
+      const colors = {
+        high: '#EF4444',
+        medium: '#F59E0B',
+        low: '#3B82F6'
+      };
+      return colors[priority] || colors.medium;
+    }
+
+    // Add Kanban events to calendar on initial load
+    const kanbanEvents = loadKanbanEvents();
+    kanbanEvents.forEach(evt => calendar.addEvent(evt));
+
+    // Listen for Kanban task changes
+    window.addEventListener('kanban:taskAdded', (e) => {
+      const task = e.detail;
+      if (!task || !task.dueDate) return;
+
+      calendar.addEvent({
+        id: `kanban-${task.id}`,
+        title: `[Kanban] ${task.title}`,
+        start: task.dueDate,
+        end: task.dueDate,
+        allDay: true,
+        backgroundColor: getPriorityColor(task.priority),
+        borderColor: getPriorityColor(task.priority),
+        extendedProps: {
+          kanbanTaskId: task.id,
+          priority: task.priority,
+          column: task.column,
+          assignee: task.assignee,
+          description: task.description
+        }
+      });
+    });
+
+    window.addEventListener('kanban:taskUpdated', (e) => {
+      const task = e.detail;
+      const evt = calendar.getEventById(`kanban-${task.id}`);
+
+      if (evt) {
+        if (task.dueDate) {
+          evt.setProp('title', `[Kanban] ${task.title}`);
+          evt.setStart(task.dueDate);
+          evt.setEnd(task.dueDate);
+          evt.setProp('backgroundColor', getPriorityColor(task.priority));
+          evt.setProp('borderColor', getPriorityColor(task.priority));
+          evt.setExtendedProp('priority', task.priority);
+          evt.setExtendedProp('column', task.column);
+          evt.setExtendedProp('assignee', task.assignee);
+          evt.setExtendedProp('description', task.description);
+        } else {
+          // No due date anymore, remove from calendar
+          evt.remove();
+        }
+      } else if (task.dueDate) {
+        // Task now has a due date, add to calendar
+        calendar.addEvent({
+          id: `kanban-${task.id}`,
+          title: `[Kanban] ${task.title}`,
+          start: task.dueDate,
+          end: task.dueDate,
+          allDay: true,
+          backgroundColor: getPriorityColor(task.priority),
+          borderColor: getPriorityColor(task.priority),
+          extendedProps: {
+            kanbanTaskId: task.id,
+            priority: task.priority,
+            column: task.column,
+            assignee: task.assignee,
+            description: task.description
+          }
+        });
+      }
+    });
+
+    window.addEventListener('kanban:taskDeleted', (e) => {
+      const evt = calendar.getEventById(`kanban-${e.detail.id}`);
+      if (evt) evt.remove();
+    });
+
+    window.addEventListener('kanban:boardSwitched', () => {
+      // Remove all Kanban events
+      const allEvents = calendar.getEvents();
+      allEvents.forEach(evt => {
+        if (evt.id && evt.id.startsWith('kanban-')) {
+          evt.remove();
+        }
+      });
+
+      // Reload Kanban events from new active board
+      const newKanbanEvents = loadKanbanEvents();
+      newKanbanEvents.forEach(evt => calendar.addEvent(evt));
+    });
+
     // Reset modal fields when hidden
     document.getElementById("eventModal").addEventListener("click", (event) => {
       if (event.target.classList.contains("modal-close-btn")) {
