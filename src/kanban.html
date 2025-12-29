@@ -400,6 +400,9 @@
         }
 
         this.saveKanbanData();
+
+        // Dispatch event for calendar sync
+        window.dispatchEvent(new CustomEvent('kanban:taskUpdated', { detail: task }));
       },
 
       recalculateColumnPositions(columnId) {
