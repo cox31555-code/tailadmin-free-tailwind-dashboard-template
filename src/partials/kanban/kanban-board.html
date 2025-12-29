@@ -115,11 +115,10 @@
   <!-- Kanban Columns -->
   <div class="flex gap-4 overflow-x-auto pb-4 min-h-[600px]" style="scroll-snap-type: x proximity;">
     <template x-for="column in columns" :key="column.id">
-      <div 
+      <div
         class="flex-shrink-0 w-80"
         style="scroll-snap-align: start;"
-        @dragover="allowDrop($event)"
-        @drop="drop(column.id)"
+        :data-kanban-column="column.id"
       >
         <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] h-full flex flex-col">
           <!-- Column Header -->
@@ -163,13 +162,11 @@
           </div>
           
           <!-- Column Content (Tasks) -->
-          <div class="flex-1 p-3 space-y-3 overflow-y-auto">
+          <div class="flex-1 p-3 space-y-3 overflow-y-auto" data-tasks-container>
             <template x-for="task in getTasksForColumn(column.id)" :key="task.id">
-              <div 
-                draggable="true"
-                @dragstart="startDrag(task.id, column.id)"
+              <div
+                :data-task-id="task.id"
                 class="group bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg p-3 cursor-move hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all"
-                :class="draggedTaskId === task.id ? 'opacity-50' : ''"
               >
                 <!-- Task Header -->
                 <div class="flex items-start justify-between gap-2 mb-2">
