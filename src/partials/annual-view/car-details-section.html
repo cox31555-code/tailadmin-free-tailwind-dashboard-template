@@ -498,6 +498,8 @@
           x-model="whenBought"
           type="text"
           placeholder="MM/YYYY"
+          maxlength="7"
+          @input="whenBought = whenBought.replace(/[^\d\/]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').substring(0, 7)"
           class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
         />
       </div>

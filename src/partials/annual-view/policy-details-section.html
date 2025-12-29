@@ -513,14 +513,17 @@
         Voluntary excess
       </label>
       <div class="sm:col-span-2">
-        <p x-show="!editMode['cover']" class="text-sm text-gray-800 dark:text-white/90" x-text="voluntaryExcess"></p>
-        <input
-          x-show="editMode['cover']"
-          x-model="voluntaryExcess"
-          type="text"
-          placeholder="£"
-          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
-        />
+        <p x-show="!editMode['cover']" class="text-sm text-gray-800 dark:text-white/90" x-text="'£' + (voluntaryExcess ? Number(voluntaryExcess).toLocaleString('en-GB') : '0')"></p>
+        <div x-show="editMode['cover']" class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400 pointer-events-none">£</span>
+          <input
+            x-model="voluntaryExcess"
+            type="text"
+            placeholder="0"
+            @input="voluntaryExcess = voluntaryExcess.replace(/[^\d]/g, '')"
+            class="h-10 w-full rounded-lg border border-gray-300 bg-transparent pl-7 pr-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+          />
+        </div>
       </div>
     </div>
     
@@ -549,8 +552,11 @@
         <input
           x-show="editMode['cover']"
           x-model="policyStartDate"
-          type="date"
-          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+          type="text"
+          placeholder="DD/MM/YYYY"
+          maxlength="10"
+          @input="policyStartDate = policyStartDate.replace(/[^\d\/]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2').substring(0, 10)"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
         />
       </div>
     </div>
