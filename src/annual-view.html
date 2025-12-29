@@ -499,24 +499,53 @@
         window.print();
       },
 
+      updateDriverFullName(driverIndex) {
+        const driver = this.additionalDriversList[driverIndex];
+        if (driver) {
+          driver.fullName = `${driver.title} ${driver.firstName} ${driver.surname}`.trim();
+        }
+      },
+
       addDriver() {
         this.additionalDriversList.push({
+          // About You
+          title: 'Mr',
+          firstName: '',
+          surname: '',
           fullName: '',
           dob: '',
           relationshipStatus: 'Single',
-          relationshipToPolicyholder: '',
+
+          // Employment
           employmentStatus: 'Employed',
           occupation: '',
           industry: '',
+
+          // Licence
           licenceType: 'Full UK Car Licence',
-          yearsHeld: '0',
+          yearsHeld: '0 years',
           additionalQualifications: 'No',
           dvlaConditions: 'No',
-          dvlaConditionType: '',
           insuranceDenied: 'No',
           nonMotoringConvictions: 'No',
+
+          // Claims
           claimsLast5Years: 'None',
-          motoringConvictions: 'None'
+
+          // Motoring Convictions
+          motoringConvictions: 'None',
+          convictionLocation: 'England, Scotland or Wales (Great Britain)',
+          convictionType: 'DR - Drink',
+          convictionCode: '',
+          convictionDay: '',
+          convictionMonth: '',
+          convictionYear: '',
+          convictionPenaltyPoints: 'No',
+          convictionPointsAmount: '',
+          convictionFine: 'No',
+          convictionFineAmount: '',
+          convictionBan: 'No',
+          convictionBanMonths: ''
         });
       },
 
