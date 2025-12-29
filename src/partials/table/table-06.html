@@ -11,27 +11,35 @@
     // Filter out old annual data
     allOrders = allOrders.filter(order => order.type !== 'annual');
 
-    // Add new orders from this page
+    // Add new orders from this page (new column structure)
     const tableRows = document.querySelectorAll('table tbody tr');
 
     tableRows.forEach((row) => {
-      const dateCell = row.querySelector('td:first-child p:first-child');
-      const priceCell = row.querySelector('td:nth-child(2) p');
-      const emailCell = row.querySelector('td:nth-child(3) p');
-      const phoneCell = row.querySelector('td:nth-child(4) p');
-      const vehicleCell = row.querySelector('td:nth-child(5) p');
-      const paymentCell = row.querySelector('td:nth-child(6) span');
+      const cells = row.querySelectorAll('td');
 
-      if (dateCell) {
-        const dateText = dateCell.textContent.trim();
+      // Extract data from new column positions
+      const nameCell = cells[0];       // Customer Name
+      const emailCell = cells[1];      // Email
+      const phoneCell = cells[2];      // Phone
+      const vehicleCell = cells[3];    // Vehicle
+      const priceCell = cells[4];      // Price
+      const paymentCell = cells[5];    // Payment
+      const policyStartCell = cells[6]; // Policy Start
+      const policyEndCell = cells[7];  // Policy End
+      const statusCell = cells[8];     // Status
+
+      if (nameCell) {
         allOrders.push({
           type: 'annual',
-          date: dateText,
-          price: priceCell ? priceCell.textContent.trim() : '',
+          name: nameCell.textContent.trim(),
           email: emailCell ? emailCell.textContent.trim() : '',
           phone: phoneCell ? phoneCell.textContent.trim() : '',
           vehicle: vehicleCell ? vehicleCell.textContent.trim() : '',
-          payment: paymentCell ? paymentCell.textContent.trim() : ''
+          price: priceCell ? priceCell.textContent.trim() : '',
+          payment: paymentCell ? paymentCell.textContent.trim() : '',
+          policyStart: policyStartCell ? policyStartCell.textContent.trim() : '',
+          policyEnd: policyEndCell ? policyEndCell.textContent.trim() : '',
+          status: statusCell ? statusCell.textContent.trim() : ''
         });
       }
     });
