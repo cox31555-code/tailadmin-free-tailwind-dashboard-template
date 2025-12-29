@@ -18,8 +18,10 @@
       stickyMenu: false,
       sidebarToggle: false,
       scrollTop: false,
-      
+
       // Kanban State
+      sortableInitialized: false,
+      enforceWIPLimits: true,
       showAddTaskModal: false,
       showEditTaskModal: false,
       showColumnModal: false,
@@ -169,6 +171,71 @@
       // Methods
       init() {
         this.loadKanbanData();
+        this.initSortable();
+
+        // Listen for task moved events from SortableJS
+        window.addEventListener('kanban:taskMoved', (e) => {
+          this.handleTaskMoved(e.detail);
+        });
+      },
+
+      initSortable() {
+        if (!this.sortableInitialized) {
+          import('./js/components/kanban-sortable-init.js').then(module => {
+            module.initKanbanSortable(this);
+            this.sortableInitialized = true;
+          }).catch(err => {
+            console.error('Failed to load SortableJS:', err);
+          });
+        }
+      },
+
+      handleTaskMoved(detail) {
+        const { taskId, newColumnId, oldColumnId, newIndex } = detail;
+        const task = this.tasks.find(t => t.id === taskId);
+
+        if (!task) return;
+
+        // Check WIP limit before moving
+        const column = this.columns.find(c => c.id === newColumnId);
+        if (this.enforceWIPLimits && column && column.limit && oldColumnId !== newColumnId) {
+          const tasksInColumn = this.tasks.filter(t => t.column === newColumnId && t.id !== taskId).length;
+
+          if (tasksInColumn >= column.limit) {
+            alert(`Cannot move task: ${column.name} has reached its WIP limit of ${column.limit}.`);
+            // Reload to revert the UI change
+            location.reload();
+            return;
+          }
+        }
+
+        // Update task column and position
+        task.column = newColumnId;
+        task.position = newIndex;
+        task.updatedAt = new Date().toISOString();
+
+        // Recalculate positions for all tasks in the target column
+        this.recalculateColumnPositions(newColumnId);
+
+        // Show WIP warning if over limit (but not enforcing)
+        if (!this.enforceWIPLimits && column && column.limit) {
+          const tasksInColumn = this.tasks.filter(t => t.column === newColumnId).length;
+          if (tasksInColumn > column.limit) {
+            console.warn(`Warning: ${column.name} has ${tasksInColumn} tasks, exceeding the WIP limit of ${column.limit}.`);
+          }
+        }
+
+        this.saveKanbanData();
+      },
+
+      recalculateColumnPositions(columnId) {
+        const columnTasks = this.tasks
+          .filter(t => t.column === columnId)
+          .sort((a, b) => (a.position || 0) - (b.position || 0));
+
+        columnTasks.forEach((task, index) => {
+          task.position = index;
+        });
       },
       
       loadKanbanData() {
@@ -189,7 +256,9 @@
       },
       
       getTasksForColumn(columnId) {
-        return this.getFilteredTasks().filter(task => task.column === columnId);
+        return this.getFilteredTasks()
+          .filter(task => task.column === columnId)
+          .sort((a, b) => (a.position || 0) - (b.position || 0));
       },
       
       getFilteredTasks() {
@@ -263,12 +332,19 @@
       },
       
       addTask() {
+        // Calculate position for new task in column
+        const columnTasks = this.tasks.filter(t => t.column === this.newTask.column);
+        const maxPosition = columnTasks.length > 0
+          ? Math.max(...columnTasks.map(t => t.position || 0))
+          : -1;
+
         const task = {
           ...this.newTask,
           id: Date.now().toString(),
+          position: maxPosition + 1,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          assigneeAvatar: this.newTask.assignee ? 
+          assigneeAvatar: this.newTask.assignee ?
             `https://ui-avatars.com/api/?name=${encodeURIComponent(this.newTask.assignee)}&background=3B82F6&color=fff` : '',
           attachments: 0,
           comments: 0
