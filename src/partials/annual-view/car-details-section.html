@@ -377,7 +377,10 @@
         Any modifications?
       </label>
       <div class="sm:col-span-2">
-        <p x-show="!editMode['carDetails']" class="text-sm text-gray-800 dark:text-white/90" x-text="modifications"></p>
+        <div x-show="!editMode['carDetails']">
+          <p class="text-sm text-gray-800 dark:text-white/90" x-text="modifications"></p>
+          <p x-show="modifications === 'Yes' && selectedModifications.length > 0" class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="selectedModifications.length + ' modification(s) declared'"></p>
+        </div>
         <select
           x-show="editMode['carDetails']"
           x-model="modifications"
@@ -386,6 +389,225 @@
           <option value="No">No</option>
         </select>
       </div>
+    </div>
+
+    <!-- Modification Details (shown when modifications = Yes) -->
+    <div x-show="modifications === 'Yes' && editMode['carDetails']" x-transition class="pl-0 sm:pl-8 border-l-2 border-brand-200 dark:border-brand-800 ml-0 sm:ml-4 space-y-3">
+      <div class="text-sm font-medium text-gray-700 dark:text-gray-400 mb-3">
+        Select all modifications that apply:
+        <span class="ml-2 text-xs text-brand-500 dark:text-brand-400" x-text="'(' + selectedModifications.length + ' selected)'"></span>
+      </div>
+
+      <!-- Engine, Tuning & Performance -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.engine.expanded = !modificationCategories.engine.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Engine, Tuning & Performance</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.engine.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.engine.expanded" x-collapse class="p-4 space-y-2 bg-white dark:bg-transparent">
+          <template x-for="mod in ['ECU remap / engine remap', 'Chip tuning', 'Software tune (Stage 1/2/3)', 'Engine swap', 'Turbocharger added', 'Turbocharger upgraded', 'Supercharger added', 'Supercharger upgraded', 'Hybrid turbo', 'Increased boost pressure', 'Boost controller', 'Intercooler upgrade', 'Air intake / induction kit', 'Cone air filter', 'Cold air intake', 'Throttle body upgrade', 'Fuel injectors upgraded', 'Fuel pump upgraded', 'Forged pistons', 'Forged connecting rods', 'Performance camshaft(s)', 'Oil cooler fitted']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Exhaust & Emissions -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.exhaust.expanded = !modificationCategories.exhaust.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Exhaust & Emissions</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.exhaust.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.exhaust.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Performance exhaust system', 'Cat-back exhaust', 'Sports catalytic converter', 'Decat pipe', 'Exhaust manifold / headers', 'Downpipe', 'Valved exhaust', 'Aftermarket silencer / muffler', 'DPF delete', 'EGR delete', 'AdBlue system modification']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Suspension, Steering & Handling -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.suspension.expanded = !modificationCategories.suspension.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Suspension, Steering & Handling</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.suspension.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.suspension.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Lowering springs', 'Coilover suspension', 'Adjustable suspension', 'Air suspension', 'Uprated dampers / shocks', 'Anti-roll bars', 'Sway bars', 'Strut brace', 'Chassis bracing', 'Polybushes', 'Camber kit', 'Ride height change']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Wheels & Tyres -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.wheels.expanded = !modificationCategories.wheels.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Wheels & Tyres</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.wheels.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.wheels.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Alloy wheels changed', 'Aftermarket wheels', 'Wheel size changed', 'Wheel width changed', 'Wheel spacers', 'Wider tyres fitted', 'Tyre size changed', 'Performance tyres', 'Wheel arch modifications']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Exterior Bodywork & Styling -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.exterior.expanded = !modificationCategories.exterior.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Exterior Bodywork & Styling</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.exterior.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.exterior.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Body kit', 'Front bumper changed', 'Rear bumper changed', 'Side skirts', 'Front splitter', 'Rear diffuser', 'Rear spoiler', 'Rear wing', 'Bonnet / hood replacement', 'Carbon fibre bonnet', 'Vented bonnet', 'Widebody kit', 'Debadging']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Paint, Wrap & Visual Finishes -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.paint.expanded = !modificationCategories.paint.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Paint, Wrap & Visual Finishes</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.paint.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.paint.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Full respray', 'Colour change', 'Vinyl wrap (full)', 'Vinyl wrap (partial)', 'Matte paint finish', 'Satin paint finish', 'Graphics', 'Decals', 'Racing livery', 'Chrome delete']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Lighting & Exterior Electrical -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.lighting.expanded = !modificationCategories.lighting.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Lighting & Exterior Electrical</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.lighting.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.lighting.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Aftermarket headlights', 'Aftermarket tail lights', 'HID conversion', 'LED conversion', 'Daytime running lights (DRL)', 'Underglow lighting', 'Light bars', 'Smoked lights']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Security & Anti-Theft -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.security.expanded = !modificationCategories.security.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Security & Anti-Theft</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.security.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.security.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Aftermarket alarm', 'Aftermarket immobiliser', 'Vehicle tracker', 'Thatcham-approved tracker', 'Ghost immobiliser', 'Kill switch', 'Locking wheel nuts']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Interior Modifications -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.interior.expanded = !modificationCategories.interior.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Interior Modifications</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.interior.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.interior.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Aftermarket seats', 'Bucket seats', 'Rear seats removed', 'Steering wheel changed', 'Roll cage', 'Racing harnesses', 'Interior trim changes']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Other Categories Combined (for space efficiency) -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.other.expanded = !modificationCategories.other.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Other Modifications</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.other.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.other.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Towbar fitted', 'Roof rack', 'LPG conversion', 'Window tinting', 'Dashcam hardwired', 'Parking sensors retrofit', 'Heated seats retrofit', 'Apple CarPlay retrofit', 'Subwoofer installed', 'Factory optional extras not listed on V5C']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
