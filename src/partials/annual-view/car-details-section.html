@@ -38,19 +38,194 @@
   
   <!-- Fields Grid -->
   <div class="p-5 sm:p-6 space-y-5">
-    <!-- Car Make & Model -->
+    <!-- VRM Lookup / Manual Entry -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
-        Car make and model
+        Vehicle details
       </label>
       <div class="sm:col-span-2">
+        <!-- View Mode - Display current vehicle -->
         <p x-show="!editMode['carDetails']" class="text-sm text-gray-800 dark:text-white/90" x-text="carMake"></p>
-        <input
-          x-show="editMode['carDetails']"
-          x-model="carMake"
-          type="text"
-          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
-        />
+
+        <!-- Edit Mode - VRM Lookup or Manual Entry -->
+        <div x-show="editMode['carDetails']" class="space-y-4">
+
+          <!-- VRM Lookup Mode -->
+          <div x-show="vrmLookupMode">
+            <h3 class="text-base font-semibold text-gray-800 dark:text-white/90 mb-2">What's your car's registration?</h3>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mb-4">We can only show you quotes for cars registered in the UK.</p>
+
+            <div class="flex gap-2 mb-4">
+              <input
+                x-model="vrm"
+                type="text"
+                placeholder="Enter car registration..."
+                class="h-10 flex-1 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+              />
+              <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg bg-brand-500 px-6 py-2 text-sm font-medium text-white hover:bg-brand-600 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 transition-colors">
+                Find my car
+              </button>
+            </div>
+
+            <div class="flex items-center gap-3 mb-3">
+              <div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+              <span class="text-xs text-gray-500 dark:text-gray-400">Or</span>
+              <div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+
+            <button
+              @click="vrmLookupMode = false"
+              type="button"
+              class="inline-flex items-center justify-center rounded-lg border-2 border-brand-500 px-4 py-2 text-sm font-medium text-brand-500 hover:bg-brand-500/10 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 transition-colors dark:border-brand-400 dark:text-brand-400">
+              Enter make and model
+            </button>
+          </div>
+
+          <!-- Manual Entry Mode -->
+          <div x-show="!vrmLookupMode">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">Enter Vehicle Details</h3>
+              <button
+                @click="vrmLookupMode = true"
+                type="button"
+                class="text-xs text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium border border-brand-500 dark:border-brand-400 rounded px-2 py-1">
+                Back to registration lookup
+              </button>
+            </div>
+
+            <p class="text-xs text-gray-600 dark:text-gray-400 mb-4">Please complete each field in order to unlock the next selection.</p>
+
+            <div class="space-y-3">
+              <!-- Vehicle Type -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Vehicle Type</label>
+                <select
+                  x-model="vehicleType"
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+                  <option value="Car">Car</option>
+                  <option value="Van">Van</option>
+                  <option value="Motorcycle">Motorcycle</option>
+                </select>
+              </div>
+
+              <!-- Make -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Make</label>
+                  <select
+                    x-model="vehicleMake"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+                    <option value="">Select make</option>
+                    <option value="Audi">Audi</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Mercedes">Mercedes</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Volkswagen">Volkswagen</option>
+                  </select>
+                </div>
+
+                <!-- Year -->
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Year</label>
+                  <select
+                    x-model="vehicleYear"
+                    :disabled="!vehicleMake"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select year</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Model -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Model</label>
+                <select
+                  x-model="vehicleModel"
+                  :disabled="!vehicleMake"
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <option value="">Select model</option>
+                  <option value="Corolla">Corolla</option>
+                  <option value="Camry">Camry</option>
+                  <option value="RAV4">RAV4</option>
+                </select>
+              </div>
+
+              <!-- Doors & Fuel Type -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Doors</label>
+                  <select
+                    x-model="vehicleDoors"
+                    :disabled="!vehicleModel"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select doors</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Fuel Type</label>
+                  <select
+                    x-model="vehicleFuelType"
+                    :disabled="!vehicleModel"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select fuel type</option>
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Electric">Electric</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Transmission & Colour -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Transmission</label>
+                  <select
+                    x-model="vehicleTransmission"
+                    :disabled="!vehicleModel"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select transmission</option>
+                    <option value="Manual">Manual</option>
+                    <option value="Automatic">Automatic</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Colour</label>
+                  <select
+                    x-model="vehicleColour"
+                    :disabled="!vehicleModel"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select colour</option>
+                    <option value="Black">Black</option>
+                    <option value="White">White</option>
+                    <option value="Silver">Silver</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Red">Red</option>
+                    <option value="Grey">Grey</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
     
