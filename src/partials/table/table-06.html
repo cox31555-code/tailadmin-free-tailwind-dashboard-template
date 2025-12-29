@@ -11,35 +11,37 @@
     // Filter out old annual data
     allOrders = allOrders.filter(order => order.type !== 'annual');
 
-    // Add new orders from this page (new column structure)
+    // Add new orders from this page (new column structure with merged customer cell)
     const tableRows = document.querySelectorAll('table tbody tr');
 
     tableRows.forEach((row) => {
       const cells = row.querySelectorAll('td');
 
       // Extract data from new column positions
-      const nameCell = cells[0];       // Customer Name
-      const emailCell = cells[1];      // Email
-      const phoneCell = cells[2];      // Phone
-      const vehicleCell = cells[3];    // Vehicle
-      const priceCell = cells[4];      // Price
-      const paymentCell = cells[5];    // Payment
-      const policyStartCell = cells[6]; // Policy Start
-      const policyEndCell = cells[7];  // Policy End
-      const statusCell = cells[8];     // Status
+      const customerCell = cells[0];       // Customer (Name + Email merged)
+      const phoneCell = cells[1];          // Phone
+      const vehicleCell = cells[2];        // Vehicle
+      const priceCell = cells[3];          // Price
+      const paymentCell = cells[4];        // Payment
+      const policyStartCell = cells[5];    // Policy Start
+      const policyEndCell = cells[6];      // Policy End
+      // Status column removed (index 7 is now Actions)
 
-      if (nameCell) {
+      if (customerCell) {
+        // Extract name and email from merged customer cell
+        const nameParagraph = customerCell.querySelector('p:first-child');
+        const emailParagraph = customerCell.querySelector('p:last-child');
+        
         allOrders.push({
           type: 'annual',
-          name: nameCell.textContent.trim(),
-          email: emailCell ? emailCell.textContent.trim() : '',
+          name: nameParagraph ? nameParagraph.textContent.trim() : '',
+          email: emailParagraph ? emailParagraph.textContent.trim() : '',
           phone: phoneCell ? phoneCell.textContent.trim() : '',
           vehicle: vehicleCell ? vehicleCell.textContent.trim() : '',
           price: priceCell ? priceCell.textContent.trim() : '',
           payment: paymentCell ? paymentCell.textContent.trim() : '',
           policyStart: policyStartCell ? policyStartCell.textContent.trim() : '',
-          policyEnd: policyEndCell ? policyEndCell.textContent.trim() : '',
-          status: statusCell ? statusCell.textContent.trim() : ''
+          policyEnd: policyEndCell ? policyEndCell.querySelector('p:first-child')?.textContent.trim() : ''
         });
       }
     });
@@ -83,9 +85,9 @@
         matchesSearch = rowText.includes(searchLower);
       }
 
-      // Check payment filter (now at index 5 in new column order)
+      // Check payment filter (now at index 4 in new column order)
       if (filterPayment !== 'all') {
-        const paymentCell = cells[5];
+        const paymentCell = cells[4];
         const paymentText = paymentCell ? paymentCell.textContent.toLowerCase().trim() : '';
         matchesFilter = paymentText === filterPayment.toLowerCase();
       }
@@ -102,7 +104,7 @@
   function exportAnnualPoliciesToCSV() {
     const table = document.querySelector('table');
     const tbody = table.querySelector('tbody');
-    const headers = ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End', 'Status'];
+    const headers = ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End'];
     const rows = [];
 
     rows.push(headers.join(','));
@@ -114,9 +116,23 @@
       const cells = row.querySelectorAll('td');
       const rowData = [];
 
-      // Extract data from first 9 columns (skip Actions column at index 9)
-      for (let i = 0; i < 9; i++) {
-        let cellText = cells[i] ? cells[i].textContent.trim() : '';
+      // Extract customer name and email from merged cell
+      const customerCell = cells[0];
+      const nameParagraph = customerCell?.querySelector('p:first-child');
+      const emailParagraph = customerCell?.querySelector('p:last-child');
+      rowData.push(`"${nameParagraph ? nameParagraph.textContent.trim() : ''}"`);
+      rowData.push(`"${emailParagraph ? emailParagraph.textContent.trim() : ''}"`);
+
+      // Extract other columns (indices 1-6, skip Actions at index 7)
+      for (let i = 1; i <= 6; i++) {
+        let cellText = '';
+        if (i === 6) {
+          // Policy End - extract just the date from the progress bar container
+          const dateP = cells[i]?.querySelector('p:first-child');
+          cellText = dateP ? dateP.textContent.trim() : '';
+        } else {
+          cellText = cells[i] ? cells[i].textContent.trim() : '';
+        }
         // Remove extra whitespace and newlines
         cellText = cellText.replace(/\s+/g, ' ').trim();
         // Quote fields for CSV
@@ -141,14 +157,6 @@
   // Make export function globally available
   window.exportAnnualPoliciesToCSV = exportAnnualPoliciesToCSV;
 
-  // Helper function: Extract customer name from email
-  function extractCustomerName(email) {
-    if (!email) return 'Unknown';
-    const localPart = email.split('@')[0];
-    const parts = localPart.split('.');
-    return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
-  }
-
   // Helper function: Determine if policy is expiring soon (within 30 days)
   function isExpiringsSoon(policyEndDate, daysThreshold = 30) {
     try {
@@ -162,12 +170,12 @@
     }
   }
 
-  // Helper function: Get policy status (Active or Expiring Soon)
+  // Helper function: Get policy status (Active or Expiring Soon - NO EXPIRED)
   function getStatus(policyEndDate) {
     try {
       const endDate = new Date(policyEndDate);
       const today = new Date();
-      if (endDate < today) return 'Expired';
+      if (endDate < today) return 'Expired'; // We filter these out
       if (isExpiringsSoon(policyEndDate)) return 'Expiring Soon';
       return 'Active';
     } catch (e) {
@@ -175,19 +183,27 @@
     }
   }
 
-  // Helper function: Calculate policy counts from visible rows
+  // Helper function: Calculate policy counts from visible rows (ONLY Active & Expiring Soon)
   function calculatePolicyCounts() {
     const rows = document.querySelectorAll('table tbody tr');
     let total = 0, active = 0, expiringSoon = 0;
 
     rows.forEach(row => {
       if (row.style.display === 'none') return; // Skip hidden rows
-      total++;
-      // Status is in column 8 (0-indexed)
-      const statusCell = row.querySelectorAll('td')[8];
-      const status = statusCell ? statusCell.textContent.trim() : '';
-      if (status === 'Active') active++;
-      if (status === 'Expiring Soon') expiringSoon++;
+      
+      // Get policy end date to determine status
+      const policyEndCell = row.querySelectorAll('td')[6];
+      const dateP = policyEndCell?.querySelector('p:first-child');
+      const policyEndDate = dateP ? dateP.textContent.trim() : '';
+      
+      if (policyEndDate) {
+        const status = getStatus(policyEndDate);
+        if (status !== 'Expired') { // Only count non-expired
+          total++;
+          if (status === 'Active') active++;
+          if (status === 'Expiring Soon') expiringSoon++;
+        }
+      }
     });
 
     return { total, active, expiringSoon };
@@ -203,20 +219,30 @@
 
   // Extract and normalize values for sorting
   function getSortValue(cell, columnName) {
-    let value = cell.textContent.trim();
+    let value = '';
 
     // Handle different column types
     if (columnName === 'name') {
-      // Customer name - case insensitive alphabetic sort
+      // Customer name - extract from first paragraph in merged cell
+      const nameParagraph = cell.querySelector('p:first-child');
+      value = nameParagraph ? nameParagraph.textContent.trim() : '';
       return value.toLowerCase();
     } else if (columnName === 'price') {
       // Strip currency symbol and convert to number
+      value = cell.textContent.trim();
       return parseFloat(value.replace(/[£$,]/g, '')) || 0;
     } else if (columnName === 'policystart' || columnName === 'policyend') {
-      // Parse dates
+      // Parse dates - for policyend, extract from first paragraph
+      if (columnName === 'policyend') {
+        const dateP = cell.querySelector('p:first-child');
+        value = dateP ? dateP.textContent.trim() : '';
+      } else {
+        value = cell.textContent.trim();
+      }
       return new Date(value).getTime();
     } else {
       // Text columns: return lowercase for case-insensitive sorting
+      value = cell.textContent.trim();
       return value.toLowerCase();
     }
   }
@@ -230,18 +256,15 @@
     const visibleRows = rows.filter(row => row.style.display !== 'none');
     const hiddenRows = rows.filter(row => row.style.display === 'none');
 
-    // Column index mapping (new order)
+    // Column index mapping (new order after merging customer column)
     const columnMap = {
-      'name': 0,        // Customer Name
-      'email': 1,       // Email
-      'phone': 2,       // Phone
-      'vehicle': 3,     // Vehicle
-      'price': 4,       // Price
-      'payment': 5,     // Payment
-      'policystart': 6, // Policy Start
-      'policyend': 7    // Policy End
-      // status: 8 (not sortable)
-      // actions: 9 (not sortable)
+      'name': 0,        // Customer (merged name + email)
+      'phone': 1,       // Phone
+      'vehicle': 2,     // Vehicle
+      'price': 3,       // Price
+      'payment': 4,     // Payment
+      'policystart': 5, // Policy Start
+      'policyend': 6    // Policy End
     };
 
     const cellIndex = columnMap[sortColumn];
@@ -326,6 +349,22 @@
     background: rgba(31, 41, 55, 0.1);
   }
 
+  /* Fixed row heights */
+  table tbody tr {
+    height: 72px;
+  }
+
+  table tbody td {
+    vertical-align: middle;
+    max-height: 72px;
+  }
+
+  /* Prevent text overflow in cells */
+  table tbody td p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   @media (max-width: 640px) {
     .table-scroller {
       height: 945px;
@@ -342,11 +381,29 @@
     sortDirection: 'asc',
     policyCounts: { total: 0, active: 0, expiringSoon: 0 },
     init() {
+      // Remove expired policies from DOM on page load
+      this.removeExpiredPolicies();
       // Initialize stats on page load
       this.updatePolicyCounts();
       // Listen for stats updates from filter/search
       document.addEventListener('update-stats', (e) => {
         this.policyCounts = e.detail;
+      });
+    },
+    removeExpiredPolicies() {
+      const rows = document.querySelectorAll('table tbody tr');
+      rows.forEach(row => {
+        const policyEndCell = row.querySelectorAll('td')[6];
+        const dateP = policyEndCell?.querySelector('p:first-child');
+        const policyEndDate = dateP ? dateP.textContent.trim() : '';
+        if (policyEndDate) {
+          const endDate = new Date(policyEndDate);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          if (endDate < today) {
+            row.remove(); // Remove expired policies
+          }
+        }
       });
     },
     updatePolicyCounts() {
@@ -360,42 +417,71 @@
         this.sortDirection = 'asc';
       }
       performSort(this.sortColumn, this.sortDirection);
+    },
+    getPolicyProgress(startDate, endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const today = new Date();
+      const totalDays = Math.max(1, (end - start) / (1000 * 60 * 60 * 24));
+      const daysElapsed = (today - start) / (1000 * 60 * 60 * 24);
+      return Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100));
+    },
+    getDaysRemaining(endDate) {
+      const end = new Date(endDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const days = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+      return days > 0 ? `${days}d` : '0d';
+    },
+    getPolicyEndColor(endDate) {
+      const end = new Date(endDate);
+      const today = new Date();
+      const days = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+      if (days <= 30) return 'bg-orange-500';
+      return 'bg-green-500';
+    },
+    getPolicyEndTextColor(endDate) {
+      const end = new Date(endDate);
+      const today = new Date();
+      const days = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+      if (days <= 30) return 'text-orange-600 dark:text-orange-400';
+      return 'text-green-600 dark:text-green-400';
     }
   }"
   @click.outside="filterPanelOpen = false"
   class="overflow-visible rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
 >
-  <!-- Statistics Header Section -->
-  <div class="border-b border-gray-200 dark:border-gray-700 px-5 py-6 sm:px-6">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-      <!-- Total Policies Card -->
-      <div class="rounded-lg border border-gray-200 dark:border-gray-700 px-5 py-4 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
-        <p class="text-gray-600 dark:text-gray-400 text-theme-xs uppercase tracking-wider font-medium mb-2">Total Policies</p>
-        <p class="text-gray-800 dark:text-white/90 text-2xl font-semibold" x-text="policyCounts.total"></p>
-      </div>
-
-      <!-- Active Policies Card -->
-      <div class="rounded-lg border border-green-200 dark:border-green-500/20 px-5 py-4 hover:border-green-300 dark:hover:border-green-500/30 transition-colors">
-        <p class="text-green-700 dark:text-green-400 text-theme-xs uppercase tracking-wider font-medium mb-2">Active</p>
-        <p class="text-green-900 dark:text-green-300 text-2xl font-semibold" x-text="policyCounts.active"></p>
-      </div>
-
-      <!-- Expiring Soon Card -->
-      <div class="rounded-lg border border-orange-200 dark:border-orange-500/20 px-5 py-4 hover:border-orange-300 dark:hover:border-orange-500/30 transition-colors">
-        <p class="text-orange-700 dark:text-orange-400 text-theme-xs uppercase tracking-wider font-medium mb-2">Expiring Soon</p>
-        <p class="text-orange-900 dark:text-orange-300 text-2xl font-semibold" x-text="policyCounts.expiringSoon"></p>
+  <!-- Table Header with Compact Inline Stats -->
+  <div class="flex flex-col gap-3 px-5 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+    <!-- Header Row with Stats -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+        <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
+          Annual Policies List
+        </h3>
+        
+        <!-- Compact Inline Stats Badges -->
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 rounded-md border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 px-2.5 py-1 text-theme-xs">
+            <span class="text-gray-600 dark:text-gray-400">Total:</span>
+            <span class="font-semibold text-gray-800 dark:text-white/90" x-text="policyCounts.total"></span>
+          </span>
+          
+          <span class="inline-flex items-center gap-1.5 rounded-md border border-green-200 dark:border-green-500/20 bg-green-50 dark:bg-green-500/10 px-2.5 py-1 text-theme-xs">
+            <span class="text-green-700 dark:text-green-400">Active:</span>
+            <span class="font-semibold text-green-900 dark:text-green-300" x-text="policyCounts.active"></span>
+          </span>
+          
+          <span class="inline-flex items-center gap-1.5 rounded-md border border-orange-200 dark:border-orange-500/20 bg-orange-50 dark:bg-orange-500/10 px-2.5 py-1 text-theme-xs">
+            <span class="text-orange-700 dark:text-orange-400">Expiring:</span>
+            <span class="font-semibold text-orange-900 dark:text-orange-300" x-text="policyCounts.expiringSoon"></span>
+          </span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6 sm:items-center">
-    <div>
-      <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
-        Annual Policies List
-      </h3>
-    </div>
-
-    <div class="flex flex-col gap-3 w-full sm:w-auto">
+    <!-- Controls Row -->
+    <div class="flex flex-col gap-3 w-full">
       <!-- Search input -->
       <input
         x-model="searchQuery"
@@ -530,21 +616,11 @@
       <!-- table header start -->
       <thead class="bg-gray-50 dark:bg-gray-800/50">
         <tr class="border-b-2 border-gray-200 dark:border-gray-700">
-          <!-- Customer Name Header -->
+          <!-- Customer Header (merged name + email) -->
           <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('name')">
             <div class="flex items-center gap-2">
-              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Customer Name</p>
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Customer</p>
               <span x-show="sortColumn === 'name'" class="text-gray-600 dark:text-gray-300">
-                <span x-show="sortDirection === 'asc'">↑</span>
-                <span x-show="sortDirection === 'desc'">↓</span>
-              </span>
-            </div>
-          </th>
-          <!-- Email Header -->
-          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" @click="handleSort('email')">
-            <div class="flex items-center gap-2">
-              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Email</p>
-              <span x-show="sortColumn === 'email'" class="text-gray-600 dark:text-gray-300">
                 <span x-show="sortDirection === 'asc'">↑</span>
                 <span x-show="sortDirection === 'desc'">↓</span>
               </span>
@@ -610,10 +686,6 @@
               </span>
             </div>
           </th>
-          <!-- Status Header (NOT sortable) -->
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Status</p>
-          </th>
           <!-- Actions Header (NOT sortable) -->
           <th class="px-5 py-3.5 text-left sm:px-6">
             <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Actions</p>
@@ -623,13 +695,13 @@
       <!-- table header end -->
       <!-- table body start -->
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-white/[0.03]">
-        <!-- Row 1: Jane Smith -->
+        <!-- Row 1: Jane Smith - Active -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Jane Smith</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">jane.smith@example.com</p>
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Jane Smith</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">jane.smith@example.com</p>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07987654321</p>
@@ -641,16 +713,29 @@
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£299.99</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Monthly</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Monthly</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Nov 10, 2025</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 09, 2025</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-green-50 px-3 py-1 text-theme-xs font-medium text-green-600 dark:bg-green-500/15 dark:text-green-400">Active</span>
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 09, 2026</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-300"
+                    :class="getPolicyEndColor('Jan 09, 2026')"
+                    :style="`width: ${getPolicyProgress('Nov 10, 2025', 'Jan 09, 2026')}%`"
+                  ></div>
+                </div>
+                <span 
+                  class="text-theme-xs font-medium whitespace-nowrap"
+                  :class="getPolicyEndTextColor('Jan 09, 2026')"
+                  x-text="getDaysRemaining('Jan 09, 2026')"
+                ></span>
+              </div>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
@@ -662,13 +747,13 @@
             </div>
           </td>
         </tr>
-        <!-- Row 2: John Doe -->
+        <!-- Row 2: John Doe - Active -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">John Doe</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">john.doe@example.com</p>
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">John Doe</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">john.doe@example.com</p>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07912345678</p>
@@ -680,16 +765,29 @@
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£299.99</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">One-time</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">One-time</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Nov 24, 2025</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 07, 2025</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-green-50 px-3 py-1 text-theme-xs font-medium text-green-600 dark:bg-green-500/15 dark:text-green-400">Active</span>
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 07, 2026</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-300"
+                    :class="getPolicyEndColor('Jan 07, 2026')"
+                    :style="`width: ${getPolicyProgress('Nov 24, 2025', 'Jan 07, 2026')}%`"
+                  ></div>
+                </div>
+                <span 
+                  class="text-theme-xs font-medium whitespace-nowrap"
+                  :class="getPolicyEndTextColor('Jan 07, 2026')"
+                  x-text="getDaysRemaining('Jan 07, 2026')"
+                ></span>
+              </div>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
@@ -701,13 +799,13 @@
             </div>
           </td>
         </tr>
-        <!-- Row 3: Sarah Wilson -->
+        <!-- Row 3: Sarah Wilson - Active -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Sarah Wilson</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">sarah.wilson@example.com</p>
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Sarah Wilson</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">sarah.wilson@example.com</p>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07923456789</p>
@@ -719,16 +817,29 @@
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£299.99</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Monthly</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Monthly</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Dec 01, 2025</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 04, 2025</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-green-50 px-3 py-1 text-theme-xs font-medium text-green-600 dark:bg-green-500/15 dark:text-green-400">Active</span>
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 04, 2026</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-300"
+                    :class="getPolicyEndColor('Jan 04, 2026')"
+                    :style="`width: ${getPolicyProgress('Dec 01, 2025', 'Jan 04, 2026')}%`"
+                  ></div>
+                </div>
+                <span 
+                  class="text-theme-xs font-medium whitespace-nowrap"
+                  :class="getPolicyEndTextColor('Jan 04, 2026')"
+                  x-text="getDaysRemaining('Jan 04, 2026')"
+                ></span>
+              </div>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
@@ -740,13 +851,13 @@
             </div>
           </td>
         </tr>
-        <!-- Row 4: Michael J -->
+        <!-- Row 4: Michael J - EXPIRED (will be removed by Alpine) -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Michael J</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">michael.j@example.com</p>
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Michael J</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">michael.j@example.com</p>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07934567890</p>
@@ -758,16 +869,21 @@
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£299.99</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">One-time</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">One-time</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Dec 05, 2025</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Dec 19, 2023</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-red-50 px-3 py-1 text-theme-xs font-medium text-red-600 dark:bg-red-500/15 dark:text-red-400">Expired</span>
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Dec 19, 2023</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div class="h-full bg-red-500 rounded-full transition-all duration-300" style="width: 100%"></div>
+                </div>
+                <span class="text-theme-xs font-medium whitespace-nowrap text-red-600 dark:text-red-400">0d</span>
+              </div>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
@@ -779,13 +895,13 @@
             </div>
           </td>
         </tr>
-        <!-- Row 5: Emily Brown -->
+        <!-- Row 5: Emily Brown - Active -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Emily Brown</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">emily.brown@example.com</p>
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Emily Brown</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">emily.brown@example.com</p>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07945678901</p>
@@ -797,16 +913,29 @@
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£299.99</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Monthly</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Monthly</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Nov 16, 2025</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 01, 2025</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-green-50 px-3 py-1 text-theme-xs font-medium text-green-600 dark:bg-green-500/15 dark:text-green-400">Active</span>
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 01, 2026</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-300"
+                    :class="getPolicyEndColor('Jan 01, 2026')"
+                    :style="`width: ${getPolicyProgress('Nov 16, 2025', 'Jan 01, 2026')}%`"
+                  ></div>
+                </div>
+                <span 
+                  class="text-theme-xs font-medium whitespace-nowrap"
+                  :class="getPolicyEndTextColor('Jan 01, 2026')"
+                  x-text="getDaysRemaining('Jan 01, 2026')"
+                ></span>
+              </div>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
@@ -818,13 +947,13 @@
             </div>
           </td>
         </tr>
-        <!-- Row 6: David M -->
+        <!-- Row 6: David M - EXPIRED (will be removed by Alpine) -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">David M</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">david.m@example.com</p>
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">David M</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">david.m@example.com</p>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07956789012</p>
@@ -836,16 +965,21 @@
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£299.99</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">One-time</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">One-time</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Nov 27, 2025</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Dec 27, 2024</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-red-50 px-3 py-1 text-theme-xs font-medium text-red-600 dark:bg-red-500/15 dark:text-red-400">Expired</span>
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Dec 27, 2024</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div class="h-full bg-red-500 rounded-full transition-all duration-300" style="width: 100%"></div>
+                </div>
+                <span class="text-theme-xs font-medium whitespace-nowrap text-red-600 dark:text-red-400">0d</span>
+              </div>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
@@ -857,13 +991,13 @@
             </div>
           </td>
         </tr>
-        <!-- Row 7: Lisa Anderson -->
+        <!-- Row 7: Lisa Anderson - EXPIRED (will be removed by Alpine) -->
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Lisa Anderson</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">lisa.anderson@example.com</p>
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Lisa Anderson</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">lisa.anderson@example.com</p>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07967890123</p>
@@ -875,16 +1009,21 @@
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£299.99</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Monthly</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Monthly</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Dec 02, 2025</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Dec 24, 2024</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-red-50 px-3 py-1 text-theme-xs font-medium text-red-600 dark:bg-red-500/15 dark:text-red-400">Expired</span>
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Dec 24, 2024</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div class="h-full bg-red-500 rounded-full transition-all duration-300" style="width: 100%"></div>
+                </div>
+                <span class="text-theme-xs font-medium whitespace-nowrap text-red-600 dark:text-red-400">0d</span>
+              </div>
+            </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
