@@ -33,6 +33,7 @@
       originalValues: {},
       
       // Your car fields
+      changingVehicle: false, // Toggle to show VRM lookup interface
       vrmLookupMode: true, // Toggle between VRM lookup and manual entry
       vrm: 'AB12 CDE',
       vehicleType: 'Car',
@@ -231,7 +232,7 @@
       
       getSectionFields(sectionName) {
         const sectionMap = {
-          'carDetails': ['vrmLookupMode', 'vrm', 'vehicleType', 'vehicleMake', 'vehicleModel', 'vehicleYear', 'vehicleDoors', 'vehicleFuelType', 'vehicleTransmission', 'vehicleColour', 'carMake', 'alarm', 'tracking', 'import', 'driverSide', 'seats', 'modifications'],
+          'carDetails': ['changingVehicle', 'vrmLookupMode', 'vrm', 'vehicleType', 'vehicleMake', 'vehicleModel', 'vehicleYear', 'vehicleDoors', 'vehicleFuelType', 'vehicleTransmission', 'vehicleColour', 'carMake', 'alarm', 'tracking', 'import', 'driverSide', 'seats', 'modifications'],
           'carValue': ['marketValue'],
           'carUsageSection': ['whenBought', 'carUsage', 'annualMileage'],
           'carStorage': ['daytimeStorage', 'nighttimeStorage', 'keptAtHome'],
