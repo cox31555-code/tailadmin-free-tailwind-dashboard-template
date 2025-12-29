@@ -257,10 +257,15 @@
       
       async saveSection(sectionName) {
         this.savingField[sectionName] = true;
-        
+
+        // Sync customerName from title, firstName, surname if saving aboutYou
+        if (sectionName === 'aboutYou') {
+          this.customerName = `${this.title} ${this.firstName} ${this.surname}`;
+        }
+
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
+
         // Save all policy data to localStorage
         const policyData = this.getPolicyData();
         localStorage.setItem('policy_' + this.policyRef, JSON.stringify(policyData));
