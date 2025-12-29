@@ -57,6 +57,7 @@
     "fullcalendar": "^6.1.15",
     "google-auth-library": "^10.5.0",
     "jsvectormap": "^1.6.0",
+    "sortablejs": "^1.15.0",
     "swiper": "^11.1.14"
   }
 }
