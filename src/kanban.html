@@ -71,6 +71,11 @@
         }
       },
 
+      // Computed: Get viewing task
+      get viewingTask() {
+        return this.tasks.find(t => t.id === this.viewingTaskId) || null;
+      },
+
       // Default columns template
       _defaultColumns: [
         { id: 'backlog', name: 'Backlog', color: '#6B7280', limit: null },
