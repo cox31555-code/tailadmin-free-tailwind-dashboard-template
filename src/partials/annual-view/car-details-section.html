@@ -384,6 +384,7 @@
         <select
           x-show="editMode['carDetails']"
           x-model="modifications"
+          @change="if (modifications === 'No') selectedModifications = []"
           class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
           <option value="Yes">Yes</option>
           <option value="No">No</option>
