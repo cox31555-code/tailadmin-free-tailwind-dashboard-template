@@ -229,15 +229,20 @@ function filterAndSearchTable(searchQuery = '', filterPayment = 'all') {
  * @param {Object} config - Table configuration
  */
 function exportTableToCSV(config) {
-  const table = document.querySelector('table');
+  const table = getTableElement(config);
+  if (!table) {
+    console.error('Table not found for export');
+    return;
+  }
+
   const tbody = table.querySelector('tbody');
   const rows = [];
 
   rows.push(config.csvHeaders.join(','));
 
   tbody.querySelectorAll('tr').forEach(row => {
-    // Skip hidden rows
-    if (row.style.display === 'none') return;
+    // Only export rows that pass filters (ignore pagination)
+    if (row.dataset.filteredOut === 'true') return;
 
     const cells = row.querySelectorAll('td');
     const rowData = [];
