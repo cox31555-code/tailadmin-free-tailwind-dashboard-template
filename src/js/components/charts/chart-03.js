@@ -1,7 +1,10 @@
 import ApexCharts from "apexcharts";
 import Alpine from "alpinejs";
 import flatpickr from "flatpickr";
-import { parseDateAsLondon, getLondonNow, convertToLondonTime } from "../../utils/londonTime.js";
+import { parseDateAsLondon, getLondonNow } from "../../utils/londonTime.js";
+import { ensureOrdersDataComplete } from "../../utils/orders-data-sync.js";
+import { onOrdersDataUpdated } from "../../utils/orders-data-store.js";
+import { getAllPolicies, getQuotes } from "../../utils/dashboard-data.js";
 
 const parseDate = (dateStr) => {
   return parseDateAsLondon(dateStr);
@@ -9,28 +12,38 @@ const parseDate = (dateStr) => {
 
 const filterByDateRange = (data, startDate, endDate) => {
   if (!startDate && !endDate) return data;
-  
-  return data.filter(item => {
+
+  return data.filter((item) => {
     const itemDate = parseDate(item.date);
     if (!itemDate) return false;
-    
+
     if (startDate && itemDate < startDate) return false;
     if (endDate && itemDate > endDate) return false;
-    
+
     return true;
   });
 };
 
 const getMonthsData = (data) => {
   const monthCounts = {
-    'Jan': 0, 'Feb': 0, 'Mar': 0, 'Apr': 0, 'May': 0, 'Jun': 0,
-    'Jul': 0, 'Aug': 0, 'Sep': 0, 'Oct': 0, 'Nov': 0, 'Dec': 0
+    Jan: 0,
+    Feb: 0,
+    Mar: 0,
+    Apr: 0,
+    May: 0,
+    Jun: 0,
+    Jul: 0,
+    Aug: 0,
+    Sep: 0,
+    Oct: 0,
+    Nov: 0,
+    Dec: 0,
   };
 
-  data.forEach(item => {
+  data.forEach((item) => {
     const date = parseDate(item.date);
     if (date) {
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const monthName = monthNames[date.getMonth()];
       if (monthName) {
         monthCounts[monthName]++;
@@ -41,78 +54,16 @@ const getMonthsData = (data) => {
   return Object.values(monthCounts);
 };
 
-const loadQuotesData = async () => {
-  try {
-    const response = await fetch('/quotes.html', { cache: 'no-cache' });
-    const html = await response.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    const quotes = [];
-    const rows = doc.querySelectorAll('table tbody tr');
-
-    rows.forEach((row) => {
-      const cells = row.querySelectorAll('td');
-      if (cells.length >= 4) {
-        const dateElement = cells[0]?.querySelector('p:first-child');
-        const dateText = dateElement?.textContent?.trim() || '';
-
-        if (dateText) {
-          quotes.push({
-            date: dateText,
-          });
-        }
-      }
-    });
-
-    return quotes;
-  } catch (error) {
-    console.warn('Failed to fetch quotes:', error);
-    return [];
-  }
-};
-
-const loadSalesData = async () => {
-  try {
-    const pages = ['/annual.html', '/temporary.html', '/impound.html'];
-    const allSales = [];
-
-    for (const page of pages) {
-      try {
-        const response = await fetch(page, { cache: 'no-cache' });
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-
-        const rows = doc.querySelectorAll('table tbody tr');
-        rows.forEach((row) => {
-          const cells = row.querySelectorAll('td');
-          if (cells.length >= 2) {
-            const dateElement = cells[0]?.querySelector('p:first-child');
-            const dateText = dateElement?.textContent?.trim() || '';
-
-            if (dateText) {
-              allSales.push({
-                date: dateText,
-              });
-            }
-          }
-        });
-      } catch (e) {
-        console.warn(`Failed to fetch ${page}:`, e);
-      }
-    }
-
-    return allSales;
-  } catch (error) {
-    console.warn('Failed to fetch sales:', error);
-    return [];
-  }
-};
-
 let chartThreeInstance = null;
 let allQuotesData = [];
 let allSalesData = [];
+
+const refreshSourceData = async () => {
+  await ensureOrdersDataComplete();
+
+  allQuotesData = getQuotes().map((q) => ({ date: q.date }));
+  allSalesData = getAllPolicies().map((p) => ({ date: p.policyStart || p.date }));
+};
 
 const renderChart = (salesData, quotesData) => {
   const salesMonthly = getMonthsData(salesData);
@@ -184,20 +135,7 @@ const renderChart = (salesData, quotesData) => {
     },
     xaxis: {
       type: "category",
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       axisBorder: {
         show: false,
       },
@@ -220,26 +158,27 @@ const renderChart = (salesData, quotesData) => {
   } else {
     const chartSelector = document.querySelectorAll("#chartThree");
     if (chartSelector.length) {
-      chartThreeInstance = new ApexCharts(
-        document.querySelector("#chartThree"),
-        chartThreeOptions,
-      );
+      chartThreeInstance = new ApexCharts(document.querySelector("#chartThree"), chartThreeOptions);
       chartThreeInstance.render();
     }
   }
 };
 
-Alpine.data('chartFilters', function() {
+Alpine.data("chartFilters", function () {
   return {
-    selected: 'overview',
+    selected: "overview",
     dateRange: null,
 
     async init() {
-      allQuotesData = await loadQuotesData();
-      allSalesData = await loadSalesData();
+      await refreshSourceData();
       this.renderInitialChart();
       this.initDatePicker();
       setTimeout(() => this.updateChart(), 100);
+
+      onOrdersDataUpdated(async () => {
+        await refreshSourceData();
+        this.updateChart();
+      });
     },
 
     renderInitialChart() {
@@ -250,44 +189,44 @@ Alpine.data('chartFilters', function() {
       const filteredSales = filterByDateRange(allSalesData, pastYear, today);
       const filteredQuotes = filterByDateRange(allQuotesData, pastYear, today);
 
-      if (this.selected === 'overview') {
+      if (this.selected === "overview") {
         renderChart(filteredSales, filteredQuotes);
-      } else if (this.selected === 'sales') {
+      } else if (this.selected === "sales") {
         renderChart(filteredSales, []);
-      } else if (this.selected === 'quotes') {
+      } else if (this.selected === "quotes") {
         renderChart([], filteredQuotes);
       }
     },
 
     async updateChart() {
-      const dateInput = document.querySelector('.chart-datepicker');
-      const dateValue = dateInput?.value || '';
+      const dateInput = document.querySelector(".chart-datepicker");
+      const dateValue = dateInput?.value || "";
 
       let startDate = null;
       let endDate = null;
 
       if (dateValue) {
-        const parts = dateValue.split('-').map(d => d.trim());
+        const parts = dateValue.split("-").map((d) => d.trim());
         if (parts.length === 2) {
           startDate = parseDate(parts[0]);
           endDate = parseDate(parts[1]);
         }
       }
 
-      let filteredSales = filterByDateRange(allSalesData, startDate, endDate);
-      let filteredQuotes = filterByDateRange(allQuotesData, startDate, endDate);
+      const filteredSales = filterByDateRange(allSalesData, startDate, endDate);
+      const filteredQuotes = filterByDateRange(allQuotesData, startDate, endDate);
 
-      if (this.selected === 'overview') {
+      if (this.selected === "overview") {
         renderChart(filteredSales, filteredQuotes);
-      } else if (this.selected === 'sales') {
+      } else if (this.selected === "sales") {
         renderChart(filteredSales, []);
-      } else if (this.selected === 'quotes') {
+      } else if (this.selected === "quotes") {
         renderChart([], filteredQuotes);
       }
     },
 
     initDatePicker() {
-      const dateInput = document.querySelector('.chart-datepicker');
+      const dateInput = document.querySelector(".chart-datepicker");
       if (dateInput) {
         const today = getLondonNow();
         const pastYear = new Date(today);
@@ -315,7 +254,7 @@ Alpine.data('chartFilters', function() {
           },
         });
       }
-    }
+    },
   };
 });
 

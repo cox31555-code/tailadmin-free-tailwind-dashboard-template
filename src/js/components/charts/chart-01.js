@@ -1,78 +1,26 @@
 import ApexCharts from "apexcharts";
-import { parseDateAsLondon, getLondonNow } from "../../utils/londonTime.js";
+import { getLondonNow } from "../../utils/londonTime.js";
+import { ensureOrdersDataComplete } from "../../utils/orders-data-sync.js";
+import { onOrdersDataUpdated } from "../../utils/orders-data-store.js";
+import { buildMonthlyCounts, getAllPolicies, getComputedData } from "../../utils/dashboard-data.js";
 
-// ===== chartOne
-const chart01 = async () => {
-  const parseDate = (dateStr) => {
-    return parseDateAsLondon(dateStr);
-  };
+let chartOneInstance = null;
 
-  const loadOrdersData = async () => {
-    try {
-      const pages = ['/annual.html', '/temporary.html', '/impound.html'];
-      const allOrders = [];
+const getMonthlySalesData = async () => {
+  await ensureOrdersDataComplete();
 
-      for (const page of pages) {
-        try {
-          const response = await fetch(page, { cache: 'no-cache' });
-          const html = await response.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
+  const year = getLondonNow().getFullYear();
+  return getComputedData(`chart01:monthly:${year}`, () => {
+    const policies = getAllPolicies();
+    return buildMonthlyCounts(policies, (p) => p.policyStart || p.date, year);
+  });
+};
 
-          const rows = doc.querySelectorAll('table tbody tr');
-          rows.forEach((row) => {
-            const cells = row.querySelectorAll('td');
-            if (cells.length >= 2) {
-              const dateElement = cells[0]?.querySelector('p:first-child');
-              const dateText = dateElement?.textContent?.trim() || '';
-              if (dateText) {
-                allOrders.push({
-                  date: dateText,
-                });
-              }
-            }
-          });
-        } catch (e) {
-          console.warn(`Failed to fetch ${page}:`, e);
-        }
-      }
+const renderChart = async () => {
+  const chartSelector = document.querySelectorAll("#chartOne");
+  if (!chartSelector.length) return;
 
-      return allOrders;
-    } catch (error) {
-      console.warn('Chart-01: Failed to load orders:', error);
-      return [];
-    }
-  };
-
-  // Get current year in London timezone
-  const currentYear = getLondonNow().getFullYear();
-
-  // Count orders by month
-  const getMonthlyOrderCounts = async () => {
-    const orders = await loadOrdersData();
-    const monthlyCounts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; // 12 months
-
-    orders.forEach((order) => {
-      const orderDate = parseDate(order.date);
-
-      if (orderDate === null) {
-        console.warn('Chart-01: Could not parse order date:', order.date);
-        return;
-      }
-
-      const orderYear = orderDate.getFullYear();
-      const orderMonth = orderDate.getMonth();
-
-      // Count orders from current year
-      if (orderYear === currentYear) {
-        monthlyCounts[orderMonth]++;
-      }
-    });
-
-    return monthlyCounts;
-  };
-
-  const monthlySalesData = await getMonthlyOrderCounts();
+  const monthlySalesData = await getMonthlySalesData();
 
   const chartOneOptions = {
     series: [
@@ -111,20 +59,7 @@ const chart01 = async () => {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       axisBorder: {
         show: false,
       },
@@ -133,7 +68,7 @@ const chart01 = async () => {
       },
       labels: {
         style: {
-          fontSize: '13px',
+          fontSize: "13px",
           fontWeight: 500,
         },
       },
@@ -145,13 +80,13 @@ const chart01 = async () => {
       title: false,
       labels: {
         style: {
-          fontSize: '13px',
+          fontSize: "13px",
         },
       },
     },
     grid: {
       strokeDashArray: 4,
-      borderColor: '#e5e7eb',
+      borderColor: "#e5e7eb",
       yaxis: {
         lines: {
           show: true,
@@ -176,19 +111,26 @@ const chart01 = async () => {
           return val + " orders";
         },
       },
-      theme: 'dark',
+      theme: "dark",
     },
   };
 
-  const chartSelector = document.querySelectorAll("#chartOne");
-
-  if (chartSelector.length) {
-    const chartFour = new ApexCharts(
-      document.querySelector("#chartOne"),
-      chartOneOptions,
-    );
-    chartFour.render();
+  if (chartOneInstance) {
+    chartOneInstance.updateOptions(chartOneOptions, false, true);
+  } else {
+    chartOneInstance = new ApexCharts(document.querySelector("#chartOne"), chartOneOptions);
+    chartOneInstance.render();
   }
+};
+
+// ===== chartOne
+const chart01 = async () => {
+  await renderChart();
+
+  // Live updates when tables mutate (same tab + cross tab)
+  onOrdersDataUpdated(async () => {
+    await renderChart();
+  });
 };
 
 export default chart01;

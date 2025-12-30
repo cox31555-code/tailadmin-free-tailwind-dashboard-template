@@ -1,82 +1,50 @@
 import ApexCharts from "apexcharts";
-import { parseDateAsLondon, getLondonToday } from "../../utils/londonTime.js";
+import { getLondonToday, parseDateAsLondon } from "../../utils/londonTime.js";
+import { ensureOrdersDataComplete } from "../../utils/orders-data-sync.js";
+import { onOrdersDataUpdated } from "../../utils/orders-data-store.js";
+import { getActivePolicies, getComputedData } from "../../utils/dashboard-data.js";
 
-// ===== chartTwo - Bar Chart for Product Types
-const chart02 = async () => {
-  const parseDate = (dateStr) => {
-    return parseDateAsLondon(dateStr);
-  };
+let chartTwoInstance = null;
 
-  // Generate last 7 days labels (simple day names only) in London timezone
-  const getLast7Days = () => {
-    const days = [];
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const today = getLondonToday();
+const parseDate = (dateStr) => {
+  return parseDateAsLondon(dateStr);
+};
 
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      days.push(dayNames[date.getDay()]);
-    }
+// Generate last 7 days labels (simple day names only) in London timezone
+const getLast7Days = () => {
+  const days = [];
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const today = getLondonToday();
 
-    return days;
-  };
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    days.push(dayNames[date.getDay()]);
+  }
 
-  // Get last 7 days with full dates in London timezone
-  const getLast7DaysWithDates = () => {
-    const dates = [];
-    const today = getLondonToday();
+  return days;
+};
 
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      date.setHours(0, 0, 0, 0);
-      dates.push(date);
-    }
+// Get last 7 days with full dates in London timezone
+const getLast7DaysWithDates = () => {
+  const dates = [];
+  const today = getLondonToday();
 
-    return dates;
-  };
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    date.setHours(0, 0, 0, 0);
+    dates.push(date);
+  }
 
-  const loadOrdersData = async () => {
-    try {
-      const pages = ['/annual.html', '/temporary.html', '/impound.html'];
-      const allOrders = [];
+  return dates;
+};
 
-      for (const page of pages) {
-        try {
-          const response = await fetch(page, { cache: 'no-cache' });
-          const html = await response.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
+const getOrdersSeries = async () => {
+  await ensureOrdersDataComplete();
 
-          const rows = doc.querySelectorAll('table tbody tr');
-          rows.forEach((row) => {
-            const cells = row.querySelectorAll('td');
-            if (cells.length >= 2) {
-              const dateElement = cells[0]?.querySelector('p:first-child');
-              const dateText = dateElement?.textContent?.trim() || '';
-              if (dateText) {
-                allOrders.push({
-                  date: dateText,
-                  type: page.includes('annual') ? 'annual' : page.includes('temporary') ? 'temporary' : 'impound',
-                });
-              }
-            }
-          });
-        } catch (e) {
-          // Continue if one page fails
-        }
-      }
-
-      return allOrders;
-    } catch (error) {
-      return [];
-    }
-  };
-
-  // Count orders by type for each day in the past 7 days
-  const getOrdersDataBySeries = async () => {
-    const orders = await loadOrdersData();
+  return getComputedData("chart02:series", () => {
+    const policies = getActivePolicies();
     const last7Days = getLast7DaysWithDates();
 
     const annualCounts = [];
@@ -88,22 +56,15 @@ const chart02 = async () => {
       let temporaryCount = 0;
       let impoundCount = 0;
 
-      orders.forEach((order) => {
-        const orderDate = parseDate(order.date);
+      policies.forEach((policy) => {
+        const dateStr = policy.policyStart || policy.date;
+        const policyDate = parseDate(dateStr);
+        if (!policyDate) return;
 
-        if (orderDate === null) {
-          console.warn('Chart-02: Could not parse order date:', order.date);
-          return;
-        }
-
-        if (orderDate.getTime() === dayDate.getTime()) {
-          if (order.type === 'annual') {
-            annualCount++;
-          } else if (order.type === 'temporary') {
-            temporaryCount++;
-          } else if (order.type === 'impound') {
-            impoundCount++;
-          }
+        if (policyDate.getTime() === dayDate.getTime()) {
+          if (policy.type === "annual") annualCount++;
+          else if (policy.type === "temporary") temporaryCount++;
+          else if (policy.type === "impound") impoundCount++;
         }
       });
 
@@ -113,25 +74,21 @@ const chart02 = async () => {
     });
 
     return [
-      {
-        name: "Annual",
-        data: annualCounts,
-      },
-      {
-        name: "Temporary",
-        data: temporaryCounts,
-      },
-      {
-        name: "Impound",
-        data: impoundCounts,
-      },
+      { name: "Annual", data: annualCounts },
+      { name: "Temporary", data: temporaryCounts },
+      { name: "Impound", data: impoundCounts },
     ];
-  };
+  });
+};
 
-  const series = await getOrdersDataBySeries();
+const renderChart = async () => {
+  const chartSelector = document.querySelectorAll("#chartTwo");
+  if (!chartSelector.length) return;
+
+  const series = await getOrdersSeries();
 
   const chartTwoOptions = {
-    series: series,
+    series,
     colors: ["#0388FF", "#10B981", "#F59E0B"],
     chart: {
       fontFamily: "Outfit, sans-serif",
@@ -171,7 +128,7 @@ const chart02 = async () => {
       },
       labels: {
         style: {
-          fontSize: '13px',
+          fontSize: "13px",
           fontWeight: 500,
         },
       },
@@ -183,13 +140,13 @@ const chart02 = async () => {
       title: false,
       labels: {
         style: {
-          fontSize: '13px',
+          fontSize: "13px",
         },
       },
     },
     grid: {
       strokeDashArray: 4,
-      borderColor: '#e5e7eb',
+      borderColor: "#e5e7eb",
       yaxis: {
         lines: {
           show: true,
@@ -214,19 +171,25 @@ const chart02 = async () => {
           return val + " orders";
         },
       },
-      theme: 'dark',
+      theme: "dark",
     },
   };
 
-  const chartSelector = document.querySelectorAll("#chartTwo");
-
-  if (chartSelector.length) {
-    const chartTwo = new ApexCharts(
-      document.querySelector("#chartTwo"),
-      chartTwoOptions,
-    );
-    chartTwo.render();
+  if (chartTwoInstance) {
+    chartTwoInstance.updateOptions(chartTwoOptions, false, true);
+  } else {
+    chartTwoInstance = new ApexCharts(document.querySelector("#chartTwo"), chartTwoOptions);
+    chartTwoInstance.render();
   }
+};
+
+// ===== chartTwo
+const chart02 = async () => {
+  await renderChart();
+
+  onOrdersDataUpdated(async () => {
+    await renderChart();
+  });
 };
 
 export default chart02;
