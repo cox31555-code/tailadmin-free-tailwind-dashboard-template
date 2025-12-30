@@ -350,12 +350,12 @@
           <template x-for="customer in paginatedCustomers" :key="customer.email">
             <tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30">
               <td class="px-5 py-4 sm:px-6">
-                <div class="flex items-center gap-3">
+                <a :href="'customer-view.html?id=' + customer.email" class="flex items-center gap-3 group">
                   <div class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 dark:bg-brand-900/30">
                     <span class="text-sm font-semibold text-brand-600 dark:text-brand-400" x-text="customer.name.split(' ').map(n => n[0]).join('')"></span>
                   </div>
-                  <p class="font-semibold text-gray-900 dark:text-white" x-text="customer.name"></p>
-                </div>
+                  <p class="font-semibold text-gray-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors" x-text="customer.name"></p>
+                </a>
               </td>
               <td class="px-5 py-3 sm:px-6">
                 <div class="flex flex-col gap-0.5">
