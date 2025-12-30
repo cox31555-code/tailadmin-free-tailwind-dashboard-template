@@ -109,18 +109,6 @@
 
 /* Sticky Actions Column for Tablet and Mobile */
 @media (max-width: 1024px) {
-  /* Allow vertical overflow for dropdowns while keeping horizontal scroll */
-  .table-scroller {
-    overflow-x: auto;
-    overflow-y: visible !important;
-  }
-
-  /* Ensure table and tbody allow overflow */
-  .table-scroller table,
-  .table-scroller tbody {
-    overflow: visible !important;
-  }
-
   /* Make Actions cells sticky on tablet and mobile (not headers) */
   tbody .actions-column-sticky {
     position: sticky !important;
@@ -129,7 +117,6 @@
     background: white;
     box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.08);
     min-width: 140px;
-    overflow: visible !important;
   }
 
   .dark tbody .actions-column-sticky {
@@ -137,23 +124,18 @@
     box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.3);
   }
 
-  /* Ensure dropdown parent has proper stacking context and overflow */
+  /* Static positioning for dropdown parent to establish fixed position context */
   tbody .actions-column-sticky > div {
-    position: relative;
-    z-index: 1;
-    overflow: visible !important;
+    position: static;
   }
 
-  /* Boost dropdown z-index inside sticky cells to appear above other sticky cells */
+  /* Use fixed positioning for dropdowns to escape overflow clipping */
   tbody .actions-column-sticky .table-action-dropdown,
-  tbody .actions-column-sticky [x-show="actionsOpen"],
-  tbody .actions-column-sticky div[class*="absolute"] {
+  tbody .actions-column-sticky div[class*="absolute"][x-show] {
+    position: fixed !important;
     z-index: 9999 !important;
-    position: absolute !important;
-  }
-
-  /* Ensure row doesn't clip dropdown */
-  tbody tr {
-    overflow: visible !important;
+    /* Adjust right positioning for fixed context */
+    right: 1rem !important;
+    left: auto !important;
   }
 }
