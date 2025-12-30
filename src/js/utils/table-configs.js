@@ -71,7 +71,7 @@ export const temporaryTableConfig = {
 export const impoundTableConfig = {
   tableType: 'impound',
   csvFilename: 'impound-policies.csv',
-  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Type', 'Policy Start', 'Policy End'],
+  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Policy Start', 'Policy End'],
 
   columns: {
     defaultSort: 'name',
@@ -81,15 +81,14 @@ export const impoundTableConfig = {
       { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
       { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
       { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
-      { sortKey: 'type', sortType: 'text', dataKey: 'type', exportable: true },
       { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
       { sortKey: 'policyend', sortType: 'date', dataKey: 'policyEnd', hasProgressBar: true, exportable: true },
       { sortKey: null, exportable: false } // Actions column
     ]
   },
-  
+
   dateColumns: {
-    policyEnd: 6
+    policyEnd: 5
   },
   
   statusConfig: {
@@ -166,7 +165,7 @@ export const expiredTemporaryTableConfig = {
 export const expiredImpoundTableConfig = {
   tableType: 'expired-impound',
   csvFilename: 'expired-impound-policies.csv',
-  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Type', 'Policy Start', 'Policy End'],
+  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Policy Start', 'Policy End'],
 
   columns: {
     defaultSort: 'policyend',
@@ -176,7 +175,6 @@ export const expiredImpoundTableConfig = {
       { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
       { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
       { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
-      { sortKey: 'type', sortType: 'text', dataKey: 'type', exportable: true },
       { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
       { sortKey: 'policyend', sortType: 'date', dataKey: 'policyEnd', hasProgressBar: false, exportable: true },
       { sortKey: null, exportable: false }
@@ -184,7 +182,7 @@ export const expiredImpoundTableConfig = {
   },
 
   dateColumns: {
-    policyEnd: 6
+    policyEnd: 5
   },
 
   statusConfig: {
