@@ -223,6 +223,11 @@
         window.addEventListener('kanban:taskMoved', (e) => {
           this.handleTaskMoved(e.detail);
         });
+
+        // Listen for column moved events from SortableJS
+        window.addEventListener('kanban:columnMoved', (e) => {
+          this.handleColumnMoved(e.detail);
+        });
       },
 
       loadBoards() {
