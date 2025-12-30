@@ -8,32 +8,48 @@
       this.updateRoleCounts();
     },
     handleSort(column) {
+      console.log('Sorting by column:', column);
       if (this.sortColumn === column) {
         this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
       } else {
         this.sortColumn = column;
         this.sortDirection = 'asc';
       }
+      console.log('Sort direction:', this.sortDirection);
       this.performSort();
     },
     performSort() {
       const tbody = this.$el.querySelector('table tbody');
-      if (!tbody) return;
-      
+      if (!tbody) {
+        console.error('tbody not found');
+        return;
+      }
+
       const rows = Array.from(tbody.querySelectorAll('tr'));
+      console.log('Found rows:', rows.length);
       const columnIndex = this.getColumnIndex(this.sortColumn);
-      
+      console.log('Column index:', columnIndex);
+
       rows.sort((a, b) => {
         const aCell = a.querySelectorAll('td')[columnIndex];
         const bCell = b.querySelectorAll('td')[columnIndex];
+
+        if (!aCell || !bCell) {
+          console.error('Cell not found at index', columnIndex);
+          return 0;
+        }
+
         let aValue = this.getSortValue(aCell, this.sortColumn);
         let bValue = this.getSortValue(bCell, this.sortColumn);
-        
+
+        console.log('Comparing:', aValue, 'vs', bValue);
+
         if (aValue < bValue) return this.sortDirection === 'asc' ? -1 : 1;
         if (aValue > bValue) return this.sortDirection === 'asc' ? 1 : -1;
         return 0;
       });
-      
+
+      console.log('Sorting complete, reordering DOM');
       rows.forEach(row => tbody.appendChild(row));
     },
     getSortValue(cell, column) {
