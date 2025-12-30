@@ -156,41 +156,41 @@
       <!-- table header end -->
       <!-- table body start -->
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-[#030e21]">
-        <!-- Row 1 -->
+        <!-- Row 1: Kevin Hart -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
-              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Jane Smith</p>
-              <p class="text-gray-500 text-theme-xs dark:text-gray-400">jane.smith@example.com</p>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Kevin Hart</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">kevin.h@example.com</p>
             </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">07987654321</p>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">07811111111</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Honda Civic</p>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Honda Jazz</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£150.00</p>
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£180.00</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 05, 2025</p>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 01, 2025</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-1.5">
-              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 12, 2025</p>
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 31, 2025</p>
               <div class="flex items-center gap-2">
                 <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div 
                     class="h-full rounded-full transition-all duration-300"
-                    :class="getPolicyEndColor('Jan 12, 2025')"
-                    :style="`width: ${getPolicyProgress('Jan 05, 2025', 'Jan 12, 2025')}%`"
+                    :class="getPolicyEndColor('Jan 31, 2025')"
+                    :style="`width: ${getPolicyProgress('Jan 01, 2025', 'Jan 31, 2025')}%`"
                   ></div>
                 </div>
                 <span 
                   class="text-theme-xs font-medium whitespace-nowrap"
-                  :class="getPolicyEndTextColor('Jan 12, 2025')"
-                  x-text="getDaysRemaining('Jan 12, 2025')"
+                  :class="getPolicyEndTextColor('Jan 31, 2025')"
+                  x-text="getDaysRemaining('Jan 31, 2025')"
                 ></span>
               </div>
             </div>
@@ -204,91 +204,41 @@
             </div>
           </td>
         </tr>
-
-        <!-- Row 2 -->
+        <!-- Row 2: Laura Croft -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
-              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">John Doe</p>
-              <p class="text-gray-500 text-theme-xs dark:text-gray-400">john.doe@example.com</p>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Laura Croft</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">laura.c@example.com</p>
             </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">07912345678</p>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">07822222222</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Toyota Corolla</p>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Land Rover</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£150.00</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 02, 2025</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <div class="flex flex-col gap-1.5">
-              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 09, 2025</p>
-              <div class="flex items-center gap-2">
-                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                  <div 
-                    class="h-full rounded-full transition-all duration-300"
-                    :class="getPolicyEndColor('Jan 09, 2025')"
-                    :style="`width: ${getPolicyProgress('Jan 02, 2025', 'Jan 09, 2025')}%`"
-                  ></div>
-                </div>
-                <span 
-                  class="text-theme-xs font-medium whitespace-nowrap"
-                  :class="getPolicyEndTextColor('Jan 09, 2025')"
-                  x-text="getDaysRemaining('Jan 09, 2025')"
-                ></span>
-              </div>
-            </div>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
-              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">Actions<svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg></button>
-              <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown">
-                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">View</button><button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03]">Edit</button><button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03]">Delete</button><button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Send Email</button>
-              </div>
-            </div>
-          </td>
-        </tr>
-
-        <!-- Row 3 -->
-        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
-          <td class="px-5 py-3 sm:px-6">
-            <div class="flex flex-col gap-0.5">
-              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Sarah Wilson</p>
-              <p class="text-gray-500 text-theme-xs dark:text-gray-400">sarah.wilson@example.com</p>
-            </div>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">07923456789</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Ford Focus</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£150.00</p>
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£250.00</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Dec 28, 2024</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-1.5">
-              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 04, 2025</p>
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 25, 2025</p>
               <div class="flex items-center gap-2">
                 <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div 
                     class="h-full rounded-full transition-all duration-300"
-                    :class="getPolicyEndColor('Jan 04, 2025')"
-                    :style="`width: ${getPolicyProgress('Dec 28, 2024', 'Jan 04, 2025')}%`"
+                    :class="getPolicyEndColor('Jan 25, 2025')"
+                    :style="`width: ${getPolicyProgress('Dec 28, 2024', 'Jan 25, 2025')}%`"
                   ></div>
                 </div>
                 <span 
                   class="text-theme-xs font-medium whitespace-nowrap"
-                  :class="getPolicyEndTextColor('Jan 04, 2025')"
-                  x-text="getDaysRemaining('Jan 04, 2025')"
+                  :class="getPolicyEndTextColor('Jan 25, 2025')"
+                  x-text="getDaysRemaining('Jan 25, 2025')"
                 ></span>
               </div>
             </div>
@@ -302,42 +252,137 @@
             </div>
           </td>
         </tr>
-
-        <!-- Row 4 -->
+        <!-- Row 3: Marty McFly -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
-              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Michael Johnson</p>
-              <p class="text-gray-500 text-theme-xs dark:text-gray-400">michael.j@example.com</p>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Marty McFly</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">marty.m@example.com</p>
             </div>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">07934567890</p>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">07833333333</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">BMW 3 Series</p>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">DeLorean</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£150.00</p>
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£200.00</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 05, 2025</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Feb 04, 2025</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-300"
+                    :class="getPolicyEndColor('Feb 04, 2025')"
+                    :style="`width: ${getPolicyProgress('Jan 05, 2025', 'Feb 04, 2025')}%`"
+                  ></div>
+                </div>
+                <span 
+                  class="text-theme-xs font-medium whitespace-nowrap"
+                  :class="getPolicyEndTextColor('Feb 04, 2025')"
+                  x-text="getDaysRemaining('Feb 04, 2025')"
+                ></span>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">Actions<svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg></button>
+              <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown">
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">View</button><button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03]">Edit</button><button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03]">Delete</button><button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Send Email</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <!-- Row 4: Natasha Romanoff -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Natasha Romanoff</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">natasha.r@example.com</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">07844444444</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Audi TT</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£220.00</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Dec 20, 2024</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-1.5">
-              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Dec 27, 2024</p>
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 19, 2025</p>
               <div class="flex items-center gap-2">
                 <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div 
                     class="h-full rounded-full transition-all duration-300"
-                    :class="getPolicyEndColor('Dec 27, 2024')"
-                    :style="`width: ${getPolicyProgress('Dec 20, 2024', 'Dec 27, 2024')}%`"
+                    :class="getPolicyEndColor('Jan 19, 2025')"
+                    :style="`width: ${getPolicyProgress('Dec 20, 2024', 'Jan 19, 2025')}%`"
                   ></div>
                 </div>
                 <span 
                   class="text-theme-xs font-medium whitespace-nowrap"
-                  :class="getPolicyEndTextColor('Dec 27, 2024')"
-                  x-text="getDaysRemaining('Dec 27, 2024')"
+                  :class="getPolicyEndTextColor('Jan 19, 2025')"
+                  x-text="getDaysRemaining('Jan 19, 2025')"
+                ></span>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">Actions<svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg></button>
+              <div x-show="actionsOpen" x-transition class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown">
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">View</button><button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03]">Edit</button><button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03]">Delete</button><button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Send Email</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <!-- Row 5: Oliver Queen -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Oliver Queen</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">oliver.q@example.com</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">07855555555</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Motorcycle</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£150.00</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 01, 2025</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-1.5">
+              <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 31, 2025</p>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-300"
+                    :class="getPolicyEndColor('Jan 31, 2025')"
+                    :style="`width: ${getPolicyProgress('Jan 01, 2025', 'Jan 31, 2025')}%`"
+                  ></div>
+                </div>
+                <span 
+                  class="text-theme-xs font-medium whitespace-nowrap"
+                  :class="getPolicyEndTextColor('Jan 31, 2025')"
+                  x-text="getDaysRemaining('Jan 31, 2025')"
                 ></span>
               </div>
             </div>
@@ -363,22 +408,6 @@
     <div class="pagination-scroller flex items-center gap-0.5 sm:gap-1 overflow-x-auto">
       <button class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-brand-500 text-theme-xs sm:text-theme-sm font-medium text-white">
         1
-      </button>
-      <button class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-        2
-      </button>
-      <button class="hidden sm:flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-        3
-      </button>
-      <span class="px-1 sm:px-2 py-1 sm:py-2 text-theme-xs sm:text-theme-sm text-gray-500 dark:text-gray-400">...</span>
-      <button class="hidden sm:flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-        8
-      </button>
-      <button class="hidden sm:flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-        9
-      </button>
-      <button class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-        10
       </button>
     </div>
 
