@@ -141,9 +141,14 @@
     overflow: visible !important;
   }
 
-  /* When dropdown is open, increase the entire cell's z-index */
-  tbody .actions-column-sticky:has(div[x-show="actionsOpen"][style*="display"]),
-  tbody .actions-column-sticky:has(.table-action-dropdown[style*="display"]) {
+  /* Increase z-index of entire row when dropdown is open */
+  tbody tr:has(.actions-column-sticky div[x-show="actionsOpen"][style*="display"]) {
+    z-index: 99998;
+    position: relative;
+  }
+
+  /* Increase sticky cell z-index when it contains an open dropdown */
+  tbody tr:has(.actions-column-sticky div[x-show="actionsOpen"][style*="display"]) .actions-column-sticky {
     z-index: 99999 !important;
   }
 
@@ -156,12 +161,11 @@
   tbody .actions-column-sticky > div {
     overflow: visible !important;
     position: relative;
-    z-index: 1;
   }
 
-  /* Ensure dropdown has high z-index within its parent */
+  /* Ensure dropdown has high z-index */
   tbody .actions-column-sticky .table-action-dropdown,
   tbody .actions-column-sticky div[x-show="actionsOpen"] {
-    z-index: 9999 !important;
+    z-index: 1 !important;
   }
 }
