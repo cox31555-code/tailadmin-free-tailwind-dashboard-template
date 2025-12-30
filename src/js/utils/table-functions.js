@@ -254,6 +254,24 @@ function calculatePolicyCounts(tableType) {
         else if (typeText.includes('impound')) nextDue++;
       }
     });
+  } else if (tableType === 'contactForm') {
+    // For contact form, count by message type
+    rows.forEach(row => {
+      if (row.style.display === 'none') return; // Skip hidden rows
+
+      total++;
+      const cells = row.querySelectorAll('td');
+
+      // Find the type column (index 2 for contact form)
+      const typeCell = cells[2];
+      if (typeCell) {
+        const typeText = typeCell.textContent.trim().toLowerCase();
+        // Count as "unread" for blue badge - could be enhanced with actual read/unread tracking
+        if (typeText.includes('quote')) active++;
+        // Count as "read" for green badge
+        else if (typeText.includes('general') || typeText.includes('business')) expiringSoon++;
+      }
+    });
   } else {
     // Original logic for policy tables
     rows.forEach(row => {
