@@ -22,6 +22,8 @@
       // Policy metadata
       policyRef: 'REF-2025-001234',
       status: 'Active',
+      quoteReceived: '2025-01-05',
+      orderReceived: '2025-01-10',
       policyStart: '2025-01-14',
       policyEnd: '2026-01-14',
       policyPrice: '£1,247.50',
@@ -337,6 +339,8 @@
         return {
           policyRef: this.policyRef,
           status: this.status,
+          quoteReceived: this.quoteReceived,
+          orderReceived: this.orderReceived,
           policyStart: this.policyStart,
           policyEnd: this.policyEnd,
           policyPrice: this.policyPrice,
@@ -450,6 +454,22 @@
         const today = new Date();
         const diffTime = end - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      },
+
+      getDaysSinceQuoteReceived() {
+        const quote = new Date(this.quoteReceived);
+        const today = new Date();
+        const diffTime = today - quote;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      },
+
+      getDaysSinceOrderReceived() {
+        const order = new Date(this.orderReceived);
+        const today = new Date();
+        const diffTime = today - order;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
       },
 
