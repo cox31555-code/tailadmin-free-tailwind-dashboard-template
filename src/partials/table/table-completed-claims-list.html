@@ -151,12 +151,12 @@
         <!-- Export button -->
         <button
           onclick="window.exportTableToCSV()"
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 whitespace-nowrap"
+          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 whitespace-nowrap"
         >
           <svg
             class="stroke-current fill-none"
-            width="16"
-            height="16"
+            width="14"
+            height="14"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -168,7 +168,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          Export CSV
+          <span class="hidden sm:inline">Export CSV</span>
         </button>
       </div>
     </div>
