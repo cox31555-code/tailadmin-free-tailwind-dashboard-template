@@ -9,17 +9,11 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-      eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template
+      Dashboard | Limitless Admin
     </title>
     <style>
       @media (max-width: 640px) {
         .page-main-content {
-          padding: 0 10px;
-        }
-      }
-
-      @media (max-width: 640px) {
-        .page-table-wrapper {
           padding: 0 10px;
         }
       }
@@ -56,35 +50,47 @@
         <!-- ===== Main Content Start ===== -->
         <main>
           <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 page-main-content">
+            <!-- Dashboard Header -->
+            <div class="mb-6">
+              <h1 class="text-2xl font-bold text-gray-800 dark:text-white/90 md:text-3xl">
+                Dashboard Overview
+              </h1>
+              <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
+                Monitor your policy statistics and sales performance
+              </p>
+            </div>
+
+            <!-- Main Dashboard Grid -->
             <div class="grid grid-cols-12 gap-4 md:gap-6">
-              <div class="col-span-12 space-y-6 xl:col-span-7">
-                <!-- Metric Group One -->
-                <include src="./partials/metric-group/metric-group-01.html" />
-                <!-- Metric Group One -->
-
-                <!-- ====== Chart One Start -->
-                <include src="./partials/chart/chart-01.html" />
-                <!-- ====== Chart One End -->
-              </div>
-              <div class="col-span-12 xl:col-span-5">
-                <!-- ====== Chart Two Start -->
-                <include src="./partials/chart/chart-02.html" />
-                <!-- ====== Chart Two End -->
-              </div>
-
-              <!-- ====== Revenue Overview Start -->
-              <include src="./partials/revenue-overview.html" />
-              <!-- ====== Revenue Overview End -->
-
-              <!-- ====== Recent Items Start -->
-              <include src="./partials/recent-items.html" />
-              <!-- ====== Recent Items End -->
-
+              
+              <!-- Key Metrics Section -->
               <div class="col-span-12">
-                <!-- ====== Chart Three Start -->
-                <include src="./partials/chart/chart-03.html" />
-                <!-- ====== Chart Three End -->
+                <include src="./partials/metric-group/metric-group-01.html" />
               </div>
+
+              <!-- Charts Row -->
+              <div class="col-span-12 grid grid-cols-1 gap-4 lg:grid-cols-2 md:gap-6">
+                <!-- Monthly Sales Chart -->
+                <div class="lg:col-span-1">
+                  <include src="./partials/chart/chart-01.html" />
+                </div>
+
+                <!-- Orders by Product Type Chart -->
+                <div class="lg:col-span-1">
+                  <include src="./partials/chart/chart-02.html" />
+                </div>
+              </div>
+
+              <!-- Statistics Chart - Full Width -->
+              <div class="col-span-12">
+                <include src="./partials/chart/chart-03.html" />
+              </div>
+
+              <!-- Revenue Overview -->
+              <include src="./partials/revenue-overview.html" />
+
+              <!-- Recent Items Table -->
+              <include src="./partials/recent-items.html" />
 
             </div>
           </div>
