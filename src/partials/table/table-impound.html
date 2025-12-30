@@ -127,11 +127,11 @@
               </span>
             </div>
           </th>
-          <!-- Lot Number Header -->
-          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('lotnumber')">
+          <!-- Impound Reason Header -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('reason')">
             <div class="flex items-center gap-2">
-              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Lot Number</p>
-              <span x-show="sortColumn === 'lotnumber'" class="text-gray-600 dark:text-gray-300">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Impound Reason</p>
+              <span x-show="sortColumn === 'reason'" class="text-gray-600 dark:text-gray-300">
                 <span x-show="sortDirection === 'asc'">↑</span>
                 <span x-show="sortDirection === 'desc'">↓</span>
               </span>
