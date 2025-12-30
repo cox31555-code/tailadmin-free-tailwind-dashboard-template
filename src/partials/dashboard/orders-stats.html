@@ -1,18 +1,16 @@
 <div x-data="ordersCounter()" x-init="init()">
-  <div class="grid grid-cols-3 gap-3">
+  <div class="grid grid-cols-3 gap-2 sm:gap-3">
     <!-- Today -->
-    <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-800/50">
-      <div class="flex items-start justify-between mb-1">
-        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Today</p>
+    <div class="rounded-lg border border-gray-200 bg-gray-50 p-2 sm:p-3 dark:border-gray-800 dark:bg-gray-800/50">
+      <div class="flex items-start justify-between gap-1 mb-0.5 sm:mb-1">
+        <p class="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 leading-tight">Today</p>
         <span
-          class="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-medium"
+          class="inline-flex items-center gap-0.5 sm:gap-1 rounded-full px-1 sm:px-1.5 py-0.5 text-[10px] sm:text-xs font-medium whitespace-nowrap"
           :class="trendBadgeClasses(trendToday)"
         >
           <svg
-            class="fill-current transition-transform"
+            class="fill-current transition-transform w-2 h-2 sm:w-2.5 sm:h-2.5 flex-shrink-0"
             :class="trendIconClasses(trendToday)"
-            width="10"
-            height="10"
             viewBox="0 0 12 12"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -22,22 +20,20 @@
           <span x-text="formatTrend(trendToday)">0%</span>
         </span>
       </div>
-      <p class="text-xl font-bold text-gray-900 dark:text-white" x-text="formatNumber(todayCount)">0</p>
+      <p class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white leading-tight" x-text="formatNumber(todayCount)">0</p>
     </div>
     
     <!-- Last 7 Days -->
-    <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-800/50">
-      <div class="flex items-start justify-between mb-1">
-        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">7 Days</p>
+    <div class="rounded-lg border border-gray-200 bg-gray-50 p-2 sm:p-3 dark:border-gray-800 dark:bg-gray-800/50">
+      <div class="flex items-start justify-between gap-1 mb-0.5 sm:mb-1">
+        <p class="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 leading-tight">7 Days</p>
         <span
-          class="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-medium"
+          class="inline-flex items-center gap-0.5 sm:gap-1 rounded-full px-1 sm:px-1.5 py-0.5 text-[10px] sm:text-xs font-medium whitespace-nowrap"
           :class="trendBadgeClasses(trendLast7Days)"
         >
           <svg
-            class="fill-current transition-transform"
+            class="fill-current transition-transform w-2 h-2 sm:w-2.5 sm:h-2.5 flex-shrink-0"
             :class="trendIconClasses(trendLast7Days)"
-            width="10"
-            height="10"
             viewBox="0 0 12 12"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -47,22 +43,20 @@
           <span x-text="formatTrend(trendLast7Days)">0%</span>
         </span>
       </div>
-      <p class="text-xl font-bold text-gray-900 dark:text-white" x-text="formatNumber(last7DaysCount)">0</p>
+      <p class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white leading-tight" x-text="formatNumber(last7DaysCount)">0</p>
     </div>
     
     <!-- Past 30 Days -->
-    <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-800/50">
-      <div class="flex items-start justify-between mb-1">
-        <p class="text-xs font-medium text-gray-500 dark:text-gray-400">30 Days</p>
+    <div class="rounded-lg border border-gray-200 bg-gray-50 p-2 sm:p-3 dark:border-gray-800 dark:bg-gray-800/50">
+      <div class="flex items-start justify-between gap-1 mb-0.5 sm:mb-1">
+        <p class="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 leading-tight">30 Days</p>
         <span
-          class="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-medium"
+          class="inline-flex items-center gap-0.5 sm:gap-1 rounded-full px-1 sm:px-1.5 py-0.5 text-[10px] sm:text-xs font-medium whitespace-nowrap"
           :class="trendBadgeClasses(trendLast30Days)"
         >
           <svg
-            class="fill-current transition-transform"
+            class="fill-current transition-transform w-2 h-2 sm:w-2.5 sm:h-2.5 flex-shrink-0"
             :class="trendIconClasses(trendLast30Days)"
-            width="10"
-            height="10"
             viewBox="0 0 12 12"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -72,7 +66,7 @@
           <span x-text="formatTrend(trendLast30Days)">0%</span>
         </span>
       </div>
-      <p class="text-xl font-bold text-brand-500 dark:text-brand-400" x-text="formatNumber(past30DaysCount)">0</p>
+      <p class="text-lg sm:text-xl font-bold text-brand-500 dark:text-brand-400 leading-tight" x-text="formatNumber(past30DaysCount)">0</p>
     </div>
   </div>
 </div>
