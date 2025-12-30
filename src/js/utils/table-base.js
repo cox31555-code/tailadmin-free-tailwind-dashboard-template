@@ -53,15 +53,12 @@ export function createTableState(config) {
 
     // Load expired policies from localStorage
     loadExpiredPolicies() {
-      const ordersDataStr = localStorage.getItem('ordersData');
-      if (ordersDataStr) {
-        const allOrders = JSON.parse(ordersDataStr);
-        // Filter for orders matching this table type (e.g. 'expired-annual')
-        this.expiredPolicies = allOrders.filter(order => order.type === tableType);
-        
-        // Update stats based on loaded data
-        this.policyCounts.total = this.expiredPolicies.length;
-      }
+      const allOrders = readOrdersData();
+      // Filter for orders matching this table type (e.g. 'expired-annual')
+      this.expiredPolicies = allOrders.filter((order) => order.type === tableType);
+
+      // Update stats based on loaded data
+      this.policyCounts.total = this.expiredPolicies.length;
     },
 
     // Remove expired policies from DOM and save to localStorage
