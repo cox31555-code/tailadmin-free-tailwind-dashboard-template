@@ -27,6 +27,9 @@ import {
   getActivePolicies,
   getAllPolicies,
   getCountsForRanges,
+  getCountsWithTrends,
+  buildRangePairs,
+  calculatePercentChange,
   sumRevenue,
   sumRevenueInRange,
 } from "./utils/dashboard-data.js";
@@ -76,6 +79,42 @@ const parseDate = (dateStr) => {
 };
 
 /**
+ * Shared formatting + styling helpers for trend badges
+ */
+const formatTrend = (value) => {
+  const n = Number.isFinite(value) ? value : 0;
+  const abs = Math.abs(n);
+
+  const rounded = abs < 10 ? Math.round(n * 10) / 10 : Math.round(n);
+  const formatted = Number.isInteger(rounded) ? rounded.toString() : rounded.toFixed(1);
+
+  const sign = rounded > 0 ? "+" : "";
+  return `${sign}${formatted}%`;
+};
+
+const trendBadgeClasses = (value) => {
+  const n = Number.isFinite(value) ? value : 0;
+
+  if (n > 0) {
+    return "bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500";
+  }
+
+  if (n < 0) {
+    return "bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400";
+  }
+
+  return "bg-gray-100 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400";
+};
+
+const trendIconClasses = (value) => {
+  const n = Number.isFinite(value) ? value : 0;
+
+  if (n < 0) return "rotate-180";
+  if (n === 0) return "opacity-60";
+  return "";
+};
+
+/**
  * Alpine.js component for quotes counter
  */
 Alpine.data("quotesCounter", function () {
@@ -84,17 +123,29 @@ Alpine.data("quotesCounter", function () {
     last7DaysCount: 0,
     past30DaysCount: 0,
 
+    trendToday: 0,
+    trendLast7Days: 0,
+    trendLast30Days: 0,
+
     formatNumber(num) {
       return num.toLocaleString("en-US");
     },
 
+    formatTrend,
+    trendBadgeClasses,
+    trendIconClasses,
+
     async refreshCounts() {
       await ensureOrdersDataComplete();
       const quotes = getQuotes();
-      const counts = getCountsForRanges(quotes, (q) => q.date);
+      const { counts, trends } = getCountsWithTrends(quotes, (q) => q.date);
       this.todayCount = counts.today;
       this.last7DaysCount = counts.last7Days;
       this.past30DaysCount = counts.last30Days;
+
+      this.trendToday = trends.today;
+      this.trendLast7Days = trends.last7Days;
+      this.trendLast30Days = trends.last30Days;
     },
 
     async init() {
@@ -125,17 +176,29 @@ Alpine.data("ordersCounter", function () {
     last7DaysCount: 0,
     past30DaysCount: 0,
 
+    trendToday: 0,
+    trendLast7Days: 0,
+    trendLast30Days: 0,
+
     formatNumber(num) {
       return num.toLocaleString("en-US");
     },
 
+    formatTrend,
+    trendBadgeClasses,
+    trendIconClasses,
+
     async refreshCounts() {
       await ensureOrdersDataComplete();
       const policies = getActivePolicies();
-      const counts = getCountsForRanges(policies, (p) => p.policyStart || p.date);
+      const { counts, trends } = getCountsWithTrends(policies, (p) => p.policyStart || p.date);
       this.todayCount = counts.today;
       this.last7DaysCount = counts.last7Days;
       this.past30DaysCount = counts.last30Days;
+
+      this.trendToday = trends.today;
+      this.trendLast7Days = trends.last7Days;
+      this.trendLast30Days = trends.last30Days;
     },
 
     async init() {
@@ -165,9 +228,17 @@ Alpine.data("revenueOverview", function () {
     dailyRevenue: 0,
     weeklyRevenue: 0,
 
+    totalTrend: 0,
+    dailyTrend: 0,
+    weeklyTrend: 0,
+
     formatCurrency(amount) {
       return "£" + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
+
+    formatTrend,
+    trendBadgeClasses,
+    trendIconClasses,
 
     async calculateRevenue() {
       await ensureOrdersDataComplete();
@@ -176,12 +247,54 @@ Alpine.data("revenueOverview", function () {
       const dateSelector = (p) => p.policyStart || p.date;
       const priceSelector = (p) => p.price;
 
-      const today = getDateRange("today");
-      const last7Days = getDateRange("last7days");
+      const rangePairs = buildRangePairs(["today", "last7days", "last30days"]);
+
+      const dailyCurrent = sumRevenueInRange(
+        policies,
+        priceSelector,
+        dateSelector,
+        rangePairs.today.current,
+      );
+      const dailyPrevious = sumRevenueInRange(
+        policies,
+        priceSelector,
+        dateSelector,
+        rangePairs.today.previous,
+      );
+
+      const weeklyCurrent = sumRevenueInRange(
+        policies,
+        priceSelector,
+        dateSelector,
+        rangePairs.last7days.current,
+      );
+      const weeklyPrevious = sumRevenueInRange(
+        policies,
+        priceSelector,
+        dateSelector,
+        rangePairs.last7days.previous,
+      );
+
+      const last30Current = sumRevenueInRange(
+        policies,
+        priceSelector,
+        dateSelector,
+        rangePairs.last30days.current,
+      );
+      const last30Previous = sumRevenueInRange(
+        policies,
+        priceSelector,
+        dateSelector,
+        rangePairs.last30days.previous,
+      );
 
       this.totalRevenue = sumRevenue(policies, priceSelector);
-      this.dailyRevenue = sumRevenueInRange(policies, priceSelector, dateSelector, today);
-      this.weeklyRevenue = sumRevenueInRange(policies, priceSelector, dateSelector, last7Days);
+      this.dailyRevenue = dailyCurrent;
+      this.weeklyRevenue = weeklyCurrent;
+
+      this.totalTrend = calculatePercentChange(last30Current, last30Previous);
+      this.dailyTrend = calculatePercentChange(dailyCurrent, dailyPrevious);
+      this.weeklyTrend = calculatePercentChange(weeklyCurrent, weeklyPrevious);
     },
 
     async init() {
