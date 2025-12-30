@@ -202,17 +202,25 @@ function filterAndSearchTable(searchQuery = '', filterPayment = 'all') {
   });
 
   // Reset to page 1 and reapply pagination
-  const alpineEl = document.querySelector(`[x-data*="createTableState"]`);
+  // Find the Alpine component by traversing up from the table
+  let alpineEl = table.closest('[x-data]');
+  if (!alpineEl) {
+    // Fallback: search globally
+    alpineEl = document.querySelector(`[x-data*="createTableState"]`);
+  }
+
   if (alpineEl && alpineEl._x_dataStack) {
     const alpineData = alpineEl._x_dataStack[0];
-    if (alpineData) {
+    if (alpineData && typeof alpineData.applyPagination === 'function') {
       alpineData.currentPage = 1;
       alpineData.applyPagination();
     }
   }
 
   // Update statistics counts after filtering
-  window.updateStatsCounts();
+  if (typeof window.updateStatsCounts === 'function') {
+    window.updateStatsCounts();
+  }
 }
 
 /**
