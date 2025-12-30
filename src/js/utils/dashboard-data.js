@@ -109,11 +109,9 @@ export function getAllPolicies() {
 
 export function getCountsWithTrends(records, dateSelector) {
   const rangePairs = buildRangePairs(["today", "last7days", "last30days"]);
-  const buckets = {
-    today: { current: 0, previous: 0 },
-    last7Days: { current: 0, previous: 0 },
-    last30Days: { current: 0, previous: 0 },
-  };
+  const buckets = Object.fromEntries(
+    Object.keys(rangePairs).map((key) => [key, { current: 0, previous: 0 }]),
+  );
 
   if (Array.isArray(records)) {
     records.forEach((record) => {
@@ -122,25 +120,34 @@ export function getCountsWithTrends(records, dateSelector) {
       if (!date) return;
 
       Object.entries(rangePairs).forEach(([key, range]) => {
+        const bucket = buckets[key];
+        if (!bucket) return;
+
         if (date >= range.current.start && date <= range.current.end) {
-          buckets[key].current += 1;
+          bucket.current += 1;
         } else if (date >= range.previous.start && date <= range.previous.end) {
-          buckets[key].previous += 1;
+          bucket.previous += 1;
         }
       });
     });
   }
 
   const counts = {
-    today: buckets.today.current,
-    last7Days: buckets.last7Days.current,
-    last30Days: buckets.last30Days.current,
+    today: buckets.today?.current || 0,
+    last7Days: buckets.last7days?.current || 0,
+    last30Days: buckets.last30days?.current || 0,
   };
 
   const trends = {
-    today: calculatePercentChange(buckets.today.current, buckets.today.previous),
-    last7Days: calculatePercentChange(buckets.last7Days.current, buckets.last7Days.previous),
-    last30Days: calculatePercentChange(buckets.last30Days.current, buckets.last30Days.previous),
+    today: calculatePercentChange(buckets.today?.current || 0, buckets.today?.previous || 0),
+    last7Days: calculatePercentChange(
+      buckets.last7days?.current || 0,
+      buckets.last7days?.previous || 0,
+    ),
+    last30Days: calculatePercentChange(
+      buckets.last30days?.current || 0,
+      buckets.last30days?.previous || 0,
+    ),
   };
 
   return { counts, trends };
