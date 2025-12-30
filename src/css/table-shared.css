@@ -141,13 +141,30 @@
     overflow: visible !important;
   }
 
-  /* Increase z-index of entire row when dropdown is open */
+  /* Boost z-index when row is hovered or focused (captures dropdown interaction) */
+  tbody tr:hover,
+  tbody tr:focus-within {
+    z-index: 99998;
+    position: relative;
+  }
+
+  /* Boost sticky cell z-index on row hover/focus */
+  tbody tr:hover .actions-column-sticky,
+  tbody tr:focus-within .actions-column-sticky {
+    z-index: 99999 !important;
+  }
+
+  /* Also boost when dropdown parent has focus or is interacted with */
+  tbody .actions-column-sticky:focus-within {
+    z-index: 99999 !important;
+  }
+
+  /* Increase z-index of entire row when dropdown is open (for browsers supporting :has) */
   tbody tr:has(.actions-column-sticky div[x-show="actionsOpen"][style*="display"]) {
     z-index: 99998;
     position: relative;
   }
 
-  /* Increase sticky cell z-index when it contains an open dropdown */
   tbody tr:has(.actions-column-sticky div[x-show="actionsOpen"][style*="display"]) .actions-column-sticky {
     z-index: 99999 !important;
   }
