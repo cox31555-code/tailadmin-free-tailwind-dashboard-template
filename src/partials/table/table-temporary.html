@@ -53,32 +53,117 @@
         x-model="searchQuery"
         @input="filterAndSearchTable(searchQuery, filterPayment)"
         type="text"
-        placeholder="Search by email, phone, vehicle..."
+        placeholder="Search by name, email, vehicle..."
         class="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-800 placeholder:text-gray-500 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500 dark:hover:border-gray-600 dark:focus:border-brand-600"
       />
 
-      <!-- Export button -->
-      <button
-        onclick="window.exportTableToCSV()"
-        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 whitespace-nowrap"
-      >
-        <svg
-          class="stroke-current fill-none"
-          width="16"
-          height="16"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
+      <!-- Action Buttons Group -->
+      <div class="flex items-center gap-2">
+        <!-- Filter button -->
+        <div class="relative">
+          <button
+            @click="filterPanelOpen = !filterPanelOpen"
+            class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 whitespace-nowrap"
+          >
+            <svg
+              class="stroke-current fill-white dark:fill-gray-800"
+              width="16"
+              height="16"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2.29004 5.90393H17.7067"
+                stroke=""
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M17.7075 14.0961H2.29085"
+                stroke=""
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M12.0826 3.33331C13.5024 3.33331 14.6534 4.48431 14.6534 5.90414C14.6534 7.32398 13.5024 8.47498 12.0826 8.47498C10.6627 8.47498 9.51172 7.32398 9.51172 5.90415C9.51172 4.48432 10.6627 3.33331 12.0826 3.33331Z"
+                fill=""
+                stroke=""
+                stroke-width="1.5"
+              />
+              <path
+                d="M7.91745 11.525C6.49762 11.525 5.34662 12.676 5.34662 14.0959C5.34661 15.5157 6.49762 16.6667 7.91745 16.6667C9.33728 16.6667 10.4883 15.5157 10.4883 14.0959C10.4883 12.676 9.33728 11.525 7.91745 11.525Z"
+                fill=""
+                stroke=""
+                stroke-width="1.5"
+              />
+            </svg>
+            Filter
+          </button>
+
+          <!-- Filter panel -->
+          <div
+            x-show="filterPanelOpen"
+            x-transition
+            class="absolute left-0 top-full mt-2 w-48 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] z-10"
+          >
+            <div class="p-4 space-y-3">
+              <div>
+                <label class="block text-theme-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Payment Type</label>
+                <select
+                  x-model="filterPayment"
+                  @change="filterAndSearchTable(searchQuery, filterPayment)"
+                  class="w-full rounded-lg border border-gray-300 bg-white px-2.5 py-2 text-theme-xs font-medium text-gray-700 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                >
+                  <option value="all">All</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="one-time">One-time</option>
+                </select>
+              </div>
+
+              <div class="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                <button
+                  @click="filterPayment = 'all'; filterAndSearchTable(searchQuery, filterPayment); filterPanelOpen = false"
+                  class="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                >
+                  Clear
+                </button>
+                <button
+                  @click="filterPanelOpen = false"
+                  class="flex-1 rounded-lg bg-brand-500 px-3 py-2 text-theme-xs font-medium text-white hover:bg-brand-600"
+                >
+                  Apply
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export button -->
+        <button
+          onclick="window.exportTableToCSV()"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 whitespace-nowrap"
         >
-          <path
-            d="M4 13V17C4 17.5304 4.21071 18.0391 4.58579 18.4142C4.96086 18.7893 5.46957 19 6 19H14C14.5304 19 15.0391 18.7893 15.4142 18.4142C15.7893 18.0391 16 17.5304 16 17V13M7 10L10 13M10 13L13 10M10 13V3"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        Export CSV
-      </button>
+          <svg
+            class="stroke-current fill-none"
+            width="16"
+            height="16"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 13V17C4 17.5304 4.21071 18.0391 4.58579 18.4142C4.96086 18.7893 5.46957 19 6 19H14C14.5304 19 15.0391 18.7893 15.4142 18.4142C15.7893 18.0391 16 17.5304 16 17V13M7 10L10 13M10 13L13 10M10 13V3"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Export CSV
+        </button>
+      </div>
     </div>
   </div>
 
@@ -87,31 +172,11 @@
       <!-- table header start -->
       <thead class="bg-gray-50 dark:bg-[#010a1b]">
         <tr class="border-b-2 border-gray-200 dark:border-gray-800">
-          <!-- Date & Time Header -->
-          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('date')">
+          <!-- Customer Header (merged name + email) -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('name')">
             <div class="flex items-center gap-2">
-              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Date & Time</p>
-              <span x-show="sortColumn === 'date'" class="text-gray-600 dark:text-gray-300">
-                <span x-show="sortDirection === 'asc'">↑</span>
-                <span x-show="sortDirection === 'desc'">↓</span>
-              </span>
-            </div>
-          </th>
-          <!-- Price Header -->
-          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('price')">
-            <div class="flex items-center gap-2">
-              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Price</p>
-              <span x-show="sortColumn === 'price'" class="text-gray-600 dark:text-gray-300">
-                <span x-show="sortDirection === 'asc'">↑</span>
-                <span x-show="sortDirection === 'desc'">↓</span>
-              </span>
-            </div>
-          </th>
-          <!-- Email Header -->
-          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('email')">
-            <div class="flex items-center gap-2">
-              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Email</p>
-              <span x-show="sortColumn === 'email'" class="text-gray-600 dark:text-gray-300">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Customer</p>
+              <span x-show="sortColumn === 'name'" class="text-gray-600 dark:text-gray-300">
                 <span x-show="sortDirection === 'asc'">↑</span>
                 <span x-show="sortDirection === 'desc'">↓</span>
               </span>
@@ -132,6 +197,26 @@
             <div class="flex items-center gap-2">
               <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Vehicle</p>
               <span x-show="sortColumn === 'vehicle'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Price Header -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('price')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Price</p>
+              <span x-show="sortColumn === 'price'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Payment Header -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('payment')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Payment</p>
+              <span x-show="sortColumn === 'payment'" class="text-gray-600 dark:text-gray-300">
                 <span x-show="sortDirection === 'asc'">↑</span>
                 <span x-show="sortDirection === 'desc'">↓</span>
               </span>
@@ -166,24 +251,25 @@
       <!-- table header end -->
       <!-- table body start -->
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-[#030e21]">
+        <!-- Row 1 -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
-          <td class="px-5 py-4 sm:px-6">
-            <div class="flex flex-col gap-1">
-              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Nov 14, 2025</p>
-              <p class="text-gray-500 text-theme-xs dark:text-gray-400">10:20 AM</p>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Jane Smith</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">jane.smith@example.com</p>
             </div>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£49.99</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">jane.smith@example.com</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07987654321</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Honda Civic</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£49.99</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">One-time</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 15, 2025</p>
@@ -201,24 +287,25 @@
           </td>
         </tr>
 
+        <!-- Row 2 -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
-          <td class="px-5 py-4 sm:px-6">
-            <div class="flex flex-col gap-1">
-              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Nov 26, 2025</p>
-              <p class="text-gray-500 text-theme-xs dark:text-gray-400">12:50 PM</p>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">John Doe</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">john.doe@example.com</p>
             </div>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£59.99</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">john.doe@example.com</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07912345678</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Toyota Corolla</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£59.99</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Monthly</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 10, 2025</p>
@@ -236,24 +323,25 @@
           </td>
         </tr>
 
+        <!-- Row 3 -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
-          <td class="px-5 py-4 sm:px-6">
-            <div class="flex flex-col gap-1">
-              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Dec 03, 2025</p>
-              <p class="text-gray-500 text-theme-xs dark:text-gray-400">05:00 PM</p>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Sarah Wilson</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">sarah.wilson@example.com</p>
             </div>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£49.99</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">sarah.wilson@example.com</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07923456789</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Ford Focus</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£49.99</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">One-time</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 12, 2025</p>
@@ -271,24 +359,25 @@
           </td>
         </tr>
 
+        <!-- Row 4 -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
-          <td class="px-5 py-4 sm:px-6">
-            <div class="flex flex-col gap-1">
-              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Dec 04, 2025</p>
-              <p class="text-gray-500 text-theme-xs dark:text-gray-400">11:55 AM</p>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex flex-col gap-0.5">
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Michael Johnson</p>
+              <p class="text-gray-500 text-theme-xs dark:text-gray-400">michael.j@example.com</p>
             </div>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£59.99</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">michael.j@example.com</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">07934567890</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">BMW 3 Series</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£59.99</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Monthly</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 08, 2025</p>
