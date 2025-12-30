@@ -26,13 +26,15 @@ export const annualTableConfig = {
   },
   
   dateColumns: {
+    recordDate: 5,
     policyEnd: 6,
     dueDate: 7
   },
-  
+
   statusConfig: {
     removeExpired: true,
-    expiringThreshold: 30
+    expiringThreshold: 30,
+    recentDays: 30
   }
 };
 
@@ -58,12 +60,14 @@ export const temporaryTableConfig = {
   },
   
   dateColumns: {
+    recordDate: 5,
     policyEnd: 6
   },
-  
+
   statusConfig: {
     removeExpired: true,
-    expiringThreshold: 7
+    expiringThreshold: 7,
+    recentDays: 30
   }
 };
 
@@ -88,12 +92,14 @@ export const impoundTableConfig = {
   },
 
   dateColumns: {
+    recordDate: 4,
     policyEnd: 5
   },
-  
+
   statusConfig: {
     removeExpired: true,
-    expiringThreshold: 7
+    expiringThreshold: 7,
+    recentDays: 30
   }
 };
 
@@ -214,12 +220,14 @@ export const quotesTableConfig = {
   },
 
   dateColumns: {
+    recordDate: 0,
     validUntil: 6
   },
 
   statusConfig: {
     removeExpired: false,
-    expiringThreshold: 30
+    expiringThreshold: 30,
+    recentDays: 30
   }
 };
 
