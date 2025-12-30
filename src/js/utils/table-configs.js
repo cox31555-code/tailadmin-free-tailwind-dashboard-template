@@ -11,7 +11,7 @@ export const annualTableConfig = {
   
   columns: {
     defaultSort: 'name',
-    paymentIndex: 4, // Index of payment column for filtering
+    paymentIndex: 5, // Index of payment column for filtering
     list: [
       { sortKey: 'name', sortType: 'name', dataKey: 'name.email', isMergedCell: true, exportable: true },
       { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
@@ -40,17 +40,17 @@ export const annualTableConfig = {
 export const temporaryTableConfig = {
   tableType: 'temporary',
   csvFilename: 'temporary-policies.csv',
-  csvHeaders: ['Date', 'Time', 'Price', 'Email', 'Phone', 'Vehicle', 'Policy Start', 'Policy End'],
+  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End'],
   
   columns: {
-    defaultSort: 'date',
-    paymentIndex: undefined, // No payment filter for temporary
+    defaultSort: 'name',
+    paymentIndex: 4, // Index of payment column for filtering
     list: [
-      { sortKey: 'date', sortType: 'date', dataKey: 'date.time', isMergedCell: true, exportable: true },
-      { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
-      { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
+      { sortKey: 'name', sortType: 'name', dataKey: 'name.email', isMergedCell: true, exportable: true },
       { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
       { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
+      { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
+      { sortKey: 'payment', sortType: 'text', dataKey: 'payment', exportable: true },
       { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
       { sortKey: 'policyend', sortType: 'date', dataKey: 'policyEnd', exportable: true },
       { sortKey: null, exportable: false } // Actions column
@@ -71,17 +71,17 @@ export const temporaryTableConfig = {
 export const impoundTableConfig = {
   tableType: 'impound',
   csvFilename: 'impound-policies.csv',
-  csvHeaders: ['Date', 'Time', 'Price', 'Email', 'Phone', 'Vehicle', 'Policy Start', 'Policy End'],
+  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End'],
   
   columns: {
-    defaultSort: 'date',
-    paymentIndex: undefined, // No payment filter for impound
+    defaultSort: 'name',
+    paymentIndex: 4, // Index of payment column for filtering
     list: [
-      { sortKey: 'date', sortType: 'date', dataKey: 'date.time', isMergedCell: true, exportable: true },
-      { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
-      { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
+      { sortKey: 'name', sortType: 'name', dataKey: 'name.email', isMergedCell: true, exportable: true },
       { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
       { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
+      { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
+      { sortKey: 'payment', sortType: 'text', dataKey: 'payment', exportable: true },
       { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
       { sortKey: 'policyend', sortType: 'date', dataKey: 'policyEnd', exportable: true },
       { sortKey: null, exportable: false } // Actions column
