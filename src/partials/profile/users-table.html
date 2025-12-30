@@ -63,15 +63,36 @@
       rows.forEach(row => tbody.appendChild(row));
     },
     getSortValue(cell, column) {
-      if (column === 'name') {
-        const nameP = cell.querySelector('p');
-        return nameP ? nameP.textContent.trim().toLowerCase() : '';
-      } else if (column === 'role') {
-        const roleSpan = cell.querySelector('span');
-        return roleSpan ? roleSpan.textContent.trim().toLowerCase() : '';
-      } else {
-        return cell.textContent.trim().toLowerCase();
+      if (!cell) {
+        console.error('getSortValue: cell is null');
+        return '';
       }
+
+      let value = '';
+
+      if (column === 'name') {
+        // Name is in a <p> tag within a <div> structure
+        const nameP = cell.querySelector('p.font-medium');
+        value = nameP ? nameP.textContent.trim() : cell.textContent.trim();
+      } else if (column === 'email') {
+        // Email is in a <p> tag
+        const emailP = cell.querySelector('p');
+        value = emailP ? emailP.textContent.trim() : cell.textContent.trim();
+      } else if (column === 'role') {
+        // Role is in a <span> tag
+        const roleSpan = cell.querySelector('span');
+        value = roleSpan ? roleSpan.textContent.trim() : cell.textContent.trim();
+      } else if (column === 'status') {
+        // Status is in a <span> within a flex div
+        const statusSpan = cell.querySelector('span.text-gray-600');
+        value = statusSpan ? statusSpan.textContent.trim() : cell.textContent.trim();
+      } else {
+        // Default: last active or other columns
+        value = cell.textContent.trim();
+      }
+
+      console.log(`getSortValue(${column}):`, value);
+      return value.toLowerCase();
     },
     getColumnIndex(column) {
       const columns = { name: 0, email: 1, role: 2, status: 3, lastActive: 4 };
