@@ -44,11 +44,39 @@ export const parseDateAsLondon = (dateStr) => {
   if (!dateStr) return null;
 
   try {
-    // Try to parse the date string
-    const date = new Date(dateStr);
+    const raw = dateStr.toString().trim();
+
+    // Handle common UK numeric formats reliably (DD/MM/YYYY or DD-MM-YYYY).
+    // Native Date parsing is locale-dependent and can misinterpret these.
+    const match = raw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\b|\s)/);
+    if (match) {
+      const day = parseInt(match[1], 10);
+      const month = parseInt(match[2], 10);
+      const year = parseInt(match[3], 10);
+
+      if (
+        Number.isFinite(day) &&
+        Number.isFinite(month) &&
+        Number.isFinite(year) &&
+        day >= 1 &&
+        day <= 31 &&
+        month >= 1 &&
+        month <= 12
+      ) {
+        // Create a date at midday to avoid DST edge cases when converting timezones.
+        const date = new Date(year, month - 1, day, 12, 0, 0, 0);
+        if (!isNaN(date.getTime())) {
+          return new Date(date.toLocaleString('en-US', { timeZone: 'Europe/London' }));
+        }
+      }
+    }
+
+    // Fallback: parse the date string as-is.
+    const date = new Date(raw);
     if (isNaN(date.getTime())) {
       return null;
     }
+
     // Convert to London timezone representation
     return new Date(date.toLocaleString('en-US', { timeZone: 'Europe/London' }));
   } catch {
