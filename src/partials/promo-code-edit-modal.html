@@ -6,187 +6,179 @@
   x-transition:leave="transition ease-in duration-150"
   x-transition:leave-start="opacity-100"
   x-transition:leave-end="opacity-0"
-  class="fixed inset-0 z-99999 flex items-center justify-center p-4 overflow-y-auto"
-  style="display: none;"
+  class="fixed inset-0 z-99999 flex items-center justify-center overflow-y-auto p-4"
+  style="background-color: rgb(15 23 42 / 75%); backdrop-filter: blur(4px)"
 >
-  <!-- Backdrop -->
   <div
-    class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm"
-    @click="promoCodeEditModal = false"
-  ></div>
-
-  <!-- Modal -->
-  <div
+    @click.outside="promoCodeEditModal = false"
     x-transition:enter="transition ease-out duration-200"
     x-transition:enter-start="opacity-0 scale-95"
     x-transition:enter-end="opacity-100 scale-100"
     x-transition:leave="transition ease-in duration-150"
     x-transition:leave-start="opacity-100 scale-100"
     x-transition:leave-end="opacity-0 scale-95"
-    @click.outside="promoCodeEditModal = false"
-    class="relative w-full max-w-2xl bg-white rounded-2xl shadow-xl dark:bg-gray-900"
+    class="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-[#010a1b]"
   >
     <!-- Header -->
-    <div class="flex items-start justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+    <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-800 dark:bg-[#0c192c]">
       <div>
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
           Edit Promo Code
         </h3>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Update discount code settings
+        <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+          Update promo code details and settings
         </p>
       </div>
       <button
         @click="promoCodeEditModal = false"
-        class="flex items-center justify-center w-10 h-10 rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+        class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-white/[0.07] dark:hover:text-gray-300"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
 
     <!-- Body -->
-    <form class="p-6 space-y-6">
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <!-- Promo Code -->
-        <div>
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Promo Code
-          </label>
-          <input
-            type="text"
-            x-model="selectedPromo.code"
-            placeholder="e.g., SAVE20"
-            class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-brand-600"
-          />
-        </div>
-
-        <!-- Discount Percentage -->
-        <div>
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Discount (%)
-          </label>
-          <div class="relative">
+    <div class="max-h-[calc(100vh-250px)] overflow-y-auto">
+      <form class="space-y-6 p-6">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Promo Code
+            </label>
             <input
-              type="number"
-              x-model="selectedPromo.savings"
-              placeholder="20"
-              min="0"
-              max="100"
-              class="w-full px-4 py-2.5 pr-10 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-brand-600"
-            />
-            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400">%</span>
-          </div>
-        </div>
-
-        <!-- Minimum Spend -->
-        <div>
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Minimum Spend
-          </label>
-          <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400">£</span>
-            <input
-              type="number"
-              x-model="selectedPromo.minSpend"
-              placeholder="50.00"
-              min="0"
-              step="0.01"
-              class="w-full pl-8 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-brand-600"
-            />
-          </div>
-        </div>
-
-        <!-- Expiry Date -->
-        <div>
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Expiry Date
-          </label>
-          <div x-data x-init="flatpickr($refs.expireDateInput, { dateFormat: 'd/m/Y', minDate: 'today' })">
-            <input
-              x-ref="expireDateInput"
               type="text"
-              x-model="selectedPromo.expiryDate"
-              placeholder="Select date"
-              class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-brand-600"
+              x-model="selectedPromo?.code"
+              placeholder="SAVE20"
+              class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500"
             />
           </div>
-        </div>
 
-        <!-- Status -->
-        <div>
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Status
-          </label>
-          <div class="relative">
-            <select
-              x-model="selectedPromo.status"
-              class="w-full px-4 py-2.5 pr-10 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 appearance-none transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-600"
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              % Saving
+            </label>
+            <div class="flex items-center">
+              <input
+                type="number"
+                x-model="selectedPromo?.savings"
+                placeholder="20"
+                min="0"
+                max="100"
+                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500"
+              />
+              <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">%</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Minimum Spend
+            </label>
+            <div class="flex items-center">
+              <span class="text-sm text-gray-600 dark:text-gray-400">£</span>
+              <input
+                type="number"
+                x-model="selectedPromo?.minSpend"
+                placeholder="50"
+                min="0"
+                step="0.01"
+                class="ml-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Expiry Date
+            </label>
+            <div x-data x-init="flatpickr($refs.expireDateInput, { dateFormat: 'd/m/Y', minDate: 'today' })">
+              <input
+                x-ref="expireDateInput"
+                type="text"
+                x-model="selectedPromo.expiryDate"
+                placeholder="Select a date"
+                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Status
+            </label>
+            <div class="relative">
+              <select
+                x-model="selectedPromo?.status"
+                class="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300"
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <span class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Number of Uses
+            </label>
+            <input
+              type="number"
+              x-model="selectedPromo?.uses"
+              placeholder="0"
+              min="0"
+              class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500"
+            />
+          </div>
+
+          <div class="lg:col-span-2 flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-[#0c192c]">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Skip Payment
+              </label>
+              <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                Allow this promo code to skip payment processing
+              </p>
+            </div>
+            <button
+              type="button"
+              @click="selectedPromo.skipPayment = !selectedPromo.skipPayment"
+              :class="selectedPromo?.skipPayment ? 'bg-brand-500' : 'bg-gray-300 dark:bg-gray-600'"
+              class="relative inline-flex h-7 w-12 flex-shrink-0 rounded-full border border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-[#010a1b]"
             >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+              <span
+                :class="selectedPromo?.skipPayment ? 'translate-x-5' : 'translate-x-0.5'"
+                class="inline-block h-6 w-6 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out"
+              ></span>
+            </button>
           </div>
         </div>
-
-        <!-- Usage Limit -->
-        <div>
-          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Usage Limit
-          </label>
-          <input
-            type="number"
-            x-model="selectedPromo.uses"
-            placeholder="Unlimited"
-            min="0"
-            class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 transition-colors focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-brand-600"
-          />
-        </div>
-      </div>
-
-      <!-- Skip Payment Toggle -->
-      <div class="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
-        <div class="flex-1">
-          <label class="block text-sm font-medium text-gray-900 dark:text-white">
-            Skip Payment
-          </label>
-          <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-            Allow customers to bypass payment with this code
-          </p>
-        </div>
-        <button
-          type="button"
-          @click="selectedPromo.skipPayment = !selectedPromo.skipPayment"
-          :class="selectedPromo.skipPayment ? 'bg-brand-500' : 'bg-gray-300 dark:bg-gray-600'"
-          class="relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-        >
-          <span
-            :class="selectedPromo.skipPayment ? 'translate-x-5' : 'translate-x-0'"
-            class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ease-in-out"
-          ></span>
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
 
     <!-- Footer -->
-    <div class="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-800">
-      <button
-        @click="promoCodeEditModal = false"
-        type="button"
-        class="px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors rounded-lg border border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-      >
-        Cancel
-      </button>
-      <button
-        type="button"
-        class="px-6 py-2.5 text-sm font-semibold text-white transition-colors rounded-lg bg-brand-500 hover:bg-brand-600"
-      >
-        Save Changes
-      </button>
+    <div class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-800 dark:bg-[#0c192c]">
+      <div class="flex items-center justify-end gap-3">
+        <button
+          @click="promoCodeEditModal = false"
+          type="button"
+          class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:hover:bg-white/[0.03]"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-600"
+        >
+          Save Changes
+        </button>
+      </div>
     </div>
   </div>
 </div>
