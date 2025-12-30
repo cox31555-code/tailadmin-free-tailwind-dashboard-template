@@ -55,6 +55,17 @@ function initTaskDragging() {
       delay: 50, // Slight delay before drag starts (helps with scrolling)
       delayOnTouchOnly: true, // Only apply delay on touch devices
 
+      // Visual feedback during drag
+      onStart: (evt) => {
+        console.log('🎯 Task drag started');
+        evt.item.classList.add('dragging');
+      },
+
+      onMove: (evt) => {
+        // Optional: Add custom move logic or restrictions
+        return true; // Return false to cancel move
+      },
+
       // Handle drag end - update task position and column
       onEnd: (evt) => {
         const taskId = evt.item.dataset.taskId;
@@ -62,6 +73,8 @@ function initTaskDragging() {
         const oldColumnId = evt.from.closest('[data-kanban-column]').dataset.kanbanColumn;
         const newIndex = evt.newIndex;
         const oldIndex = evt.oldIndex;
+
+        console.log(`📦 Task ${taskId} moved from ${oldColumnId}[${oldIndex}] to ${newColumnId}[${newIndex}]`);
 
         // Dispatch event to Alpine component
         window.dispatchEvent(new CustomEvent('kanban:taskMoved', {
@@ -73,16 +86,6 @@ function initTaskDragging() {
             oldIndex
           }
         }));
-      },
-
-      // Visual feedback during drag
-      onStart: (evt) => {
-        evt.item.classList.add('dragging');
-      },
-
-      onMove: (evt) => {
-        // Optional: Add custom move logic or restrictions
-        return true; // Return false to cancel move
       }
     });
   });
