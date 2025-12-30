@@ -633,9 +633,30 @@ function performSort(columnName, direction) {
   }
 }
 
-// Expose initializeTable to window for use in HTML
+// Expose all table functions to window for use in HTML and Alpine.js
 if (typeof window !== 'undefined') {
   window.initializeTable = initializeTable;
+  window.filterAndSearchTable = filterAndSearchTable;
+  window.exportTableToCSV = () => {
+    const config = window.currentTableConfig;
+    if (!config) {
+      console.error('No table configuration found. Call initializeTable first.');
+      return;
+    }
+    exportTableToCSV(config);
+  };
+  window.exportTableToJSON = () => {
+    const config = window.currentTableConfig;
+    if (!config) {
+      console.error('No table configuration found. Call initializeTable first.');
+      return;
+    }
+    exportTableToJSON(config);
+  };
+  window.getSortValue = getSortValue;
+  window.performSort = performSort;
+  window.calculatePolicyCounts = calculatePolicyCounts;
+  window.extractRowData = extractRowData;
 }
 
 // Initialize when DOM is ready
