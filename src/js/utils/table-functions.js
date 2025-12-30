@@ -619,10 +619,16 @@ function performSort(columnName, direction) {
   rows.forEach(row => tbody.appendChild(row));
 
   // Reapply pagination after sorting (clamp page if needed)
-  const alpineEl = document.querySelector(`[x-data*="createTableState"]`);
+  // Find the Alpine component by traversing up from the table
+  let alpineEl = table.closest('[x-data]');
+  if (!alpineEl) {
+    // Fallback: search globally
+    alpineEl = document.querySelector(`[x-data*="createTableState"]`);
+  }
+
   if (alpineEl && alpineEl._x_dataStack) {
     const alpineData = alpineEl._x_dataStack[0];
-    if (alpineData) {
+    if (alpineData && typeof alpineData.applyPagination === 'function') {
       // Clamp current page to valid range
       if (alpineData.currentPage > alpineData.totalPages) {
         alpineData.currentPage = alpineData.totalPages;
