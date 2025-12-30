@@ -64,7 +64,7 @@
     </div>
     
     <!-- Quick Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
       <!-- Quote Received -->
       <div class="p-4 rounded-lg" style="background-color: #010a1b;">
         <p class="text-xs font-medium text-gray-400 mb-1">Quote Received</p>
@@ -78,25 +78,31 @@
         <p class="text-base font-semibold text-white/90 mb-1" x-text="new Date(orderReceived).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></p>
         <p class="text-xs text-gray-500" x-text="getDaysSinceOrderReceived() + ' days ago'"></p>
       </div>
-      
+
       <!-- Policy Start -->
       <div class="p-4 rounded-lg" style="background-color: #010a1b;">
         <p class="text-xs font-medium text-gray-400 mb-1">Policy Start</p>
         <p class="text-base font-semibold text-white/90 mb-1" x-text="new Date(policyStart).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></p>
-        <p class="text-xs" 
+        <p class="text-xs"
            :class="getDaysUntilPolicyStart() > 0 ? 'text-blue-400' : 'text-gray-500'"
            x-text="getDaysUntilPolicyStart() > 0 ? getDaysUntilPolicyStart() + ' days away' : 'Started'"></p>
       </div>
-      
+
       <!-- Policy End -->
       <div class="p-4 rounded-lg" style="background-color: #010a1b;">
         <p class="text-xs font-medium text-gray-400 mb-1">Policy End</p>
         <p class="text-base font-semibold text-white/90 mb-1" x-text="new Date(policyEnd).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></p>
-        <p class="text-xs" 
+        <p class="text-xs"
            :class="getDaysUntilPolicyEnd() < 30 ? 'text-orange-400' : (getDaysUntilPolicyEnd() < 0 ? 'text-red-400' : 'text-gray-500')"
            x-text="getDaysUntilPolicyEnd() > 0 ? getDaysUntilPolicyEnd() + ' days left' : 'Expired'"></p>
       </div>
-      
+
+      <!-- Type -->
+      <div class="p-4 rounded-lg" style="background-color: #010a1b;">
+        <p class="text-xs font-medium text-gray-400 mb-1">Type</p>
+        <p class="text-base font-semibold text-white/90" x-text="impoundType"></p>
+      </div>
+
       <!-- Total Price -->
       <div class="p-4 rounded-lg" style="background-color: #010a1b;">
         <p class="text-xs font-medium text-gray-400 mb-1">Total Price</p>
