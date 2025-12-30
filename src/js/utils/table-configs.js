@@ -206,7 +206,7 @@ export const quotesTableConfig = {
       { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
       { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
       { sortKey: 'amount', sortType: 'price', dataKey: 'amount', exportable: true },
-      { sortKey: 'type', sortType: 'text', dataKey: 'type', exportable: true },
+      { sortKey: 'type', sortType: 'text', dataKey: 'policyType', exportable: true },
       { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
       { sortKey: 'validuntil', sortType: 'date', dataKey: 'validUntil', exportable: true },
       { sortKey: null, exportable: false } // Actions column
@@ -237,7 +237,7 @@ export const contactFormTableConfig = {
       { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
       { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
       { sortKey: 'policyref', sortType: 'text', dataKey: 'policyRef', exportable: true },
-      { sortKey: 'type', sortType: 'text', dataKey: 'type', exportable: true },
+      { sortKey: 'type', sortType: 'text', dataKey: 'inquiryType', exportable: true },
       { sortKey: 'date', sortType: 'date', dataKey: 'date.time', isMergedCell: true, exportable: true },
       { sortKey: null, exportable: false } // Actions column
     ]
