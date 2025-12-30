@@ -30,6 +30,11 @@ export function createTableState(config) {
     policyCounts: { total: 0, active: 0, expiringSoon: 0, nextDue: 0 },
     expiredPolicies: [], // List of expired policies (for expired-only tables)
 
+    // Pagination state
+    currentPage: 1,
+    itemsPerPage: config.itemsPerPage || 10,
+    _tableRows: null, // Cache to avoid repeated queries
+
     // Initialization
     init() {
       // If we are on an expired-only page, load data from localStorage
