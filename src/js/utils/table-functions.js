@@ -21,6 +21,28 @@ function getTableElement(config) {
  * Track initialized tables to avoid duplicate work
  */
 const initializedTables = new Set();
+let expiredRecordsPurged = false;
+
+function purgeExpiredRecordsOnce() {
+  if (expiredRecordsPurged || typeof window === 'undefined') return;
+
+  const currentOrders = readOrdersData();
+  if (!currentOrders.length) {
+    expiredRecordsPurged = true;
+    return;
+  }
+
+  const filtered = currentOrders.filter((record) => {
+    const type = (record?.type || '').toString();
+    return !type.startsWith('expired-');
+  });
+
+  if (filtered.length !== currentOrders.length) {
+    writeOrdersData(filtered);
+  }
+
+  expiredRecordsPurged = true;
+}
 
 /**
  * Initialize table with configuration
@@ -37,6 +59,9 @@ export function initializeTable(tableConfig) {
 
   // Store table config globally (used by all table functions)
   window.currentTableConfig = tableConfig;
+
+  // Remove any lingering expired records before rebuilding datasets
+  purgeExpiredRecordsOnce();
 
   // Initialize data storage
   storeTableData();
