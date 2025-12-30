@@ -1,105 +1,13 @@
 <script>
-  // Store orders data in localStorage when page loads
-  function storeOrdersData() {
-    // Get all orders from localStorage or initialize
-    let allOrders = [];
-    const ordersDataStr = localStorage.getItem('ordersData');
-    if (ordersDataStr) {
-      allOrders = JSON.parse(ordersDataStr);
-    }
-
-    // Filter out old temporary data
-    allOrders = allOrders.filter(order => order.type !== 'temporary');
-
-    // Add new orders from this page
-    const tableRows = document.querySelectorAll('table tbody tr');
-
-    tableRows.forEach((row) => {
-      const dateCell = row.querySelector('td:first-child p:first-child');
-      const priceCell = row.querySelector('td:nth-child(2) p');
-      const emailCell = row.querySelector('td:nth-child(3) p');
-      const phoneCell = row.querySelector('td:nth-child(4) p');
-      const vehicleCell = row.querySelector('td:nth-child(5) p');
-      const paymentCell = row.querySelector('td:nth-child(6) span');
-
-      if (dateCell) {
-        const dateText = dateCell.textContent.trim();
-        allOrders.push({
-          type: 'temporary',
-          date: dateText,
-          price: priceCell ? priceCell.textContent.trim() : '',
-          email: emailCell ? emailCell.textContent.trim() : '',
-          phone: phoneCell ? phoneCell.textContent.trim() : '',
-          vehicle: vehicleCell ? vehicleCell.textContent.trim() : '',
-          payment: paymentCell ? paymentCell.textContent.trim() : ''
-        });
-      }
-    });
-
-    localStorage.setItem('ordersData', JSON.stringify(allOrders));
-  }
-
-  // Store data when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', storeOrdersData);
-  } else {
-    storeOrdersData();
-  }
-
-  // Also watch for mutations in case table changes
-  const tableContainer = document.querySelector('table');
-  if (tableContainer) {
-    const observer = new MutationObserver(storeOrdersData);
-    observer.observe(tableContainer, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-    });
+  // Initialize Temporary Table Configuration
+  if (typeof window.temporaryTableConfig !== 'undefined') {
+    window.tableConfig = window.temporaryTableConfig;
+    window.initializeTable(window.temporaryTableConfig);
   }
 </script>
 
-<style>
-  .table-scroller {
-    position: relative;
-  }
-
-  .table-scroller::-webkit-scrollbar {
-    height: 12px;
-  }
-
-  .table-scroller::-webkit-scrollbar-track {
-    background: rgba(75, 85, 99, 0.1);
-    border-radius: 6px;
-    margin: 0 10px;
-  }
-
-  .table-scroller::-webkit-scrollbar-thumb {
-    background: rgba(59, 130, 246, 0.7);
-    border-radius: 6px;
-    transition: background 0.3s ease;
-  }
-
-  .table-scroller::-webkit-scrollbar-thumb:hover {
-    background: rgba(59, 130, 246, 0.95);
-  }
-
-  .table-scroller {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(59, 130, 246, 0.7) rgba(75, 85, 99, 0.1);
-  }
-
-  .dark .table-scroller::-webkit-scrollbar-track {
-    background: rgba(31, 41, 55, 0.1);
-  }
-
-  @media (max-width: 640px) {
-    .table-scroller {
-      height: 945px;
-    }
-  }
-</style>
-
 <div
+  x-data="createTableState(window.temporaryTableConfig)"
   class="overflow-visible rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
 >
   <div class="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
@@ -111,44 +19,25 @@
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
       <button
+        onclick="window.exportTableToCSV()"
         class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 w-full sm:w-auto justify-center sm:justify-start"
       >
         <svg
-          class="stroke-current fill-white dark:fill-gray-800"
+          class="stroke-current fill-none"
           width="16"
           height="16"
           viewBox="0 0 20 20"
-          fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M2.29004 5.90393H17.7067"
-            stroke=""
+            d="M4 13V17C4 17.5304 4.21071 18.0391 4.58579 18.4142C4.96086 18.7893 5.46957 19 6 19H14C14.5304 19 15.0391 18.7893 15.4142 18.4142C15.7893 18.0391 16 17.5304 16 17V13M7 10L10 13M10 13L13 10M10 13V3"
+            stroke="currentColor"
             stroke-width="1.5"
             stroke-linecap="round"
             stroke-linejoin="round"
-          />
-          <path
-            d="M17.7075 14.0961H2.29085"
-            stroke=""
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M12.0826 3.33331C13.5024 3.33331 14.6534 4.48431 14.6534 5.90414C14.6534 7.32398 13.5024 8.47498 12.0826 8.47498C10.6627 8.47498 9.51172 7.32398 9.51172 5.90415C9.51172 4.48432 10.6627 3.33331 12.0826 3.33331Z"
-            fill=""
-            stroke=""
-            stroke-width="1.5"
-          />
-          <path
-            d="M7.91745 11.525C6.49762 11.525 5.34662 12.676 5.34662 14.0959C5.34661 15.5157 6.49762 16.6667 7.91745 16.6667C9.33728 16.6667 10.4883 15.5157 10.4883 14.0959C10.4883 12.676 9.33728 11.525 7.91745 11.525Z"
-            fill=""
-            stroke=""
-            stroke-width="1.5"
           />
         </svg>
-        Filter
+        Export CSV
       </button>
 
       <div class="flex items-center gap-2 justify-center sm:justify-start">
@@ -169,61 +58,71 @@
       <!-- table header start -->
       <thead class="bg-gray-50 dark:bg-gray-800/50">
         <tr class="border-b-2 border-gray-200 dark:border-gray-700">
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Date & Time
-            </p>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('date')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Date & Time</p>
+              <span x-show="sortColumn === 'date'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('price')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Price</p>
+              <span x-show="sortColumn === 'price'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('email')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Email</p>
+              <span x-show="sortColumn === 'email'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('phone')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Phone</p>
+              <span x-show="sortColumn === 'phone'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('vehicle')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Vehicle</p>
+              <span x-show="sortColumn === 'vehicle'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('policystart')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Policy Start</p>
+              <span x-show="sortColumn === 'policystart'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('policyend')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Policy End</p>
+              <span x-show="sortColumn === 'policyend'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
           </th>
           <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Price
-            </p>
-          </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Email
-            </p>
-          </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Phone
-            </p>
-          </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Vehicle
-            </p>
-          </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Policy Start
-            </p>
-          </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Policy End
-            </p>
-          </th>
-          <th class="px-5 py-3.5 text-left sm:px-6">
-            <p
-              class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300"
-            >
-              Actions
-            </p>
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Actions</p>
           </th>
         </tr>
       </thead>
@@ -501,7 +400,7 @@
     </table>
   </div>
 
-  <div class="flex flex-wrap items-center justify-center gap-1 border-t border-gray-200 px-3 py-4 dark:border-gray-700 sm:px-6">
+  <div class="flex flex-wrap items-center justify-center gap-1 border-t border-gray-200 px-3 py-5 dark:border-gray-700 sm:px-6">
     <button class="rounded-lg border border-gray-300 bg-white px-2 py-2 sm:px-4 text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
       Prev
     </button>
