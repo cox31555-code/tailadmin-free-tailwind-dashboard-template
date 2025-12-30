@@ -1,4 +1,5 @@
 import { getDateRange, parseDateAsLondon } from "./londonTime.js";
+import { getDateRange, parseDateAsLondon } from "./londonTime.js";
 import { getOrdersDataVersion, readOrdersData } from "./orders-data-store.js";
 
 const aggregationCache = new Map();
@@ -9,6 +10,45 @@ function parseGBP(value) {
   const s = value.toString().replace(/[£$,]/g, "").trim();
   const n = parseFloat(s);
   return Number.isFinite(n) ? n : 0;
+}
+
+function cloneDate(date) {
+  return new Date(date.getTime());
+}
+
+function buildPreviousRange(range) {
+  const duration = range.end.getTime() - range.start.getTime();
+  const previousEnd = new Date(range.start.getTime() - 1);
+  const previousStart = new Date(previousEnd.getTime() - duration);
+  return {
+    start: cloneDate(previousStart),
+    end: cloneDate(previousEnd),
+  };
+}
+
+export function buildRangePairs(rangeTypes = ["today", "last7days", "last30days"]) {
+  const pairs = {};
+
+  rangeTypes.forEach((type) => {
+    const current = getDateRange(type);
+    if (!current) return;
+    pairs[type] = {
+      current,
+      previous: buildPreviousRange(current),
+    };
+  });
+
+  return pairs;
+}
+
+export function calculatePercentChange(current, previous) {
+  if (!Number.isFinite(current)) current = 0;
+  if (!Number.isFinite(previous) || previous === 0) {
+    if (current === 0) return 0;
+    return 100;
+  }
+
+  return ((current - previous) / Math.abs(previous)) * 100;
 }
 
 export function readOrdersDataCached() {
@@ -68,32 +108,47 @@ export function getAllPolicies() {
   );
 }
 
-export function getCountsForRanges(records, dateSelector) {
-  const ranges = {
-    today: getDateRange("today"),
-    last7Days: getDateRange("last7days"),
-    last30Days: getDateRange("last30days"),
+export function getCountsWithTrends(records, dateSelector) {
+  const rangePairs = buildRangePairs(["today", "last7days", "last30days"]);
+  const buckets = {
+    today: { current: 0, previous: 0 },
+    last7Days: { current: 0, previous: 0 },
+    last30Days: { current: 0, previous: 0 },
   };
+
+  if (Array.isArray(records)) {
+    records.forEach((record) => {
+      const dateStr = dateSelector(record);
+      const date = parseDateAsLondon(dateStr);
+      if (!date) return;
+
+      Object.entries(rangePairs).forEach(([key, range]) => {
+        if (date >= range.current.start && date <= range.current.end) {
+          buckets[key].current += 1;
+        } else if (date >= range.previous.start && date <= range.previous.end) {
+          buckets[key].previous += 1;
+        }
+      });
+    });
+  }
 
   const counts = {
-    today: 0,
-    last7Days: 0,
-    last30Days: 0,
+    today: buckets.today.current,
+    last7Days: buckets.last7Days.current,
+    last30Days: buckets.last30Days.current,
   };
 
-  if (!Array.isArray(records)) return counts;
+  const trends = {
+    today: calculatePercentChange(buckets.today.current, buckets.today.previous),
+    last7Days: calculatePercentChange(buckets.last7Days.current, buckets.last7Days.previous),
+    last30Days: calculatePercentChange(buckets.last30Days.current, buckets.last30Days.previous),
+  };
 
-  records.forEach((record) => {
-    const dateStr = dateSelector(record);
-    const d = parseDateAsLondon(dateStr);
-    if (!d) return;
+  return { counts, trends };
+}
 
-    if (d >= ranges.today.start && d <= ranges.today.end) counts.today += 1;
-    if (d >= ranges.last7Days.start && d <= ranges.last7Days.end) counts.last7Days += 1;
-    if (d >= ranges.last30Days.start && d <= ranges.last30Days.end) counts.last30Days += 1;
-  });
-
-  return counts;
+export function getCountsForRanges(records, dateSelector) {
+  return getCountsWithTrends(records, dateSelector).counts;
 }
 
 export function getComputedData(cacheKey, computeFn) {
