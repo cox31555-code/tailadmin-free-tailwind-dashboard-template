@@ -251,6 +251,68 @@ export const contactFormTableConfig = {
   }
 };
 
+// Pending Claims Table Configuration
+export const pendingClaimsTableConfig = {
+  tableType: 'pendingClaims',
+  csvFilename: 'pending-claims.csv',
+  csvHeaders: ['Claim Type', 'Claimant Name', 'Email', 'Phone', 'Incident Date', 'Days Pending'],
+
+  columns: {
+    defaultSort: 'incidentdate',
+    paymentIndex: undefined,
+    list: [
+      { sortKey: 'claimtype', sortType: 'text', dataKey: 'claimType', exportable: true },
+      { sortKey: 'name', sortType: 'text', dataKey: 'name', exportable: true },
+      { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
+      { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
+      { sortKey: 'incidentdate', sortType: 'date', dataKey: 'incidentDate', exportable: true },
+      { sortKey: 'dayspending', sortType: 'number', dataKey: 'daysPending', exportable: true },
+      { sortKey: null, exportable: false } // Actions column
+    ]
+  },
+
+  dateColumns: {
+    incidentDate: 4
+  },
+
+  statusConfig: {
+    removeExpired: false,
+    expiringThreshold: 30
+  }
+};
+
+// Completed Claims Table Configuration
+export const completedClaimsTableConfig = {
+  tableType: 'completedClaims',
+  csvFilename: 'completed-claims.csv',
+  csvHeaders: ['Claim Type', 'Claimant Name', 'Email', 'Phone', 'Incident Date', 'Completion Date', 'Settlement Amount'],
+
+  columns: {
+    defaultSort: 'completiondate',
+    paymentIndex: undefined,
+    list: [
+      { sortKey: 'claimtype', sortType: 'text', dataKey: 'claimType', exportable: true },
+      { sortKey: 'name', sortType: 'text', dataKey: 'name', exportable: true },
+      { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
+      { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
+      { sortKey: 'incidentdate', sortType: 'date', dataKey: 'incidentDate', exportable: true },
+      { sortKey: 'completiondate', sortType: 'date', dataKey: 'completionDate', exportable: true },
+      { sortKey: 'settlement', sortType: 'price', dataKey: 'settlement', exportable: true },
+      { sortKey: null, exportable: false } // Actions column
+    ]
+  },
+
+  dateColumns: {
+    incidentDate: 4,
+    completionDate: 5
+  },
+
+  statusConfig: {
+    removeExpired: false,
+    expiringThreshold: 30
+  }
+};
+
 // Export configurations to window for use in HTML
 if (typeof window !== 'undefined') {
   window.annualTableConfig = annualTableConfig;
@@ -261,4 +323,6 @@ if (typeof window !== 'undefined') {
   window.expiredImpoundTableConfig = expiredImpoundTableConfig;
   window.quotesTableConfig = quotesTableConfig;
   window.contactFormTableConfig = contactFormTableConfig;
+  window.pendingClaimsTableConfig = pendingClaimsTableConfig;
+  window.completedClaimsTableConfig = completedClaimsTableConfig;
 }
