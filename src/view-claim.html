@@ -363,67 +363,39 @@
                   
                   <div class="space-y-4">
                     <div>
-                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Policy Number *</label>
-                      <input
-                        type="text"
-                        x-model="policyNo"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                      />
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Policy Number</label>
+                      <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="policyNo"></div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                       <div>
-                        <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name *</label>
-                        <input
-                          type="text"
-                          x-model="policyholderFirstName"
-                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                        />
+                        <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name</label>
+                        <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="policyholderFirstName"></div>
                       </div>
                       <div>
-                        <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name *</label>
-                        <input
-                          type="text"
-                          x-model="policyholderLastName"
-                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                        />
+                        <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
+                        <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="policyholderLastName"></div>
                       </div>
                     </div>
 
                     <div>
                       <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Your Name (if not policyholder)</label>
-                      <input
-                        type="text"
-                        x-model="claimantName"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                      />
+                      <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="claimantName"></div>
                     </div>
 
                     <div>
                       <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
-                      <input
-                        type="email"
-                        x-model="email"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                      />
+                      <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="email"></div>
                     </div>
 
                     <div>
-                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Where is the vehicle currently? *</label>
-                      <input
-                        type="text"
-                        x-model="vehicleLocation"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                      />
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Where is the vehicle currently?</label>
+                      <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="vehicleLocation"></div>
                     </div>
 
                     <div>
-                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Is the vehicle drivable? *</label>
-                      <input
-                        type="text"
-                        x-model="vehicleDrivable"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                      />
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Is the vehicle drivable?</label>
+                      <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="vehicleDrivable"></div>
                     </div>
                   </div>
                 </div>
@@ -435,75 +407,43 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Name *</label>
-                    <input
-                      type="text"
-                      x-model="thirdPartyName"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                    />
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Name</label>
+                    <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="thirdPartyName"></div>
                   </div>
 
                   <div>
-                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Phone *</label>
-                    <input
-                      type="text"
-                      x-model="thirdPartyPhone"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                    />
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Phone</label>
+                    <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="thirdPartyPhone"></div>
                   </div>
 
                   <div>
-                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Postcode *</label>
-                    <input
-                      type="text"
-                      x-model="thirdPartyPostcode"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                    />
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Postcode</label>
+                    <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="thirdPartyPostcode"></div>
                   </div>
 
                   <div>
-                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Address *</label>
-                    <input
-                      type="text"
-                      x-model="thirdPartyAddress"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                    />
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Address</label>
+                    <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="thirdPartyAddress"></div>
                   </div>
 
                   <div>
-                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle Registration *</label>
-                    <input
-                      type="text"
-                      x-model="thirdPartyVehicleReg"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                    />
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle Registration</label>
+                    <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="thirdPartyVehicleReg"></div>
                   </div>
 
                   <div>
-                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle Make *</label>
-                    <input
-                      type="text"
-                      x-model="thirdPartyVehicleMake"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                    />
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle Make</label>
+                    <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="thirdPartyVehicleMake"></div>
                   </div>
 
                   <div>
-                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle Model *</label>
-                    <input
-                      type="text"
-                      x-model="thirdPartyVehicleModel"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                    />
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle Model</label>
+                    <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300" x-text="thirdPartyVehicleModel"></div>
                   </div>
 
                   <div class="md:col-span-2">
-                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Damage to Third Party Vehicle *</label>
-                    <textarea
-                      x-model="thirdPartyDamage"
-                      rows="3"
-                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
-                    ></textarea>
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Damage to Third Party Vehicle</label>
+                    <div class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-theme-sm text-gray-800 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300 whitespace-pre-wrap" x-text="thirdPartyDamage"></div>
                   </div>
                 </div>
               </div>
