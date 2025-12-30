@@ -43,7 +43,8 @@ const getLast7DaysWithDates = () => {
 const getOrdersSeries = async () => {
   await ensureOrdersDataComplete();
 
-  return getComputedData("chart02:series", () => {
+  const todayKey = getLondonToday().toISOString().slice(0, 10);
+  return getComputedData(`chart02:series:${todayKey}`, () => {
     const policies = getActivePolicies();
     const last7Days = getLast7DaysWithDates();
 
