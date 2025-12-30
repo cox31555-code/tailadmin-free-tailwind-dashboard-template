@@ -136,16 +136,20 @@ const chart02 = async () => {
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "bar",
-      height: 335,
+      height: 300,
       toolbar: {
         show: false,
+      },
+      animations: {
+        enabled: true,
+        speed: 800,
       },
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "80%",
-        borderRadius: 5,
+        columnWidth: "65%",
+        borderRadius: 6,
         borderRadiusApplication: "end",
       },
     },
@@ -167,29 +171,35 @@ const chart02 = async () => {
       },
       labels: {
         style: {
-          fontSize: '12px',
+          fontSize: '13px',
           fontWeight: 500,
         },
       },
     },
     legend: {
-      show: true,
-      position: "top",
-      horizontalAlign: "left",
-      fontFamily: "Outfit",
-      markers: {
-        radius: 4,
-        strokeWidth: 0,
-      },
+      show: false,
     },
     yaxis: {
       title: false,
+      labels: {
+        style: {
+          fontSize: '13px',
+        },
+      },
     },
     grid: {
+      strokeDashArray: 4,
+      borderColor: '#e5e7eb',
       yaxis: {
         lines: {
           show: true,
         },
+      },
+      padding: {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 10,
       },
     },
     fill: {
@@ -197,13 +207,14 @@ const chart02 = async () => {
     },
     tooltip: {
       x: {
-        show: false,
+        show: true,
       },
       y: {
         formatter: function (val) {
           return val + " orders";
         },
       },
+      theme: 'dark',
     },
   };
 
