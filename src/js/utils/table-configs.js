@@ -351,6 +351,19 @@ export const completedClaimsTableConfig = {
   }
 };
 
+export const allTableConfigs = [
+  annualTableConfig,
+  temporaryTableConfig,
+  impoundTableConfig,
+  expiredAnnualTableConfig,
+  expiredTemporaryTableConfig,
+  expiredImpoundTableConfig,
+  quotesTableConfig,
+  contactFormTableConfig,
+  pendingClaimsTableConfig,
+  completedClaimsTableConfig,
+];
+
 // Export configurations to window for use in HTML
 if (typeof window !== 'undefined') {
   window.annualTableConfig = annualTableConfig;
