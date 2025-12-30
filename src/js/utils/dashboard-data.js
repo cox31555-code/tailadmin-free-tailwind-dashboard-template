@@ -96,12 +96,17 @@ export function getCountsForRanges(records, dateSelector) {
   return counts;
 }
 
-export function getMonthlyCounts(records, dateSelector, year) {
-  const cacheKey = `monthly:${year}:${records.length}`;
-  return getAggregatedData(
-    () => true,
-    cacheKey,
-  );
+export function getComputedData(cacheKey, computeFn) {
+  const dataVersion = getOrdersDataVersion();
+  const cacheEntry = aggregationCache.get(cacheKey);
+
+  if (cacheEntry?.version === dataVersion) {
+    return cacheEntry.data;
+  }
+
+  const data = computeFn();
+  aggregationCache.set(cacheKey, { version: dataVersion, data });
+  return data;
 }
 
 export function buildMonthlyCounts(records, dateSelector, year) {
