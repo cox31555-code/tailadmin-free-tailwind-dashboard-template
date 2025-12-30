@@ -221,44 +221,53 @@
                 </div>
 
                 <!-- Add Timeline Item Form -->
-                <div x-show="editingTimeline" x-transition class="mb-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30">
-                  <h4 class="text-theme-sm font-semibold text-gray-800 dark:text-white/90 mb-4">Add New Timeline Status</h4>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="sm:col-span-2">
+                <div x-show="editingTimeline" x-transition class="mb-6 p-5 rounded-xl border-2 border-brand-200 dark:border-brand-500/20 bg-brand-50/50 dark:bg-brand-500/5">
+                  <h4 class="text-base font-semibold text-gray-800 dark:text-white/90 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add New Timeline Status
+                  </h4>
+                  <div class="space-y-4">
+                    <div>
                       <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status Message</label>
                       <input
                         type="text"
                         x-model="newTimelineStatus"
-                        placeholder="Enter status message..."
-                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 placeholder:text-gray-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                        placeholder="e.g., Documents verified and approved"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300 dark:placeholder:text-gray-500"
                       />
                     </div>
                     <div>
-                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status Color</label>
-                      <div class="flex items-center gap-2">
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Select Color</label>
+                      <div class="flex items-center gap-3">
                         <template x-for="color in ['blue', 'gray', 'yellow', 'green', 'red', 'purple', 'orange']" :key="color">
                           <button
                             @click="newTimelineColor = color"
                             :class="[
-                              'w-8 h-8 rounded-full border-2 transition-all',
-                              newTimelineColor === color ? 'border-gray-800 dark:border-white scale-110' : 'border-transparent',
+                              'w-10 h-10 rounded-full transition-all shadow-sm hover:scale-110',
+                              newTimelineColor === color ? 'ring-4 ring-gray-800 dark:ring-white ring-offset-2 scale-110' : '',
                               getColorClasses(color)
                             ]"
+                            :title="color"
                           ></button>
                         </template>
                       </div>
                     </div>
                   </div>
-                  <div class="flex items-center gap-2 mt-4">
+                  <div class="flex items-center gap-3 mt-5 pt-4 border-t border-brand-200 dark:border-brand-500/20">
                     <button
                       @click="addTimelineItem"
-                      class="rounded-lg bg-brand-500 px-4 py-2 text-theme-sm font-medium text-white hover:bg-brand-600"
+                      class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-theme-sm font-medium text-white hover:bg-brand-600 shadow-sm"
                     >
-                      Add Status
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Add to Timeline
                     </button>
                     <button
                       @click="editingTimeline = false; newTimelineStatus = ''; newTimelineColor = 'blue'"
-                      class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                      class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]"
                     >
                       Cancel
                     </button>
