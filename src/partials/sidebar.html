@@ -543,10 +543,10 @@
               href="#"
               @click.prevent="selected = (selected === 'CreatePolicies' ? '':'CreatePolicies')"
               class="menu-item group"
-              :class="(selected === 'CreatePolicies') || (page === 'annual' || page === 'temporary' || page === 'impound') ? 'menu-item-active' : 'menu-item-inactive'"
+              :class="(selected === 'CreatePolicies') || (page === 'createAnnual' || page === 'createTemporary' || page === 'createImpound') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'CreatePolicies') || (page === 'annual' || page === 'temporary' || page === 'impound') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                :class="(selected === 'CreatePolicies') || (page === 'createAnnual' || page === 'createTemporary' || page === 'createImpound') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
