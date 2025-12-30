@@ -171,7 +171,6 @@ function setupTableObserver() {
  * @param {string} filterPayment - Payment filter
  */
 function filterAndSearchTable(searchQuery = '', filterPayment = 'all') {
-  console.log('filterAndSearchTable called:', { searchQuery, filterPayment });
   const config = window.currentTableConfig;
   if (!config) {
     console.error('No currentTableConfig found');
@@ -236,13 +235,11 @@ function filterAndSearchTable(searchQuery = '', filterPayment = 'all') {
  * @param {Object} config - Table configuration
  */
 function exportTableToCSV(config) {
-  console.log('exportTableToCSV called with config:', config);
   const table = getTableElement(config);
   if (!table) {
-    console.error('Table not found for CSV export. Config:', config);
+    console.error('Table not found for CSV export. Selector:', config?.tableSelector);
     return;
   }
-  console.log('Table found:', table.id);
 
   const tbody = table.querySelector('tbody');
   const rows = [];
@@ -300,13 +297,11 @@ function exportTableToCSV(config) {
  * @param {Object} config - Table configuration
  */
 function exportTableToJSON(config) {
-  console.log('exportTableToJSON called with config:', config);
   const table = getTableElement(config);
   if (!table) {
-    console.error('Table not found for JSON export. Config:', config);
+    console.error('Table not found for JSON export. Selector:', config?.tableSelector);
     return;
   }
-  console.log('Table found:', table.id);
 
   const tbody = table.querySelector('tbody');
   const data = [];
@@ -605,7 +600,6 @@ function getSortValue(cell, columnName) {
  * Perform sorting
  */
 function performSort(columnName, direction) {
-  console.log('performSort called:', { columnName, direction });
   const config = window.currentTableConfig;
   if (!config) {
     console.error('No currentTableConfig found');
@@ -613,7 +607,7 @@ function performSort(columnName, direction) {
   }
   const table = getTableElement(config);
   if (!table) {
-    console.error('Table not found for sorting. Config:', config);
+    console.error('Table not found for sorting. Selector:', config?.tableSelector);
     return;
   }
 
