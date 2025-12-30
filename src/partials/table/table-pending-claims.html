@@ -177,7 +177,7 @@
 
   <div class="max-w-full overflow-x-auto">
     <div class="table-scroller" id="tableScroller">
-      <table class="min-w-max sm:min-w-full table-auto overflow-visible">
+      <table id="pendingClaimsTable" class="min-w-max sm:min-w-full table-auto overflow-visible">
       <!-- table header start -->
       <thead class="bg-gray-50 dark:bg-[#010a1b]">
         <tr class="border-b-2 border-gray-200 dark:border-gray-800">
@@ -251,7 +251,7 @@
       <!-- table body start -->
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-[#030e21]">
         <!-- Row 1: Property Damage -->
-        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+        <tr data-filtered-out="false" data-paged-out="false" class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-800 text-theme-sm dark:text-white/90">Property Damage</p>
           </td>
@@ -286,7 +286,7 @@
           </td>
         </tr>
         <!-- Row 2: Bodily Injury -->
-        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+        <tr data-filtered-out="false" data-paged-out="false" class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-800 text-theme-sm dark:text-white/90">Bodily Injury</p>
           </td>
@@ -316,7 +316,7 @@
           </td>
         </tr>
         <!-- Row 3: Liability -->
-        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+        <tr data-filtered-out="false" data-paged-out="false" class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-800 text-theme-sm dark:text-white/90">Liability</p>
           </td>
@@ -346,7 +346,7 @@
           </td>
         </tr>
         <!-- Row 4: Theft -->
-        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+        <tr data-filtered-out="false" data-paged-out="false" class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-800 text-theme-sm dark:text-white/90">Theft</p>
           </td>
