@@ -192,6 +192,37 @@ export const expiredImpoundTableConfig = {
   }
 };
 
+// Quotes Table Configuration
+export const quotesTableConfig = {
+  tableType: 'quotes',
+  csvFilename: 'quotes.csv',
+  csvHeaders: ['Date', 'Time', 'Customer Email', 'Vehicle', 'Quote Amount', 'Policy Type', 'Policy Start', 'Valid Until'],
+
+  columns: {
+    defaultSort: 'date',
+    paymentIndex: undefined, // No payment filter for quotes
+    list: [
+      { sortKey: 'date', sortType: 'date', dataKey: 'date.time', isMergedCell: true, exportable: true },
+      { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
+      { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
+      { sortKey: 'amount', sortType: 'price', dataKey: 'amount', exportable: true },
+      { sortKey: 'type', sortType: 'text', dataKey: 'type', exportable: true },
+      { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
+      { sortKey: 'validuntil', sortType: 'date', dataKey: 'validUntil', exportable: true },
+      { sortKey: null, exportable: false } // Actions column
+    ]
+  },
+
+  dateColumns: {
+    validUntil: 6
+  },
+
+  statusConfig: {
+    removeExpired: false,
+    expiringThreshold: 30
+  }
+};
+
 // Export configurations to window for use in HTML
 if (typeof window !== 'undefined') {
   window.annualTableConfig = annualTableConfig;
@@ -200,4 +231,5 @@ if (typeof window !== 'undefined') {
   window.expiredAnnualTableConfig = expiredAnnualTableConfig;
   window.expiredTemporaryTableConfig = expiredTemporaryTableConfig;
   window.expiredImpoundTableConfig = expiredImpoundTableConfig;
+  window.quotesTableConfig = quotesTableConfig;
 }
