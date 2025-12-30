@@ -1,4 +1,5 @@
 import { readOrdersData, writeOrdersData } from "./orders-data-store.js";
+import { getDateRange, parseDateAsLondon } from "./londonTime.js";
 
 /**
  * Shared Table Functions
@@ -76,6 +77,48 @@ export function extractRowData(row, config) {
 /**
  * Store table data in localStorage
  */
+function getRecentRange(days) {
+  const normalizedDays = Number.isFinite(days) ? Math.max(1, Math.floor(days)) : null;
+  if (!normalizedDays) return null;
+
+  // Use londonTime helper for the common cases.
+  if (normalizedDays === 30) return getDateRange("last30days");
+  if (normalizedDays === 7) return getDateRange("last7days");
+
+  const today = getDateRange("today");
+  const end = today.end;
+  const start = new Date(end);
+  start.setDate(start.getDate() - (normalizedDays - 1));
+  start.setHours(0, 0, 0, 0);
+  return { start, end };
+}
+
+function getRowDateText(row, columnIndex) {
+  const cells = row.querySelectorAll("td");
+  const cell = cells[columnIndex];
+  if (!cell) return "";
+
+  // Handles merged date/time cells (quotes) as well as simple text-only cells.
+  const dateP = cell.querySelector("p:first-child");
+  return dateP ? dateP.textContent.trim() : cell.textContent.trim();
+}
+
+function isRowWithinRecentRange(row, config, range) {
+  if (!range) return true;
+
+  const dateColumnIndex = config?.dateColumns?.recordDate;
+  if (dateColumnIndex === undefined || dateColumnIndex === null) return true;
+
+  const dateText = getRowDateText(row, dateColumnIndex);
+  const d = parseDateAsLondon(dateText);
+  if (!d) return true;
+
+  return d >= range.start && d <= range.end;
+}
+
+/**
+ * Store table data in localStorage
+ */
 function storeTableData() {
   const config = window.currentTableConfig;
   let allOrders = readOrdersData();
@@ -83,15 +126,23 @@ function storeTableData() {
   // Filter out old data of this type
   allOrders = allOrders.filter((order) => order.type !== config.tableType);
 
+  const recentRange = getRecentRange(config?.statusConfig?.recentDays);
+
   // Add new orders from this page
   const tableRows = document.querySelectorAll("table tbody tr");
 
   tableRows.forEach((row) => {
     // Only extract data if the row is part of the current table structure and has cells
-    if (row.querySelectorAll("td").length > 0) {
-      const orderData = extractRowData(row, config);
-      allOrders.push(orderData);
+    if (row.querySelectorAll("td").length === 0) return;
+
+    // Constrain visible + persisted rows to the last N days where configured.
+    if (!isRowWithinRecentRange(row, config, recentRange)) {
+      row.remove();
+      return;
     }
+
+    const orderData = extractRowData(row, config);
+    allOrders.push(orderData);
   });
 
   writeOrdersData(allOrders);
