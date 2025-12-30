@@ -6,20 +6,18 @@
     </div>
 
     <div class="border-t border-gray-100 dark:border-gray-800 p-5 sm:p-6">
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
+      <div class="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
         <!-- Total Revenue Card -->
-        <div class="rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-800/50">
-          <div class="flex items-start justify-between mb-3">
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-5 dark:border-gray-800 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+            <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 leading-tight">Total Revenue</p>
             <span
-              class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+              class="inline-flex items-center gap-0.5 sm:gap-1 rounded-full px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium whitespace-nowrap"
               :class="trendBadgeClasses(totalTrend)"
             >
               <svg
-                class="fill-current transition-transform"
+                class="fill-current transition-transform w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0"
                 :class="trendIconClasses(totalTrend)"
-                width="12"
-                height="12"
                 viewBox="0 0 12 12"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -34,22 +32,20 @@
               <span x-text="formatTrend(totalTrend)">0%</span>
             </span>
           </div>
-          <h3 class="text-2xl font-bold text-gray-900 dark:text-white" x-text="formatCurrency(totalRevenue)">£0.00</h3>
+          <h3 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-tight" x-text="formatCurrency(totalRevenue)">£0.00</h3>
         </div>
 
         <!-- Daily Revenue Card -->
-        <div class="rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-800/50">
-          <div class="flex items-start justify-between mb-3">
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Daily Revenue</p>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-5 dark:border-gray-800 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+            <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 leading-tight">Daily Revenue</p>
             <span
-              class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+              class="inline-flex items-center gap-0.5 sm:gap-1 rounded-full px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium whitespace-nowrap"
               :class="trendBadgeClasses(dailyTrend)"
             >
               <svg
-                class="fill-current transition-transform"
+                class="fill-current transition-transform w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0"
                 :class="trendIconClasses(dailyTrend)"
-                width="12"
-                height="12"
                 viewBox="0 0 12 12"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -64,22 +60,20 @@
               <span x-text="formatTrend(dailyTrend)">0%</span>
             </span>
           </div>
-          <h3 class="text-2xl font-bold text-gray-900 dark:text-white" x-text="formatCurrency(dailyRevenue)">£0.00</h3>
+          <h3 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-tight" x-text="formatCurrency(dailyRevenue)">£0.00</h3>
         </div>
 
         <!-- Weekly Revenue Card -->
-        <div class="rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-800/50">
-          <div class="flex items-start justify-between mb-3">
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Weekly Revenue</p>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-5 dark:border-gray-800 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+            <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 leading-tight">Weekly Revenue</p>
             <span
-              class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+              class="inline-flex items-center gap-0.5 sm:gap-1 rounded-full px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium whitespace-nowrap"
               :class="trendBadgeClasses(weeklyTrend)"
             >
               <svg
-                class="fill-current transition-transform"
+                class="fill-current transition-transform w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0"
                 :class="trendIconClasses(weeklyTrend)"
-                width="12"
-                height="12"
                 viewBox="0 0 12 12"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +88,7 @@
               <span x-text="formatTrend(weeklyTrend)">0%</span>
             </span>
           </div>
-          <h3 class="text-2xl font-bold text-gray-900 dark:text-white" x-text="formatCurrency(weeklyRevenue)">£0.00</h3>
+          <h3 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-tight" x-text="formatCurrency(weeklyRevenue)">£0.00</h3>
         </div>
       </div>
     </div>
