@@ -109,31 +109,18 @@
 
 /* Sticky Actions Column for Tablet and Mobile */
 @media (max-width: 1024px) {
-  /* Make Actions column sticky on tablet and mobile */
-  .actions-column-sticky {
+  /* Make Actions cells sticky on tablet and mobile (not headers) */
+  tbody .actions-column-sticky {
     position: sticky !important;
     right: 0;
     z-index: 10;
     background: white;
     box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.08);
+    min-width: 140px;
   }
 
-  .dark .actions-column-sticky {
+  .dark tbody .actions-column-sticky {
     background: #030e21;
     box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.3);
-  }
-
-  /* Header specific styling */
-  thead .actions-column-sticky {
-    background: rgb(249 250 251);
-  }
-
-  .dark thead .actions-column-sticky {
-    background: #010a1b;
-  }
-
-  /* Add slight padding for better spacing */
-  .actions-column-sticky {
-    min-width: 140px;
   }
 }
