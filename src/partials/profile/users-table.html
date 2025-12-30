@@ -29,38 +29,56 @@
       });
     },
     performSort() {
+      console.log('performSort called');
       const tbody = this.$el.querySelector('table tbody');
+
       if (!tbody) {
-        console.error('tbody not found');
+        console.error('performSort: tbody not found!');
+        this.debugMessage = 'Error: Table body not found';
         return;
       }
 
       const rows = Array.from(tbody.querySelectorAll('tr'));
-      console.log('Found rows:', rows.length);
-      const columnIndex = this.getColumnIndex(this.sortColumn);
-      console.log('Column index:', columnIndex);
+      console.log('performSort: Found', rows.length, 'rows');
 
+      if (rows.length === 0) {
+        console.error('performSort: No rows found!');
+        this.debugMessage = 'Error: No rows to sort';
+        return;
+      }
+
+      const columnIndex = this.getColumnIndex(this.sortColumn);
+      console.log('performSort: Sorting column', this.sortColumn, 'at index', columnIndex);
+
+      // Sort the rows array
       rows.sort((a, b) => {
         const aCell = a.querySelectorAll('td')[columnIndex];
         const bCell = b.querySelectorAll('td')[columnIndex];
 
         if (!aCell || !bCell) {
-          console.error('Cell not found at index', columnIndex);
+          console.error('performSort: Cell not found at index', columnIndex);
           return 0;
         }
 
-        let aValue = this.getSortValue(aCell, this.sortColumn);
-        let bValue = this.getSortValue(bCell, this.sortColumn);
+        const aValue = this.getSortValue(aCell, this.sortColumn);
+        const bValue = this.getSortValue(bCell, this.sortColumn);
 
-        console.log('Comparing:', aValue, 'vs', bValue);
+        const result = this.sortDirection === 'asc'
+          ? (aValue < bValue ? -1 : aValue > bValue ? 1 : 0)
+          : (aValue > bValue ? -1 : aValue < bValue ? 1 : 0);
 
-        if (aValue < bValue) return this.sortDirection === 'asc' ? -1 : 1;
-        if (aValue > bValue) return this.sortDirection === 'asc' ? 1 : -1;
-        return 0;
+        return result;
       });
 
-      console.log('Sorting complete, reordering DOM');
-      rows.forEach(row => tbody.appendChild(row));
+      console.log('performSort: Reordering DOM...');
+
+      // Reorder the DOM by appending rows in sorted order
+      rows.forEach((row, index) => {
+        tbody.appendChild(row);
+        console.log(`performSort: Moved row ${index + 1} to position`);
+      });
+
+      console.log('performSort: Complete!');
     },
     getSortValue(cell, column) {
       if (!cell) {
