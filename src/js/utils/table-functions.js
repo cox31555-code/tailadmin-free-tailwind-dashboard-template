@@ -237,6 +237,81 @@ function calculatePolicyCounts(tableType) {
   const rows = document.querySelectorAll('table tbody tr');
   let total = 0, active = 0, expiringSoon = 0, nextDue = 0;
 
+  // For pending claims table
+  if (tableType === 'pendingClaims') {
+    let propertyDamage = 0, bodilyInjury = 0, urgent = 0;
+
+    rows.forEach(row => {
+      if (row.style.display === 'none') return; // Skip hidden rows
+
+      total++;
+      const cells = row.querySelectorAll('td');
+
+      // Find the claim type (index 0)
+      const claimTypeCell = cells[0];
+      if (claimTypeCell) {
+        const claimTypeText = claimTypeCell.textContent.trim().toLowerCase();
+        if (claimTypeText.includes('property damage')) propertyDamage++;
+        else if (claimTypeText.includes('bodily injury')) bodilyInjury++;
+      }
+
+      // Find the days pending (index 5) to check for urgent claims
+      const daysPendingCell = cells[5];
+      if (daysPendingCell) {
+        const daysPendingText = daysPendingCell.textContent.trim().toLowerCase();
+        if (daysPendingText.includes('urgent') || daysPendingText.match(/\d+/) && parseInt(daysPendingText) > 30) {
+          urgent++;
+        }
+      }
+    });
+
+    return { total, propertyDamage, bodilyInjury, urgent };
+  }
+
+  // For completed claims table
+  if (tableType === 'completedClaims') {
+    let thisMonth = 0, lastMonth = 0, totalSettlement = 0, settlementCount = 0;
+
+    const now = new Date();
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    rows.forEach(row => {
+      if (row.style.display === 'none') return; // Skip hidden rows
+
+      total++;
+      const cells = row.querySelectorAll('td');
+
+      // Find the completion date (index 5)
+      const completionDateCell = cells[5];
+      if (completionDateCell) {
+        const completionDateText = completionDateCell.textContent.trim();
+        const completionDate = new Date(completionDateText);
+
+        if (completionDate >= thisMonthStart) {
+          thisMonth++;
+        } else if (completionDate >= lastMonthStart && completionDate <= lastMonthEnd) {
+          lastMonth++;
+        }
+      }
+
+      // Find settlement amount (index 6)
+      const settlementCell = cells[6];
+      if (settlementCell) {
+        const settlementText = settlementCell.textContent.trim().replace(/[£$,]/g, '');
+        const settlementAmount = parseFloat(settlementText);
+        if (!isNaN(settlementAmount)) {
+          totalSettlement += settlementAmount;
+          settlementCount++;
+        }
+      }
+    });
+
+    const avgSettlement = settlementCount > 0 ? `£${Math.round(totalSettlement / settlementCount).toLocaleString()}` : '£0';
+    return { total, thisMonth, lastMonth, avgSettlement };
+  }
+
   // For quotes table, count by type instead of status
   if (tableType === 'quotes') {
     rows.forEach(row => {
