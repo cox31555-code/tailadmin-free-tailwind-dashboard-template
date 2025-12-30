@@ -21,7 +21,7 @@ function getTableElement(config) {
  * @param {Object} tableConfig - Table configuration object
  */
 export function initializeTable(tableConfig) {
-  // Store table config globally
+  // Store table config globally (used by all table functions)
   window.currentTableConfig = tableConfig;
 
   // Initialize data storage
@@ -29,15 +29,6 @@ export function initializeTable(tableConfig) {
 
   // Set up mutation observer
   setupTableObserver();
-
-  // Make functions globally available
-  window.filterAndSearchTable = filterAndSearchTable;
-  window.exportTableToCSV = () => exportTableToCSV(tableConfig);
-  window.exportTableToJSON = () => exportTableToJSON(tableConfig);
-  window.getSortValue = getSortValue;
-  window.performSort = performSort;
-  window.calculatePolicyCounts = calculatePolicyCounts;
-  window.extractRowData = extractRowData;
 }
 
 /**
