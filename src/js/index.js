@@ -18,6 +18,7 @@ import "./loading-handler.js";
 import "./components/kanban-sortable-init.js";
 import { createTableState } from "./utils/table-base.js";
 import "./utils/table-functions.js";
+import "./utils/table-configs.js";
 
 import {
   getLondonNow,
