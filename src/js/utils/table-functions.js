@@ -75,7 +75,7 @@ export function extractRowData(row, config) {
 }
 
 /**
- * Store table data in localStorage
+ * Helpers: constrain table rows to a recent rolling window.
  */
 function getRecentRange(days) {
   const normalizedDays = Number.isFinite(days) ? Math.max(1, Math.floor(days)) : null;
