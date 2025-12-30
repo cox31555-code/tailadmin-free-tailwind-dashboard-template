@@ -1,3 +1,5 @@
+import { readOrdersData, writeOrdersData } from "./orders-data-store.js";
+
 /**
  * Shared Table Functions
  * Reusable functions for all policy tables
@@ -67,28 +69,23 @@ export function extractRowData(row, config) {
  */
 function storeTableData() {
   const config = window.currentTableConfig;
-  let allOrders = [];
-  const ordersDataStr = localStorage.getItem('ordersData');
-  
-  if (ordersDataStr) {
-    allOrders = JSON.parse(ordersDataStr);
-  }
+  let allOrders = readOrdersData();
 
   // Filter out old data of this type
-  allOrders = allOrders.filter(order => order.type !== config.tableType);
+  allOrders = allOrders.filter((order) => order.type !== config.tableType);
 
   // Add new orders from this page
-  const tableRows = document.querySelectorAll('table tbody tr');
+  const tableRows = document.querySelectorAll("table tbody tr");
 
   tableRows.forEach((row) => {
     // Only extract data if the row is part of the current table structure and has cells
-    if (row.querySelectorAll('td').length > 0) {
+    if (row.querySelectorAll("td").length > 0) {
       const orderData = extractRowData(row, config);
       allOrders.push(orderData);
     }
   });
 
-  localStorage.setItem('ordersData', JSON.stringify(allOrders));
+  writeOrdersData(allOrders);
 }
 
 /**
