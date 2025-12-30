@@ -102,7 +102,7 @@ export const impoundTableConfig = {
 export const expiredAnnualTableConfig = {
   tableType: 'expired-annual',
   csvFilename: 'expired-annual-policies.csv',
-  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End', 'Next Due Date'],
+  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End'],
 
   columns: {
     defaultSort: 'policyend',
@@ -115,14 +115,12 @@ export const expiredAnnualTableConfig = {
       { sortKey: 'payment', sortType: 'text', dataKey: 'payment', exportable: true },
       { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
       { sortKey: 'policyend', sortType: 'date', dataKey: 'policyEnd', hasProgressBar: false, exportable: true },
-      { sortKey: 'duedate', sortType: 'date', dataKey: 'dueDate', hasProgressBar: false, exportable: true },
       { sortKey: null, exportable: false }
     ]
   },
 
   dateColumns: {
-    policyEnd: 6,
-    dueDate: 7
+    policyEnd: 6
   },
 
   statusConfig: {
