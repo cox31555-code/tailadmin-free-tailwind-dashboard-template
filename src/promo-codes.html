@@ -8,22 +8,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>
-      Promo Codes | TailAdmin - Tailwind CSS Admin Dashboard Template
-    </title>
-    <style>
-      @media (max-width: 640px) {
-        .page-main-content {
-          padding: 0 10px;
-        }
-      }
-
-      @media (max-width: 640px) {
-        .page-table-wrapper {
-          padding: 0 10px;
-        }
-      }
-    </style>
+    <title>Promo Codes | Limitless Admin</title>
   </head>
   <body
     x-data="{
@@ -43,6 +28,15 @@
         { code: 'NEWUSER30', savings: '30%', expiryDate: 'Mar 15, 2025', status: 'Active' },
         { code: 'SPRING10', savings: '10%', expiryDate: 'Apr 30, 2025', status: 'Active' }
       ],
+      get totalPromos() {
+        return this.promoList.length;
+      },
+      get activePromos() {
+        return this.promoList.filter(p => p.status === 'Active').length;
+      },
+      get inactivePromos() {
+        return this.promoList.filter(p => p.status === 'Inactive').length;
+      },
       openPromoAdd() {
         this.newPromo = { code: '', savings: '', minSpend: '', expiryDate: '', status: 'Active', uses: '0', skipPayment: false };
         this.promoCodeAddModal = true;
@@ -95,32 +89,65 @@
 
         <!-- ===== Main Content Start ===== -->
         <main>
-          <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6 page-main-content">
-            <!-- Breadcrumb Start -->
-            <div x-data="{ pageName: `Promo Codes`}">
-              <include src="./partials/breadcrumb.html" />
+          <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6 2xl:p-10">
+            <!-- Page Header -->
+            <div class="mb-6">
+              <h1 class="text-2xl font-bold text-gray-800 dark:text-white md:text-3xl">
+                Promo Codes
+              </h1>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Manage discount codes and promotional offers
+              </p>
             </div>
-            <!-- Breadcrumb End -->
 
-            <div class="space-y-5 sm:space-y-6">
-              <div
-                class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
-              >
-                <div class="px-5 py-4 sm:px-6 sm:py-5">
-                  <h3
-                    class="text-base font-medium text-gray-800 dark:text-white/90"
-                  >
-                    Promo Codes
-                  </h3>
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-3 md:gap-6">
+              <!-- Total Promos -->
+              <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-[#010a1b]">
+                <div class="flex items-start justify-between mb-3">
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Codes</p>
                 </div>
-                <div
-                  class="p-5 border-t border-gray-100 dark:border-gray-800 sm:p-6 page-table-wrapper"
-                >
-                  <!-- ====== Promo Codes Table Start -->
-                  <include src="./partials/table/table-promo-codes.html" />
-                  <!-- ====== Promo Codes Table End -->
-                </div>
+                <h3 class="text-3xl font-bold text-gray-900 dark:text-white" x-text="totalPromos">0</h3>
               </div>
+
+              <!-- Active Promos -->
+              <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-[#010a1b]">
+                <div class="flex items-start justify-between mb-3">
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Codes</p>
+                  <span class="inline-flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
+                    <svg
+                      class="fill-current"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z"
+                        fill=""
+                      />
+                    </svg>
+                    Live
+                  </span>
+                </div>
+                <h3 class="text-3xl font-bold text-success-600 dark:text-success-400" x-text="activePromos">0</h3>
+              </div>
+
+              <!-- Inactive Promos -->
+              <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-[#010a1b]">
+                <div class="flex items-start justify-between mb-3">
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Inactive Codes</p>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-500 dark:text-gray-400" x-text="inactivePromos">0</h3>
+              </div>
+            </div>
+
+            <!-- Promo Codes Table -->
+            <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]">
+              <include src="./partials/table/table-promo-codes.html" />
             </div>
           </div>
         </main>
