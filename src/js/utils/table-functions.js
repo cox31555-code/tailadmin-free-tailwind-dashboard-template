@@ -292,11 +292,13 @@ function exportTableToCSV(config) {
  * @param {Object} config - Table configuration
  */
 function exportTableToJSON(config) {
+  console.log('exportTableToJSON called with config:', config);
   const table = getTableElement(config);
   if (!table) {
-    console.error('Table not found for export');
+    console.error('Table not found for JSON export. Config:', config);
     return;
   }
+  console.log('Table found:', table.id);
 
   const tbody = table.querySelector('tbody');
   const data = [];
