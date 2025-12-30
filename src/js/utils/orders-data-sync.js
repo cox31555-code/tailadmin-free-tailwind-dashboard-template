@@ -20,17 +20,13 @@ const SOURCES = [
   { url: "/completed-claims.html", config: completedClaimsTableConfig },
 ];
 
-const REQUIRED_TYPES = [
+const REQUIRED_BASE_TYPES = [
   "annual",
   "temporary",
   "impound",
   "quotes",
   "pendingClaims",
   "completedClaims",
-  // expired-* types are derived (see below)
-  "expired-annual",
-  "expired-temporary",
-  "expired-impound",
 ];
 
 let ensurePromise = null;
@@ -44,9 +40,9 @@ function getPresentTypes() {
   return set;
 }
 
-function isComplete() {
+function hasBaseTypes() {
   const types = getPresentTypes();
-  return REQUIRED_TYPES.every((t) => types.has(t));
+  return REQUIRED_BASE_TYPES.every((t) => types.has(t));
 }
 
 function parseHtmlTableRows(html) {
@@ -111,39 +107,40 @@ async function fetchAndExtract(url, config) {
 export async function ensureOrdersDataComplete({ force = false } = {}) {
   if (typeof window === "undefined") return;
 
-  if (!force && isComplete()) return;
-
   if (ensurePromise) return ensurePromise;
+
+  // If we already have the base types, we can skip fetch but still derive expired-*.
+  const skipFetch = !force && hasBaseTypes();
 
   ensurePromise = (async () => {
     try {
-      const presentTypes = getPresentTypes();
+      if (!skipFetch) {
+        const presentTypes = getPresentTypes();
+        const sourcesToFetch = force
+          ? SOURCES
+          : SOURCES.filter(({ config }) => !presentTypes.has(config.tableType));
 
-      const missingSources = SOURCES.filter(({ config }) => {
-        // We also re-fetch base policy types if their derived expired type is missing
-        if (!presentTypes.has(config.tableType)) return true;
+        if (sourcesToFetch.length) {
+          const extractedLists = await Promise.all(
+            sourcesToFetch.map(({ url, config }) => fetchAndExtract(url, config)),
+          );
 
-        if (config.tableType === "annual" && !presentTypes.has("expired-annual")) return true;
-        if (config.tableType === "temporary" && !presentTypes.has("expired-temporary")) return true;
-        if (config.tableType === "impound" && !presentTypes.has("expired-impound")) return true;
+          const extracted = extractedLists.flat();
+          if (extracted.length) {
+            mergeOrdersData(extracted, { preferExisting: true });
+          }
+        }
+      }
 
-        return false;
-      });
-
-      if (missingSources.length === 0) return;
-
-      const extractedLists = await Promise.all(
-        missingSources.map(({ url, config }) => fetchAndExtract(url, config)),
-      );
-
-      const extracted = extractedLists.flat();
-
-      const policyBase = extracted.filter(
+      // Always attempt to derive expired policies from whatever active policies exist.
+      const currentOrders = readOrdersData();
+      const activePolicies = currentOrders.filter(
         (x) => x?.type === "annual" || x?.type === "temporary" || x?.type === "impound",
       );
-      const derivedExpired = deriveExpiredPolicies(policyBase);
-
-      mergeOrdersData([...extracted, ...derivedExpired], { preferExisting: true });
+      const derivedExpired = deriveExpiredPolicies(activePolicies);
+      if (derivedExpired.length) {
+        mergeOrdersData(derivedExpired, { preferExisting: true });
+      }
     } finally {
       ensurePromise = null;
     }
