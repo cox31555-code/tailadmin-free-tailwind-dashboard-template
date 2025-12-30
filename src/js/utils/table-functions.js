@@ -283,6 +283,78 @@ function exportTableToCSV(config) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Export table to JSON
+ * @param {Object} config - Table configuration
+ */
+function exportTableToJSON(config) {
+  const table = getTableElement(config);
+  if (!table) {
+    console.error('Table not found for export');
+    return;
+  }
+
+  const tbody = table.querySelector('tbody');
+  const data = [];
+
+  tbody.querySelectorAll('tr').forEach(row => {
+    // Only export rows that pass filters (ignore pagination)
+    if (row.dataset.filteredOut === 'true') return;
+
+    const cells = row.querySelectorAll('td');
+    const rowData = {};
+
+    config.columns.list.forEach((col, index) => {
+      if (col.exportable === false) return; // Skip Actions column
+
+      const cell = cells[index];
+      if (!cell) return;
+
+      // Use column dataKey for property names
+      let key = col.dataKey || `column_${index}`;
+
+      if (col.isMergedCell) {
+        // Extract merged cell data (name + email)
+        const firstP = cell.querySelector('p:first-child');
+        const lastP = cell.querySelector('p:last-child');
+
+        if (key.includes('.')) {
+          const keys = key.split('.');
+          rowData[keys[0]] = firstP ? firstP.textContent.trim() : '';
+          rowData[keys[1]] = lastP ? lastP.textContent.trim() : '';
+        }
+      } else if (col.hasProgressBar) {
+        // Extract date from progress bar
+        const dateP = cell.querySelector('p:first-child');
+        rowData[key] = dateP ? dateP.textContent.trim() : '';
+      } else {
+        // Simple cell - normalize whitespace
+        let text = cell.textContent.trim().replace(/\s+/g, ' ');
+        rowData[key] = text;
+      }
+    });
+
+    data.push(rowData);
+  });
+
+  // Create and download JSON file
+  const jsonContent = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+
+  const filename = config.csvFilename ? config.csvFilename.replace('.csv', '.json') : 'export.json';
+
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 /**
