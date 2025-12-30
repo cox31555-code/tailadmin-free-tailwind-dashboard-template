@@ -25,19 +25,23 @@ export function initKanbanSortable(alpineComponent) {
 function initTaskDragging() {
   const columns = document.querySelectorAll('[data-kanban-column]');
 
+  console.log(`🔍 Found ${columns.length} kanban columns`);
+
   if (columns.length === 0) {
-    console.warn('No Kanban columns found to initialize SortableJS');
+    console.warn('❌ No Kanban columns found to initialize SortableJS');
     return;
   }
 
-  columns.forEach(column => {
+  columns.forEach((column, index) => {
     const columnId = column.dataset.kanbanColumn;
     const tasksContainer = column.querySelector('[data-tasks-container]');
 
     if (!tasksContainer) {
-      console.warn(`No tasks container found for column: ${columnId}`);
+      console.warn(`❌ No tasks container found for column: ${columnId}`);
       return;
     }
+
+    console.log(`✅ Initializing task dragging for column ${index + 1}/${columns.length}: ${columnId}`);
 
     new Sortable(tasksContainer, {
       group: 'kanban-tasks', // Allow drag between columns
