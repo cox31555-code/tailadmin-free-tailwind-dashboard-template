@@ -26,26 +26,55 @@ export function createTableState(config) {
     sortColumn: columns.defaultSort || 'name',
     sortDirection: 'asc',
     policyCounts: { total: 0, active: 0, expiringSoon: 0, nextDue: 0 },
+    expiredPolicies: [], // List of expired policies (for expired-only tables)
 
     // Initialization
     init() {
-      // Remove expired policies from DOM on page load (if configured)
-      if (statusConfig.removeExpired) {
-        this.removeExpiredPolicies();
+      // If we are on an expired-only page, load data from localStorage
+      if (statusConfig.showOnlyExpired) {
+        this.loadExpiredPolicies();
+      } else {
+        // If we are on an active page and configured to remove expired, do so
+        if (statusConfig.removeExpired) {
+          this.removeExpiredPolicies();
+        }
       }
+      
       // Initialize stats on page load
       this.updatePolicyCounts();
+      
       // Listen for stats updates from filter/search
       document.addEventListener('update-stats', (e) => {
         this.policyCounts = e.detail;
       });
     },
 
-    // Remove expired policies
+    // Load expired policies from localStorage
+    loadExpiredPolicies() {
+      const ordersDataStr = localStorage.getItem('ordersData');
+      if (ordersDataStr) {
+        const allOrders = JSON.parse(ordersDataStr);
+        // Filter for orders matching this table type (e.g. 'expired-annual')
+        this.expiredPolicies = allOrders.filter(order => order.type === tableType);
+        
+        // Update stats based on loaded data
+        this.policyCounts.total = this.expiredPolicies.length;
+      }
+    },
+
+    // Remove expired policies from DOM and save to localStorage
     removeExpiredPolicies() {
       const rows = document.querySelectorAll('table tbody tr');
       const endDateColumnIndex = dateColumns.policyEnd;
+      let expiredFound = false;
       
+      // Get existing orders to append to
+      let allOrders = [];
+      const ordersDataStr = localStorage.getItem('ordersData');
+      if (ordersDataStr) {
+        allOrders = JSON.parse(ordersDataStr);
+      }
+
       rows.forEach(row => {
         const policyEndCell = row.querySelectorAll('td')[endDateColumnIndex];
         const dateP = policyEndCell?.querySelector('p:first-child');
@@ -55,16 +84,49 @@ export function createTableState(config) {
           const endDate = new Date(policyEndDate);
           const today = new Date();
           today.setHours(0, 0, 0, 0);
+          
           if (endDate < today) {
-            row.remove(); // Remove expired policies
+            // Policy is expired. 
+            // 1. Extract data
+            if (window.extractRowData) {
+              const orderData = window.extractRowData(row, config);
+              // Set type to expired version (e.g. 'annual' -> 'expired-annual')
+              orderData.type = `expired-${tableType}`;
+              
+              // Check if already exists to avoid duplicates (optional but good)
+              const exists = allOrders.some(o => 
+                o.type === orderData.type && 
+                o.name === orderData.name && 
+                o.email === orderData.email
+              );
+              
+              if (!exists) {
+                allOrders.push(orderData);
+                expiredFound = true;
+              }
+            }
+            
+            // 2. Remove from DOM
+            row.remove(); 
           }
         }
       });
+
+      // Save updated orders if we found expired ones
+      if (expiredFound) {
+        localStorage.setItem('ordersData', JSON.stringify(allOrders));
+      }
     },
 
     // Update policy counts
     updatePolicyCounts() {
-      this.policyCounts = window.calculatePolicyCounts();
+      if (statusConfig.showOnlyExpired) {
+        // For expired pages, count is just length of array
+        this.policyCounts = { total: this.expiredPolicies.length, active: 0, expiringSoon: 0, nextDue: 0 };
+      } else {
+        // For active pages, calculate from DOM
+        this.policyCounts = window.calculatePolicyCounts();
+      }
     },
 
     // Handle column sorting
@@ -75,7 +137,47 @@ export function createTableState(config) {
         this.sortColumn = columnName;
         this.sortDirection = 'asc';
       }
-      window.performSort(this.sortColumn, this.sortDirection);
+      
+      if (statusConfig.showOnlyExpired) {
+        // Sort the array in memory
+        this.sortExpiredPolicies(columnName, this.sortDirection);
+      } else {
+        // Sort DOM rows
+        window.performSort(this.sortColumn, this.sortDirection);
+      }
+    },
+
+    // Sort in-memory expired policies
+    sortExpiredPolicies(columnName, direction) {
+      const colDef = config.columns.list.find(c => c.sortKey === columnName);
+      if (!colDef) return;
+
+      this.expiredPolicies.sort((a, b) => {
+        let valA = a[colDef.dataKey] || '';
+        let valB = b[colDef.dataKey] || '';
+
+        // Handle merged keys (like name.email) - usually we sort by the first part
+        if (colDef.dataKey.includes('.')) {
+          const key = colDef.dataKey.split('.')[0];
+          valA = a[key] || '';
+          valB = b[key] || '';
+        }
+
+        if (colDef.sortType === 'price') {
+          valA = parseFloat(valA.replace(/[£$,]/g, '')) || 0;
+          valB = parseFloat(valB.replace(/[£$,]/g, '')) || 0;
+        } else if (colDef.sortType === 'date') {
+          valA = new Date(valA).getTime() || 0;
+          valB = new Date(valB).getTime() || 0;
+        } else {
+          valA = valA.toString().toLowerCase();
+          valB = valB.toString().toLowerCase();
+        }
+
+        if (valA < valB) return direction === 'asc' ? -1 : 1;
+        if (valA > valB) return direction === 'asc' ? 1 : -1;
+        return 0;
+      });
     },
 
     // Get policy progress (for progress bars)
