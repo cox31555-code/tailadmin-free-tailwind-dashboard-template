@@ -1,3 +1,5 @@
+import { getDateRange, parseDateAsLondon } from "./londonTime.js";
+
 const ORDERS_DATA_KEY = "ordersData";
 const ORDERS_DATA_VERSION_KEY = "ordersData_version";
 const ORDERS_DATA_UPDATED_EVENT = "ordersData:updated";
@@ -34,35 +36,59 @@ export function readOrdersData() {
 
   if (!Array.isArray(parsed)) return [];
 
+  const last30DaysRange = getDateRange("last30days");
+
   // Lightweight migrations / normalizations to keep filters consistent.
   // Older dashboard code used `type: 'quote'` but table configs use `quotes`.
   // Also: the Quotes table previously overwrote record.type with policy-type labels (Annual/Temporary/Impound).
-  return parsed.map((record) => {
-    if (!record || typeof record !== "object") return record;
+  const normalized = parsed
+    .map((record) => {
+      if (!record || typeof record !== "object") return null;
 
-    if (record.type === "quote") {
-      return { ...record, type: "quotes" };
+      if (record.type === "quote") {
+        return { ...record, type: "quotes" };
+      }
+
+      const typeText = (record.type || "").toString().trim();
+      const looksLikeQuote =
+        Boolean(record.amount) &&
+        Boolean(record.validUntil) &&
+        Boolean(record.policyStart) &&
+        Boolean(record.email) &&
+        Boolean(record.vehicle);
+
+      const isPolicyTypeLabel = /^(annual|temporary|impound)$/i.test(typeText);
+
+      if (looksLikeQuote && isPolicyTypeLabel) {
+        return {
+          ...record,
+          type: "quotes",
+          policyType: record.policyType || typeText,
+        };
+      }
+
+      return record;
+    })
+    .filter(Boolean);
+
+  // Global table constraint: keep only the last 30 days for active policy tables + quotes.
+  // (Expired policies and claims keep their full history.)
+  return normalized.filter((record) => {
+    const type = (record.type || "").toString();
+
+    if (type === "annual" || type === "temporary" || type === "impound") {
+      const d = parseDateAsLondon(record.policyStart || record.date);
+      if (!d) return true;
+      return d >= last30DaysRange.start && d <= last30DaysRange.end;
     }
 
-    const typeText = (record.type || "").toString().trim();
-    const looksLikeQuote =
-      Boolean(record.amount) &&
-      Boolean(record.validUntil) &&
-      Boolean(record.policyStart) &&
-      Boolean(record.email) &&
-      Boolean(record.vehicle);
-
-    const isPolicyTypeLabel = /^(annual|temporary|impound)$/i.test(typeText);
-
-    if (looksLikeQuote && isPolicyTypeLabel) {
-      return {
-        ...record,
-        type: "quotes",
-        policyType: record.policyType || typeText,
-      };
+    if (type === "quotes") {
+      const d = parseDateAsLondon(record.date);
+      if (!d) return true;
+      return d >= last30DaysRange.start && d <= last30DaysRange.end;
     }
 
-    return record;
+    return true;
   });
 }
 
