@@ -61,6 +61,7 @@ const getOrdersSeries = async () => {
         const dateStr = policy.policyStart || policy.date;
         const policyDate = parseDate(dateStr);
         if (!policyDate) return;
+        policyDate.setHours(0, 0, 0, 0);
 
         if (policyDate.getTime() === dayDate.getTime()) {
           if (policy.type === "annual") annualCount++;
