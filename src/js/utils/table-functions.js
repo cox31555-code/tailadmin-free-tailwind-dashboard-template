@@ -605,9 +605,17 @@ function getSortValue(cell, columnName) {
  * Perform sorting
  */
 function performSort(columnName, direction) {
+  console.log('performSort called:', { columnName, direction });
   const config = window.currentTableConfig;
+  if (!config) {
+    console.error('No currentTableConfig found');
+    return;
+  }
   const table = getTableElement(config);
-  if (!table) return;
+  if (!table) {
+    console.error('Table not found for sorting. Config:', config);
+    return;
+  }
 
   const tbody = table.querySelector('tbody');
   const rows = Array.from(tbody.querySelectorAll('tr'));
