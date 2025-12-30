@@ -17,7 +17,9 @@
       this.performSort();
     },
     performSort() {
-      const tbody = this.$el.querySelector('tbody');
+      const tbody = this.$el.querySelector('table tbody');
+      if (!tbody) return;
+
       const rows = Array.from(tbody.querySelectorAll('tr'));
       const columnIndex = this.getColumnIndex(this.sortColumn);
 
@@ -50,7 +52,9 @@
       return columns[column] || 0;
     },
     filterTable() {
-      const tbody = this.$el.querySelector('tbody');
+      const tbody = this.$el.querySelector('table tbody');
+      if (!tbody) return;
+
       const rows = tbody.querySelectorAll('tr');
 
       rows.forEach(row => {
@@ -76,7 +80,9 @@
       this.updateRoleCounts();
     },
     updateRoleCounts() {
-      const tbody = this.$el.querySelector('tbody');
+      const tbody = this.$el.querySelector('table tbody');
+      if (!tbody) return;
+
       const rows = tbody.querySelectorAll('tr');
 
       const counts = { total: 0, admin: 0, support: 0, basic: 0 };
