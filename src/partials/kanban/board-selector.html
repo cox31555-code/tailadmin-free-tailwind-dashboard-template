@@ -26,7 +26,7 @@
     class="absolute right-0 mt-2 w-64 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-50"
   >
     <!-- Board List -->
-    <div class="max-h-64 overflow-y-auto p-2">
+    <div class="max-h-64 overflow-y-auto custom-scrollbar p-2">
       <template x-for="board in boards" :key="board.id">
         <button 
           @click="switchBoard(board.id); showBoardSelector = false"

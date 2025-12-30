@@ -197,7 +197,7 @@
           </div>
           
           <!-- Column Content (Tasks) -->
-          <div class="flex-1 p-3 space-y-3 overflow-y-auto" data-tasks-container>
+          <div class="flex-1 p-3 space-y-3 overflow-y-auto custom-scrollbar" data-tasks-container>
             <template x-for="task in getTasksForColumn(column.id)" :key="task.id">
               <div
                 :data-task-id="task.id"
