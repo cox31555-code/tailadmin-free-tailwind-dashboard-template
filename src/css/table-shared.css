@@ -117,6 +117,7 @@
     background: white;
     box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.08);
     min-width: 140px;
+    overflow: visible !important;
   }
 
   .dark tbody .actions-column-sticky {
@@ -124,15 +125,22 @@
     box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.3);
   }
 
-  /* Ensure dropdown parent has proper stacking context */
+  /* Ensure dropdown parent has proper stacking context and overflow */
   tbody .actions-column-sticky > div {
     position: relative;
     z-index: 1;
+    overflow: visible !important;
   }
 
   /* Boost dropdown z-index inside sticky cells to appear above other sticky cells */
   tbody .actions-column-sticky .table-action-dropdown,
-  tbody .actions-column-sticky [x-show="actionsOpen"] {
+  tbody .actions-column-sticky [x-show="actionsOpen"],
+  tbody .actions-column-sticky div[class*="absolute"] {
     z-index: 9999 !important;
+  }
+
+  /* Ensure row doesn't clip dropdown */
+  tbody tr {
+    overflow: visible !important;
   }
 }
