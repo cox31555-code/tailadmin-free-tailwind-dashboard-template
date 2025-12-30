@@ -11,16 +11,17 @@
     <title>User Management | TailAdmin - Tailwind CSS Admin Dashboard Template</title>
   </head>
   <body
-    x-data="{ 
-      page: 'profile', 
-      'isLoading': false, 
-      'darkMode': true, 
-      'stickyMenu': false, 
-      'sidebarToggle': false, 
-      'scrollTop': false, 
+    x-data="{
+      page: 'profile',
+      'isLoading': false,
+      'darkMode': true,
+      'stickyMenu': false,
+      'sidebarToggle': false,
+      'scrollTop': false,
       'isCreateUserModal': false,
       'isEditUserModal': false,
       'selectedUser': null,
+      'userCounts': { total: 0, admin: 0, support: 0, basic: 0 },
       editUser(name, email, role) {
         this.selectedUser = { name, email, role };
         this.isEditUserModal = true;
@@ -28,7 +29,10 @@
     }"
     x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
-         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
+         document.addEventListener('update-user-counts', (e) => {
+           userCounts = e.detail;
+         })"
   >
     <!-- ===== Preloader Start ===== -->
     <include src="./partials/preloader.html"></include>
@@ -69,7 +73,7 @@
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Users</p>
-                      <h3 class="mt-2 text-2xl font-bold text-gray-800 dark:text-white/90">24</h3>
+                      <h3 class="mt-2 text-2xl font-bold text-gray-800 dark:text-white/90" x-text="userCounts.total">24</h3>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10">
                       <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -87,7 +91,7 @@
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Admin Users</p>
-                      <h3 class="mt-2 text-2xl font-bold text-gray-800 dark:text-white/90">5</h3>
+                      <h3 class="mt-2 text-2xl font-bold text-gray-800 dark:text-white/90" x-text="userCounts.admin">5</h3>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10">
                       <svg class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -105,7 +109,7 @@
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Support Users</p>
-                      <h3 class="mt-2 text-2xl font-bold text-gray-800 dark:text-white/90">12</h3>
+                      <h3 class="mt-2 text-2xl font-bold text-gray-800 dark:text-white/90" x-text="userCounts.support">12</h3>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10">
                       <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -123,7 +127,7 @@
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Basic Users</p>
-                      <h3 class="mt-2 text-2xl font-bold text-gray-800 dark:text-white/90">7</h3>
+                      <h3 class="mt-2 text-2xl font-bold text-gray-800 dark:text-white/90" x-text="userCounts.basic">7</h3>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-500/10">
                       <svg class="h-6 w-6 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
