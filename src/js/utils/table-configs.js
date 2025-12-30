@@ -223,6 +223,32 @@ export const quotesTableConfig = {
   }
 };
 
+// Contact Form Table Configuration
+export const contactFormTableConfig = {
+  tableType: 'contactForm',
+  csvFilename: 'contact-form-submissions.csv',
+  csvHeaders: ['Name', 'Email', 'Type', 'Date Received', 'Time Received', 'Message'],
+
+  columns: {
+    defaultSort: 'date',
+    paymentIndex: undefined,
+    list: [
+      { sortKey: 'name', sortType: 'text', dataKey: 'name', exportable: true },
+      { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
+      { sortKey: 'type', sortType: 'text', dataKey: 'type', exportable: true },
+      { sortKey: 'date', sortType: 'date', dataKey: 'date.time', isMergedCell: true, exportable: true },
+      { sortKey: null, exportable: false } // Actions column
+    ]
+  },
+
+  dateColumns: {},
+
+  statusConfig: {
+    removeExpired: false,
+    expiringThreshold: 30
+  }
+};
+
 // Export configurations to window for use in HTML
 if (typeof window !== 'undefined') {
   window.annualTableConfig = annualTableConfig;
@@ -232,4 +258,5 @@ if (typeof window !== 'undefined') {
   window.expiredTemporaryTableConfig = expiredTemporaryTableConfig;
   window.expiredImpoundTableConfig = expiredImpoundTableConfig;
   window.quotesTableConfig = quotesTableConfig;
+  window.contactFormTableConfig = contactFormTableConfig;
 }
