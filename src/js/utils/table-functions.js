@@ -181,7 +181,10 @@ function setupTableObserver() {
  */
 function filterAndSearchTable(searchQuery = '', filterPayment = 'all') {
   const config = window.currentTableConfig;
-  const tbody = document.querySelector('table tbody');
+  const table = getTableElement(config);
+  if (!table) return;
+
+  const tbody = table.querySelector('tbody');
   const rows = tbody.querySelectorAll('tr');
   const searchLower = searchQuery.toLowerCase();
 
@@ -203,9 +206,19 @@ function filterAndSearchTable(searchQuery = '', filterPayment = 'all') {
       matchesFilter = paymentText === filterPayment.toLowerCase();
     }
 
-    // Show or hide row
-    row.style.display = matchesSearch && matchesFilter ? '' : 'none';
+    // Set data attribute instead of display
+    row.dataset.filteredOut = (matchesSearch && matchesFilter) ? 'false' : 'true';
   });
+
+  // Reset to page 1 and reapply pagination
+  const alpineEl = document.querySelector(`[x-data*="createTableState"]`);
+  if (alpineEl && alpineEl._x_dataStack) {
+    const alpineData = alpineEl._x_dataStack[0];
+    if (alpineData) {
+      alpineData.currentPage = 1;
+      alpineData.applyPagination();
+    }
+  }
 
   // Update statistics counts after filtering
   window.updateStatsCounts();
