@@ -9,7 +9,7 @@ import {
 
 import { extractRowData } from "./table-functions.js";
 import { mergeOrdersData, readOrdersData } from "./orders-data-store.js";
-import { getLondonToday, parseDateAsLondon } from "./londonTime.js";
+import { getDateRange, getLondonToday, parseDateAsLondon } from "./londonTime.js";
 
 const SOURCES = [
   { url: "/annual.html", config: annualTableConfig },
@@ -59,6 +59,42 @@ function rowHasCells(row) {
   }
 }
 
+function getRecentRange(days) {
+  const normalizedDays = Number.isFinite(days) ? Math.max(1, Math.floor(days)) : null;
+  if (!normalizedDays) return null;
+
+  if (normalizedDays === 30) return getDateRange("last30days");
+  if (normalizedDays === 7) return getDateRange("last7days");
+
+  const today = getDateRange("today");
+  const end = today.end;
+  const start = new Date(end);
+  start.setDate(start.getDate() - (normalizedDays - 1));
+  start.setHours(0, 0, 0, 0);
+  return { start, end };
+}
+
+function isRecordWithinRecentRange(record, config, range) {
+  if (!range) return true;
+  if (!record || typeof record !== "object") return false;
+
+  const type = config?.tableType;
+
+  let dateStr = null;
+  if (type === "quotes") {
+    dateStr = record.date;
+  } else if (type === "annual" || type === "temporary" || type === "impound") {
+    dateStr = record.policyStart || record.date;
+  }
+
+  if (!dateStr) return true;
+
+  const d = parseDateAsLondon(dateStr);
+  if (!d) return true;
+
+  return d >= range.start && d <= range.end;
+}
+
 function deriveExpiredPolicies(policies) {
   const today = getLondonToday();
   const expired = [];
@@ -90,12 +126,16 @@ async function fetchAndExtract(url, config) {
   const rows = parseHtmlTableRows(html);
 
   const items = [];
+  const recentRange = getRecentRange(config?.statusConfig?.recentDays);
+
   rows.forEach((row) => {
     if (!rowHasCells(row)) return;
 
     try {
       const data = extractRowData(row, config);
-      if (data && typeof data === "object") items.push(data);
+      if (!data || typeof data !== "object") return;
+      if (!isRecordWithinRecentRange(data, config, recentRange)) return;
+      items.push(data);
     } catch {
       // ignore malformed rows
     }
