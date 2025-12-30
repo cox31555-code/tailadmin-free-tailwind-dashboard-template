@@ -90,21 +90,11 @@
       <!-- table header start -->
       <thead class="bg-gray-50 dark:bg-[#010a1b]">
         <tr class="border-b-2 border-gray-200 dark:border-gray-800">
-          <!-- First Name Header -->
-          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('firstname')">
+          <!-- Name Header -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('name')">
             <div class="flex items-center gap-2">
-              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">First Name</p>
-              <span x-show="sortColumn === 'firstname'" class="text-gray-600 dark:text-gray-300">
-                <span x-show="sortDirection === 'asc'">↑</span>
-                <span x-show="sortDirection === 'desc'">↓</span>
-              </span>
-            </div>
-          </th>
-          <!-- Surname Header -->
-          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('surname')">
-            <div class="flex items-center gap-2">
-              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Surname</p>
-              <span x-show="sortColumn === 'surname'" class="text-gray-600 dark:text-gray-300">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Name</p>
+              <span x-show="sortColumn === 'name'" class="text-gray-600 dark:text-gray-300">
                 <span x-show="sortDirection === 'asc'">↑</span>
                 <span x-show="sortDirection === 'desc'">↓</span>
               </span>
@@ -172,10 +162,7 @@
         <!-- Row 1 -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">David</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Miller</p>
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">David Miller</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">david.miller@example.com</p>
@@ -187,7 +174,7 @@
             <p class="font-mono text-gray-800 text-theme-sm dark:text-white/90">POL-2024-001</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Quote Request</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Quote Request</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -208,10 +195,7 @@
         <!-- Row 2 -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Emma</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Watson</p>
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Emma Watson</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">emma.watson@example.com</p>
@@ -223,7 +207,7 @@
             <p class="text-gray-400 text-theme-xs italic dark:text-gray-500">N/A</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-purple-50 px-3 py-1 text-theme-xs font-medium text-purple-600 dark:bg-purple-500/15 dark:text-purple-400">General Inquiry</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">General Inquiry</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -244,10 +228,7 @@
         <!-- Row 3 -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Frank</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Thomas</p>
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Frank Thomas</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">frank.thomas@example.com</p>
@@ -259,7 +240,7 @@
             <p class="font-mono text-gray-800 text-theme-sm dark:text-white/90">POL-2024-002</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-green-50 px-3 py-1 text-theme-xs font-medium text-green-600 dark:bg-green-500/15 dark:text-green-400">Business Insurance</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Business Insurance</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -280,10 +261,7 @@
         <!-- Row 4 -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Sarah</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Johnson</p>
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Sarah Johnson</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">sarah.johnson@example.com</p>
@@ -295,7 +273,7 @@
             <p class="text-gray-400 text-theme-xs italic dark:text-gray-500">N/A</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Quote Request</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Quote Request</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
@@ -316,10 +294,7 @@
         <!-- Row 5 -->
         <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
           <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Robert</p>
-          </td>
-          <td class="px-5 py-3 sm:px-6">
-            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Taylor</p>
+            <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Robert Taylor</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <p class="text-gray-500 text-theme-sm dark:text-gray-400">robert.taylor@example.com</p>
@@ -331,7 +306,7 @@
             <p class="font-mono text-gray-800 text-theme-sm dark:text-white/90">POL-2024-003</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <span class="inline-flex rounded-full bg-orange-50 px-3 py-1 text-theme-xs font-medium text-orange-600 dark:bg-orange-500/15 dark:text-orange-400">Support</span>
+            <p class="text-gray-600 text-theme-sm dark:text-gray-400">Support</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-0.5">
