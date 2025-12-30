@@ -41,22 +41,31 @@ export function extractRowData(row, config) {
   // Extract data based on column configuration
   config.columns.list.forEach((col, index) => {
     if (col.dataKey && cells[index]) {
+      // Never allow a column to overwrite the reserved record.type field.
+      // Some tables historically used dataKey: 'type' for a label column.
+      let targetKey = col.dataKey;
+      if (targetKey === 'type') {
+        if (config.tableType === 'quotes') targetKey = 'policyType';
+        else if (config.tableType === 'contactForm') targetKey = 'inquiryType';
+        else targetKey = 'typeLabel';
+      }
+
       if (col.isMergedCell) {
         // Handle merged cells (name + email)
         const firstP = cells[index].querySelector('p:first-child');
         const lastP = cells[index].querySelector('p:last-child');
-        if (col.dataKey.includes('.')) {
-          const keys = col.dataKey.split('.');
+        if (targetKey.includes('.')) {
+          const keys = targetKey.split('.');
           orderData[keys[0]] = firstP ? firstP.textContent.trim() : '';
           orderData[keys[1]] = lastP ? lastP.textContent.trim() : '';
         }
       } else if (col.hasProgressBar) {
         // Extract date from progress bar container
         const dateP = cells[index].querySelector('p:first-child');
-        orderData[col.dataKey] = dateP ? dateP.textContent.trim() : '';
+        orderData[targetKey] = dateP ? dateP.textContent.trim() : '';
       } else {
         // Simple cell
-        orderData[col.dataKey] = cells[index].textContent.trim();
+        orderData[targetKey] = cells[index].textContent.trim();
       }
     }
   });
