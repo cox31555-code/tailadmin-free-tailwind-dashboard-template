@@ -51,6 +51,46 @@
   z-index: var(--z-index-50) !important;
 }
 
+/* Pagination scrollbar styling */
+.pagination-scroller::-webkit-scrollbar {
+  height: 8px;
+}
+
+.pagination-scroller::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 4px;
+  margin: 0 8px;
+}
+
+.pagination-scroller::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.pagination-scroller::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%);
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.5);
+}
+
+.pagination-scroller {
+  scrollbar-width: thin;
+  scrollbar-color: #3B82F6 rgba(226, 232, 240, 0.3);
+}
+
+.dark .pagination-scroller::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.dark .pagination-scroller::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #60A5FA 0%, #3B82F6 100%);
+}
+
+.dark .pagination-scroller::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
 .table-scroller {
   height: 1200px;
 }
