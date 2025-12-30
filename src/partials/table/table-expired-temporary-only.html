@@ -148,7 +148,7 @@
             </div>
           </th>
           <!-- Actions Header -->
-          <th class="px-5 py-3.5 text-left sm:px-6">
+          <th class="px-5 py-3.5 text-left sm:px-6 actions-column-sticky">
             <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Actions</p>
           </th>
         </tr>
@@ -183,7 +183,7 @@
             <td class="px-5 py-3 sm:px-6">
               <p class="text-gray-500 text-theme-sm dark:text-gray-400" x-text="policy.policyEnd"></p>
             </td>
-            <td class="px-5 py-3 sm:px-6">
+            <td class="px-5 py-3 sm:px-6 actions-column-sticky">
               <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
                 <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
                   Actions
