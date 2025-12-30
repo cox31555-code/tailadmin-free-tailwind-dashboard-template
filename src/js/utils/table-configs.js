@@ -62,7 +62,7 @@ export const temporaryTableConfig = {
   },
   
   statusConfig: {
-    removeExpired: false,
+    removeExpired: true,
     expiringThreshold: 7
   }
 };
@@ -92,7 +92,7 @@ export const impoundTableConfig = {
   },
   
   statusConfig: {
-    removeExpired: false,
+    removeExpired: true,
     expiringThreshold: 7
   }
 };
