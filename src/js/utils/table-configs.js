@@ -227,14 +227,17 @@ export const quotesTableConfig = {
 export const contactFormTableConfig = {
   tableType: 'contactForm',
   csvFilename: 'contact-form-submissions.csv',
-  csvHeaders: ['Name', 'Email', 'Type', 'Date Received', 'Time Received', 'Message'],
+  csvHeaders: ['First Name', 'Surname', 'Email', 'Phone Number', 'Policy Reference', 'Type', 'Date Received', 'Time Received', 'Message'],
 
   columns: {
     defaultSort: 'date',
     paymentIndex: undefined,
     list: [
-      { sortKey: 'name', sortType: 'text', dataKey: 'name', exportable: true },
+      { sortKey: 'firstname', sortType: 'text', dataKey: 'firstName', exportable: true },
+      { sortKey: 'surname', sortType: 'text', dataKey: 'surname', exportable: true },
       { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
+      { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
+      { sortKey: 'policyref', sortType: 'text', dataKey: 'policyRef', exportable: true },
       { sortKey: 'type', sortType: 'text', dataKey: 'type', exportable: true },
       { sortKey: 'date', sortType: 'date', dataKey: 'date.time', isMergedCell: true, exportable: true },
       { sortKey: null, exportable: false } // Actions column
