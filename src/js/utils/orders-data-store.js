@@ -36,11 +36,30 @@ export function readOrdersData() {
 
   // Lightweight migrations / normalizations to keep filters consistent.
   // Older dashboard code used `type: 'quote'` but table configs use `quotes`.
+  // Also: the Quotes table previously overwrote record.type with policy-type labels (Annual/Temporary/Impound).
   return parsed.map((record) => {
     if (!record || typeof record !== "object") return record;
 
     if (record.type === "quote") {
       return { ...record, type: "quotes" };
+    }
+
+    const typeText = (record.type || "").toString().trim();
+    const looksLikeQuote =
+      Boolean(record.amount) &&
+      Boolean(record.validUntil) &&
+      Boolean(record.policyStart) &&
+      Boolean(record.email) &&
+      Boolean(record.vehicle);
+
+    const isPolicyTypeLabel = /^(annual|temporary|impound)$/i.test(typeText);
+
+    if (looksLikeQuote && isPolicyTypeLabel) {
+      return {
+        ...record,
+        type: "quotes",
+        policyType: record.policyType || typeText,
+      };
     }
 
     return record;
