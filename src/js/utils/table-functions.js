@@ -23,6 +23,43 @@ export function initializeTable(tableConfig) {
   window.getSortValue = getSortValue;
   window.performSort = performSort;
   window.calculatePolicyCounts = calculatePolicyCounts;
+  window.extractRowData = extractRowData;
+}
+
+/**
+ * Extract data from a table row based on configuration
+ * @param {HTMLTableRowElement} row - Table row element
+ * @param {Object} config - Table configuration
+ * @returns {Object} Extracted data object
+ */
+export function extractRowData(row, config) {
+  const cells = row.querySelectorAll('td');
+  const orderData = { type: config.tableType };
+
+  // Extract data based on column configuration
+  config.columns.list.forEach((col, index) => {
+    if (col.dataKey && cells[index]) {
+      if (col.isMergedCell) {
+        // Handle merged cells (name + email)
+        const firstP = cells[index].querySelector('p:first-child');
+        const lastP = cells[index].querySelector('p:last-child');
+        if (col.dataKey.includes('.')) {
+          const keys = col.dataKey.split('.');
+          orderData[keys[0]] = firstP ? firstP.textContent.trim() : '';
+          orderData[keys[1]] = lastP ? lastP.textContent.trim() : '';
+        }
+      } else if (col.hasProgressBar) {
+        // Extract date from progress bar container
+        const dateP = cells[index].querySelector('p:first-child');
+        orderData[col.dataKey] = dateP ? dateP.textContent.trim() : '';
+      } else {
+        // Simple cell
+        orderData[col.dataKey] = cells[index].textContent.trim();
+      }
+    }
+  });
+
+  return orderData;
 }
 
 /**
@@ -44,33 +81,11 @@ function storeTableData() {
   const tableRows = document.querySelectorAll('table tbody tr');
 
   tableRows.forEach((row) => {
-    const cells = row.querySelectorAll('td');
-    const orderData = { type: config.tableType };
-
-    // Extract data based on column configuration
-    config.columns.list.forEach((col, index) => {
-      if (col.dataKey && cells[index]) {
-        if (col.isMergedCell) {
-          // Handle merged cells (name + email)
-          const firstP = cells[index].querySelector('p:first-child');
-          const lastP = cells[index].querySelector('p:last-child');
-          if (col.dataKey.includes('.')) {
-            const keys = col.dataKey.split('.');
-            orderData[keys[0]] = firstP ? firstP.textContent.trim() : '';
-            orderData[keys[1]] = lastP ? lastP.textContent.trim() : '';
-          }
-        } else if (col.hasProgressBar) {
-          // Extract date from progress bar container
-          const dateP = cells[index].querySelector('p:first-child');
-          orderData[col.dataKey] = dateP ? dateP.textContent.trim() : '';
-        } else {
-          // Simple cell
-          orderData[col.dataKey] = cells[index].textContent.trim();
-        }
-      }
-    });
-
-    allOrders.push(orderData);
+    // Only extract data if the row is part of the current table structure and has cells
+    if (row.querySelectorAll('td').length > 0) {
+      const orderData = extractRowData(row, config);
+      allOrders.push(orderData);
+    }
   });
 
   localStorage.setItem('ordersData', JSON.stringify(allOrders));
