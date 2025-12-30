@@ -35,6 +35,85 @@ export function createTableState(config) {
     itemsPerPage: config.itemsPerPage || 10,
     _tableRows: null, // Cache to avoid repeated queries
 
+    // Computed properties for pagination
+    get filteredRowCount() {
+      const table = document.querySelector(config.tableSelector || 'table');
+      const rows = table?.querySelectorAll('tbody tr') || [];
+      return Array.from(rows).filter(row => row.dataset.filteredOut !== 'true').length;
+    },
+
+    get totalPages() {
+      const count = this.filteredRowCount;
+      return Math.max(1, Math.ceil(count / this.itemsPerPage));
+    },
+
+    get paginationInfo() {
+      const total = this.filteredRowCount;
+      if (total === 0) return { start: 0, end: 0, total: 0 };
+      const start = (this.currentPage - 1) * this.itemsPerPage + 1;
+      const end = Math.min(this.currentPage * this.itemsPerPage, total);
+      return { start, end, total };
+    },
+
+    // Pagination methods
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+        this.applyPagination();
+      }
+    },
+
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+        this.applyPagination();
+      }
+    },
+
+    setPage(pageNumber) {
+      const page = Math.max(1, Math.min(pageNumber, this.totalPages));
+      if (page !== this.currentPage) {
+        this.currentPage = page;
+        this.applyPagination();
+      }
+    },
+
+    applyPagination() {
+      const table = document.querySelector(config.tableSelector || 'table');
+      const allRows = table?.querySelectorAll('tbody tr') || [];
+
+      // Get only rows that pass filters
+      const filteredRows = Array.from(allRows).filter(row => row.dataset.filteredOut !== 'true');
+
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+
+      // Mark rows as paged out or not
+      filteredRows.forEach((row, index) => {
+        if (index >= startIndex && index < endIndex) {
+          row.dataset.pagedOut = 'false'; // Show on this page
+        } else {
+          row.dataset.pagedOut = 'true'; // Hide (on different page)
+        }
+      });
+
+      // Apply unified visibility
+      this.applyRowVisibility();
+    },
+
+    applyRowVisibility() {
+      const table = document.querySelector(config.tableSelector || 'table');
+      const allRows = table?.querySelectorAll('tbody tr') || [];
+
+      allRows.forEach(row => {
+        const filteredOut = row.dataset.filteredOut === 'true';
+        const pagedOut = row.dataset.pagedOut === 'true';
+
+        // Hide if EITHER flag is true
+        row.style.display = (filteredOut || pagedOut) ? 'none' : '';
+      });
+    },
+
     // Initialization
     init() {
       // If we are on an expired-only page, load data from localStorage
