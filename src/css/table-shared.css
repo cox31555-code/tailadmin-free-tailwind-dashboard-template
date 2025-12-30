@@ -109,6 +109,18 @@
 
 /* Sticky Actions Column for Tablet and Mobile */
 @media (max-width: 1024px) {
+  /* Allow all parent containers to show overflow */
+  .overflow-x-auto,
+  .max-w-full.overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  /* Re-enable scrolling on the inner wrapper only */
+  .table-scroller {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+  }
+
   /* Make Actions cells sticky on tablet and mobile (not headers) */
   tbody .actions-column-sticky {
     position: sticky !important;
@@ -124,17 +136,9 @@
     box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.3);
   }
 
-  /* Remove relative positioning from parent on mobile */
-  tbody .actions-column-sticky > div[class*="relative"] {
-    position: static !important;
-  }
-
-  /* Use fixed positioning for dropdowns to escape ALL overflow clipping */
+  /* Ensure dropdown has maximum z-index */
   tbody .actions-column-sticky .table-action-dropdown,
-  tbody .actions-column-sticky div[class*="absolute"][x-show] {
-    position: fixed !important;
-    right: 1rem !important;
-    left: auto !important;
+  tbody .actions-column-sticky div[x-show="actionsOpen"] {
     z-index: 99999 !important;
   }
 }
