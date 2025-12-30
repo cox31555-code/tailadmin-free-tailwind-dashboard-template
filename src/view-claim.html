@@ -242,14 +242,14 @@
                       />
                     </div>
                     <div>
-                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Select Color</label>
-                      <div class="flex items-center gap-3">
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Color</label>
+                      <div class="flex items-center gap-2">
                         <template x-for="color in ['blue', 'gray', 'yellow', 'green', 'red', 'purple', 'orange']" :key="color">
                           <button
                             @click="newTimelineColor = color"
                             :class="[
-                              'w-10 h-10 rounded-full transition-all shadow-sm hover:scale-110',
-                              newTimelineColor === color ? 'ring-4 ring-gray-800 dark:ring-white ring-offset-2 scale-110' : '',
+                              'w-6 h-6 rounded-full transition-all',
+                              newTimelineColor === color ? 'ring-2 ring-gray-800 dark:ring-white ring-offset-1' : '',
                               getColorClasses(color)
                             ]"
                             :title="color"
