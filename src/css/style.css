@@ -324,12 +324,12 @@ html.theme-transition * {
   transition: background-color 200ms, color 200ms, border-color 200ms, box-shadow 200ms;
 }
 
-/* Fallback: Use system preference if dark class is not yet applied */
+/* Fallback: Use system preference only if dark class is not explicitly set */
 @media (prefers-color-scheme: dark) {
-  html {
+  html:not(.dark):not([data-theme]) {
     @apply bg-gray-900 text-white;
   }
-  html body {
+  html:not(.dark):not([data-theme]) body {
     @apply bg-gray-900 text-white;
   }
 }
