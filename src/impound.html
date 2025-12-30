@@ -13,13 +13,13 @@
     </title>
     <style>
       @media (max-width: 640px) {
-        .page-main-content {
+        .impound-main-content {
           padding: 0 10px;
         }
       }
 
       @media (max-width: 640px) {
-        .page-table-wrapper {
+        .impound-table-wrapper {
           padding: 0 10px;
         }
       }
@@ -55,7 +55,7 @@
 
         <!-- ===== Main Content Start ===== -->
         <main>
-          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 page-main-content">
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 impound-main-content">
             <!-- Breadcrumb Start -->
             <div x-data="{ pageName: `Impound Policies`}">
               <include src="./partials/breadcrumb.html" />
@@ -66,16 +66,7 @@
               <div
                 class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
               >
-                <div class="px-5 py-4 sm:px-6 sm:py-5">
-                  <h3
-                    class="text-base font-medium text-gray-800 dark:text-white/90"
-                  >
-                    Impound Policies
-                  </h3>
-                </div>
-                <div
-                  class="p-5 border-t border-gray-100 dark:border-gray-800 sm:p-6 page-table-wrapper"
-                >
+                <div class="pb-6">
                   <!-- ====== Impound Policies Table Start -->
                   <include src="./partials/table/table-impound.html" />
                   <!-- ====== Impound Policies Table End -->
