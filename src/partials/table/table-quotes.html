@@ -12,34 +12,34 @@
   class="overflow-visible rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]"
 >
   <!-- Table Header with Compact Inline Stats -->
-  <div class="flex flex-col gap-4 px-5 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-800">
+  <div class="flex flex-col gap-3 sm:gap-4 px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200 dark:border-gray-800">
     <!-- Stats Row -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
       <!-- Compact Inline Stats Badges -->
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 px-3 py-1.5 text-theme-xs">
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+        <span class="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-theme-xs">
           <span class="text-gray-600 dark:text-gray-400">Total:</span>
           <span class="font-semibold text-gray-800 dark:text-white/90" x-text="policyCounts.total"></span>
         </span>
 
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 text-theme-xs">
+        <span class="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-theme-xs">
           <span class="text-blue-700 dark:text-blue-400">Annual:</span>
           <span class="font-semibold text-blue-900 dark:text-blue-300" x-text="policyCounts.active"></span>
         </span>
 
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-purple-200 dark:border-purple-500/20 bg-purple-50 dark:bg-purple-500/10 px-3 py-1.5 text-theme-xs">
+        <span class="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-purple-200 dark:border-purple-500/20 bg-purple-50 dark:bg-purple-500/10 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-theme-xs">
           <span class="text-purple-700 dark:text-purple-400">Temporary:</span>
           <span class="font-semibold text-purple-900 dark:text-purple-300" x-text="policyCounts.expiringSoon"></span>
         </span>
 
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 px-3 py-1.5 text-theme-xs">
+        <span class="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-theme-xs">
           <span class="text-red-700 dark:text-red-400">Impound:</span>
           <span class="font-semibold text-red-900 dark:text-red-300" x-text="policyCounts.nextDue"></span>
         </span>
       </div>
 
       <!-- Show Entries Control -->
-      <div class="flex items-center gap-2">
+      <div class="hidden sm:flex items-center gap-2">
         <span class="text-theme-xs text-gray-600 dark:text-gray-400">Show</span>
         <select class="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-theme-xs font-medium text-gray-700 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300 dark:hover:border-gray-600 dark:focus:border-brand-600">
           <option value="10">10</option>
@@ -52,14 +52,14 @@
     </div>
 
     <!-- Controls Row -->
-    <div class="flex items-center gap-2">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
       <!-- Search input -->
       <input
         x-model="searchQuery"
         @input="filterAndSearchTable(searchQuery, filterPayment)"
         type="text"
         placeholder="Search by email, vehicle, type..."
-        class="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-800 placeholder:text-gray-500 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500 dark:hover:border-gray-600 dark:focus:border-brand-600"
+        class="flex-1 rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-800 placeholder:text-gray-500 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500 dark:hover:border-gray-600 dark:focus:border-brand-600"
       />
 
       <!-- Action Buttons Group -->
@@ -67,12 +67,12 @@
         <!-- Export button -->
         <button
           onclick="window.exportTableToCSV()"
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 whitespace-nowrap"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-xs sm:text-theme-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 whitespace-nowrap"
         >
           <svg
             class="stroke-current fill-none"
-            width="16"
-            height="16"
+            width="14"
+            height="14"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -84,7 +84,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          Export CSV
+          <span class="hidden sm:inline">Export CSV</span>
         </button>
       </div>
     </div>
