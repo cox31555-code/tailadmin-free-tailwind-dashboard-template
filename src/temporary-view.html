@@ -24,8 +24,8 @@
       status: 'Active',
       quoteReceived: '2025-01-05',
       orderReceived: '2025-01-10',
-      policyStart: '2025-01-14',
-      policyEnd: '2025-02-14',
+      policyStart: '2025-01-14T10:00:00',
+      policyEnd: '2025-02-14T16:30:00',
       policyPrice: '£247.50',
       
       // Edit mode tracking
@@ -427,6 +427,13 @@
           const years = Math.floor(diffDays / 365);
           return years === 1 ? '1 year' : years + ' years';
         }
+      },
+
+      formatDateTime(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+               ', ' +
+               date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true });
       },
 
       downloadAllPDFs() {
