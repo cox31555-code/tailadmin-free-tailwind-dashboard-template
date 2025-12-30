@@ -5,14 +5,18 @@ import Sortable from 'sortablejs';
  * Provides mobile-friendly drag and drop with touch support
  */
 export function initKanbanSortable(alpineComponent) {
-  // Wait for DOM to be ready
+  console.log('🔧 Starting Kanban SortableJS initialization...');
+
+  // Wait for DOM to be ready - increased timeout for Alpine.js rendering
   setTimeout(() => {
+    console.log('⏰ DOM ready, initializing SortableJS...');
+
     // Initialize task dragging within/between columns
     initTaskDragging();
 
     // Initialize column dragging
     initColumnDragging(alpineComponent);
-  }, 100);
+  }, 500); // Increased from 100ms to 500ms
 }
 
 /**
