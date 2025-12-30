@@ -16,6 +16,8 @@ import "./components/calendar-init.js";
 import "./components/image-resize";
 import "./loading-handler.js";
 import "./components/kanban-sortable-init.js";
+import { createTableState } from "./utils/table-base.js";
+import "./utils/table-functions.js";
 
 import {
   getLondonNow,
