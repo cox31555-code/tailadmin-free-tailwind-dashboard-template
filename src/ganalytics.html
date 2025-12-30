@@ -231,6 +231,8 @@
 
         if (charts.trend) charts.trend.destroy();
 
+        const isDarkMode = document.documentElement.classList.contains('dark');
+
         charts.trend = new ApexCharts(trendChartElement, {
           series: [
             { name: "Users", data: users },
@@ -242,13 +244,24 @@
             height: 320,
             toolbar: { show: false },
             sparkline: { enabled: false },
+            background: 'transparent',
           },
           colors: ["#0388FF", "#5edbff"],
           stroke: { curve: "smooth", width: 2 },
           fill: { type: "gradient", gradient: { opacityFrom: 0.1, opacityTo: 0 } },
-          xaxis: { categories: dates },
-          yaxis: { title: { text: "Count" } },
-          tooltip: { theme: "light" },
+          xaxis: {
+            categories: dates,
+            labels: { style: { colors: isDarkMode ? '#9ca3af' : '#6b7280' } }
+          },
+          yaxis: {
+            title: { text: "Count", style: { color: isDarkMode ? '#9ca3af' : '#6b7280' } },
+            labels: { style: { colors: isDarkMode ? '#9ca3af' : '#6b7280' } }
+          },
+          theme: { mode: isDarkMode ? 'dark' : 'light' },
+          tooltip: { theme: isDarkMode ? 'dark' : 'light' },
+          grid: {
+            borderColor: isDarkMode ? '#374151' : '#e5e7eb',
+          },
         });
 
         charts.trend.render();
