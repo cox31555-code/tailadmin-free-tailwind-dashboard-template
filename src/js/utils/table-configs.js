@@ -5,6 +5,9 @@
 
 // Annual Policies Table Configuration
 export const annualTableConfig = {
+  tableSelector: '#annualPoliciesTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'annual',
   csvFilename: 'annual-policies.csv',
   csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End', 'Next Due Date'],
@@ -40,6 +43,9 @@ export const annualTableConfig = {
 
 // Temporary Policies Table Configuration
 export const temporaryTableConfig = {
+  tableSelector: '#temporaryPoliciesTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'temporary',
   csvFilename: 'temporary-policies.csv',
   csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Duration', 'Policy Start', 'Policy End'],
@@ -73,6 +79,9 @@ export const temporaryTableConfig = {
 
 // Impound Policies Table Configuration
 export const impoundTableConfig = {
+  tableSelector: '#impoundPoliciesTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'impound',
   csvFilename: 'impound-policies.csv',
   csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Policy Start', 'Policy End'],
@@ -105,6 +114,9 @@ export const impoundTableConfig = {
 
 // Expired Annual Policies Table Configuration
 export const expiredAnnualTableConfig = {
+  tableSelector: '#expiredAnnualPoliciesTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'expired-annual',
   csvFilename: 'expired-annual-policies.csv',
   csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End'],
@@ -137,6 +149,9 @@ export const expiredAnnualTableConfig = {
 
 // Expired Temporary Policies Table Configuration
 export const expiredTemporaryTableConfig = {
+  tableSelector: '#expiredTemporaryPoliciesTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'expired-temporary',
   csvFilename: 'expired-temporary-policies.csv',
   csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Duration', 'Policy Start', 'Policy End'],
@@ -169,6 +184,9 @@ export const expiredTemporaryTableConfig = {
 
 // Expired Impound Policies Table Configuration
 export const expiredImpoundTableConfig = {
+  tableSelector: '#expiredImpoundPoliciesTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'expired-impound',
   csvFilename: 'expired-impound-policies.csv',
   csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Policy Start', 'Policy End'],
@@ -200,6 +218,9 @@ export const expiredImpoundTableConfig = {
 
 // Quotes Table Configuration
 export const quotesTableConfig = {
+  tableSelector: '#quotesTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'quotes',
   csvFilename: 'quotes.csv',
   csvHeaders: ['Date', 'Time', 'Customer Email', 'Vehicle', 'Quote Amount', 'Policy Type', 'Policy Start', 'Valid Until'],
@@ -233,6 +254,9 @@ export const quotesTableConfig = {
 
 // Contact Form Table Configuration
 export const contactFormTableConfig = {
+  tableSelector: '#contactFormTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'contactForm',
   csvFilename: 'contact-form-submissions.csv',
   csvHeaders: ['Name', 'Email', 'Phone Number', 'Policy Reference', 'Type', 'Date Received', 'Time Received', 'Message'],
@@ -261,6 +285,9 @@ export const contactFormTableConfig = {
 
 // Pending Claims Table Configuration
 export const pendingClaimsTableConfig = {
+  tableSelector: '#pendingClaimsTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'pendingClaims',
   csvFilename: 'pending-claims.csv',
   csvHeaders: ['Claim Type', 'Claimant Name', 'Email', 'Phone', 'Incident Date', 'Days Pending'],
@@ -291,6 +318,9 @@ export const pendingClaimsTableConfig = {
 
 // Completed Claims Table Configuration
 export const completedClaimsTableConfig = {
+  tableSelector: '#completedClaimsTable',
+  itemsPerPage: 10,
+  paginationEnabled: true,
   tableType: 'completedClaims',
   csvFilename: 'completed-claims.csv',
   csvHeaders: ['Claim Type', 'Claimant Name', 'Email', 'Phone', 'Incident Date', 'Completion Date', 'Settlement Amount'],
