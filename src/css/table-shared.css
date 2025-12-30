@@ -141,6 +141,17 @@
     overflow: visible !important;
   }
 
+  /* Boost z-index when dropdown is active (Alpine class binding) */
+  tbody .actions-column-sticky.dropdown-active {
+    z-index: 99999 !important;
+  }
+
+  /* Boost parent row z-index when dropdown is active */
+  tbody tr:has(.actions-column-sticky.dropdown-active) {
+    z-index: 99998;
+    position: relative;
+  }
+
   /* Boost z-index when row is hovered or focused (captures dropdown interaction) */
   tbody tr:hover,
   tbody tr:focus-within {
