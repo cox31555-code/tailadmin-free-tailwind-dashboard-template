@@ -124,7 +124,7 @@ function initColumnDragging(alpineComponent) {
  * Reinitialize SortableJS (useful after board switch or data reload)
  */
 export function reinitKanbanSortable(alpineComponent) {
-  // Destroy existing instances
+  // Destroy existing task dragging instances
   const columns = document.querySelectorAll('[data-kanban-column]');
   columns.forEach(column => {
     const tasksContainer = column.querySelector('[data-tasks-container]');
@@ -132,7 +132,13 @@ export function reinitKanbanSortable(alpineComponent) {
       tasksContainer.sortable.destroy();
     }
   });
-  
-  // Reinitialize
+
+  // Destroy existing column dragging instance
+  const columnsContainer = document.querySelector('[data-columns-container]');
+  if (columnsContainer && columnsContainer.sortable) {
+    columnsContainer.sortable.destroy();
+  }
+
+  // Reinitialize both
   initKanbanSortable(alpineComponent);
 }
