@@ -373,14 +373,14 @@
       initSortable() {
         console.log('🚀 Initializing SortableJS...');
         if (!this.sortableInitialized) {
-          import('./js/components/kanban-sortable-init.js').then(module => {
-            console.log('📦 Module loaded successfully');
-            module.initKanbanSortable(this);
+          if (typeof window.initKanbanSortable === 'function') {
+            console.log('📦 Using globally available initKanbanSortable');
+            window.initKanbanSortable(this);
             this.sortableInitialized = true;
             console.log('✅ SortableJS initialization complete');
-          }).catch(err => {
-            console.error('❌ Failed to load SortableJS:', err);
-          });
+          } else {
+            console.error('❌ initKanbanSortable not found on window object');
+          }
         } else {
           console.log('⚠️ SortableJS already initialized');
         }
