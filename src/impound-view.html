@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <include src="./partials/critical-dark-mode.html"></include>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Policy Details | Impound Policies</title>
+  </head>
+  <body
+    x-data="{
+      page: 'impound-view',
+      isLoading: false,
+      darkMode: true,
+      stickyMenu: false,
+      sidebarToggle: false,
+      scrollTop: false,
+      
+      // Policy metadata
+      policyRef: 'IMP-2025-001234',
+      status: 'Active',
+      quoteReceived: '2025-01-05',
+      orderReceived: '2025-01-10',
+      policyStart: '2025-01-14',
+      policyEnd: '2025-02-14',
+      policyPrice: '£247.50',
+      
+      // Edit mode tracking
+      editMode: {},
+      savingField: {},
+      savedField: {},
+      originalValues: {},
+      
+      // Your car fields
+      changingVehicle: false,
+      vrmLookupMode: true,
+      vrm: 'AB12 CDE',
+      vehicleType: 'Car',
+      vehicleMake: 'Toyota',
+      vehicleModel: 'Corolla',
+      vehicleYear: '2018',
+      vehicleDoors: '5',
+      vehicleFuelType: 'Petrol',
+      vehicleTransmission: 'Manual',
+      vehicleColour: 'Silver',
+      carMake: 'Toyota, Corolla, (ER)',
+      alarm: 'Factory Fitted Thatcham Approved Alarm/Immobiliser',
+      tracking: 'No',
+      isImport: 'No',
+      driverSide: 'Right Hand',
+      seats: '5',
+      modifications: 'No',
+      selectedModifications: [],
+      modificationCategories: {
+        'engine': { expanded: false, name: 'Engine, Tuning & Performance' },
+        'exhaust': { expanded: false, name: 'Exhaust & Emissions' },
+        'transmission': { expanded: false, name: 'Transmission & Drivetrain' },
+        'suspension': { expanded: false, name: 'Suspension, Steering & Handling' },
+        'brakes': { expanded: false, name: 'Brakes' },
+        'wheels': { expanded: false, name: 'Wheels & Tyres' },
+        'exterior': { expanded: false, name: 'Exterior Bodywork & Styling' },
+        'paint': { expanded: false, name: 'Paint, Wrap & Visual Finishes' },
+        'windows': { expanded: false, name: 'Windows, Tints & Glass' },
+        'lighting': { expanded: false, name: 'Lighting & Exterior Electrical' },
+        'interior': { expanded: false, name: 'Interior Modifications' },
+        'audio': { expanded: false, name: 'Audio, Infotainment & In-Car Tech' },
+        'security': { expanded: false, name: 'Security & Anti-Theft' },
+        'comfort': { expanded: false, name: 'Comfort & Convenience' },
+        'roof': { expanded: false, name: 'Roof, Towing & Utility' },
+        'fuel': { expanded: false, name: 'Fuel System & Conversions' },
+        'ev': { expanded: false, name: 'EV & Hybrid Modifications' },
+        'safety': { expanded: false, name: 'Safety & Driver Assistance' },
+        'accessibility': { expanded: false, name: 'Accessibility & Mobility Adaptations' },
+        'other': { expanded: false, name: 'Other Declarable Items' }
+      },
+
+      // Car value
+      marketValue: '4560',
+      
+      // Car usage
+      whenBought: '02/2025',
+      carUsage: 'Social and commuting',
+      annualMileage: '123',
+      
+      // Car storage
+      daytimeStorage: 'Office or factory car park',
+      nighttimeStorage: 'Street outside home',
+      keptAtHome: 'Yes',
+      
+      // Other cars
+      numCarsHousehold: '1',
+      useOtherVehicles: 'No',
+      
+      // About you
+      customerName: 'Mr Fatima Asdasd',
+      title: 'Mr',
+      firstName: 'Fatima',
+      surname: 'Asdasd',
+      dob: '12/12/1999',
+      relationshipStatus: 'Single',
+      
+      // Your household
+      changingAddress: false,
+      addressLookupMode: true,
+      houseNumber: '',
+      lookupPostcode: '',
+      addressLine1: '2 Kings Road',
+      addressLine2: '',
+      addressLine3: '',
+      townCity: 'Waltham Cross',
+      homeAddress: '2 Kings Road',
+      city: 'Waltham Cross',
+      county: 'Hertfordshire',
+      postcode: '12',
+      homeowner: 'No',
+      childrenUnder16: 'No',
+      livedInUKSinceBirth: 'Yes',
+      
+      // Your employment
+      employmentStatus: 'Employed',
+      occupation: 'Biomedical Scientist',
+      industry: 'Activities of extraterritorial organisations and bodies (specialised)',
+      
+      // Your licence
+      licenceType: 'Full UK Car Licence',
+      yearsHeld: '4 years',
+      additionalQualifications: 'Yes',
+      dvlaConditions: 'Yes',
+      insuranceDenied: 'Yes',
+      nonMotoringConvictions: 'Yes',
+      
+      // Claims & convictions
+      claimsLast5Years: 'None',
+      motoringConvictionsLast5Years: 'None',
+      
+      // Car owner
+      mainDriver: 'Mr Fatima Asdasd',
+      registeredKeeper: 'Company',
+      legalOwner: 'Company',
+      
+      // Your cover
+      coverType: 'Comprehensive',
+      voluntaryExcess: '0',
+      policyStartDate: '14/01/2026',
+      
+      // No claims discount
+      noClaimsYears: '14 years',
+      noClaimsSource: 'With this vehicle or a previous vehicle',
+      protectedNoClaimsDiscount: 'Yes',
+      
+      // Contact
+      email: 'adamjaff@protonmail.com',
+      phoneNumber: '+44 7700 900000',
+      canProvidersContact: 'No',
+
+      // DVLA conditions details
+      dvlaConditionType: 'DVLA aware - 2 year restricted Licence',
+
+      // Claims details (conditional on claimsLast5Years != 'None')
+      hasDetailedClaims: false,
+      claimIncidentType: 'Accident',
+      claimFault: 'Both parties',
+      claimDriver: 'Policyholder',
+      claimInjuries: 'No',
+      claimDay: '12',
+      claimMonth: '12',
+      claimYear: '2020',
+      claimDamageType: 'Damaged - Amount Known',
+      claimAgainstPolicy: 'Yes',
+      claimNCDaffected: 'No',
+
+      // Motoring convictions details (conditional on motoringConvictionsLast5Years != 'None')
+      hasDetailedConvictions: false,
+      convictionLocation: 'England, Scotland or Wales (Great Britain)',
+      convictionType: 'DR - Drink',
+      convictionCode: 'DR10 – Driving with alcohol level above limit',
+      convictionDay: '12',
+      convictionMonth: '12',
+      convictionYear: '2019',
+      convictionPenaltyPoints: 'Yes',
+      convictionPointsAmount: '12',
+      convictionFine: 'Yes',
+      convictionFineAmount: '£121',
+      convictionBan: 'No',
+      convictionBanMonths: '0',
+
+      // Methods
+      init() {
+        this.loadPolicyData();
+      },
+      
+      loadPolicyData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get('ref');
+        
+        if (ref) {
+          this.policyRef = ref;
+          const savedData = localStorage.getItem('policy_temp_' + ref);
+          if (savedData) {
+            const data = JSON.parse(savedData);
+            Object.keys(data).forEach(key => {
+              if (this.hasOwnProperty(key)) {
+                this[key] = data[key];
+              }
+            });
+          }
+        } else {
+          this.policyRef = this.generateRef();
+        }
+      },
+      
+      generateRef() {
+        const year = new Date().getFullYear();
+        const random = Math.random().toString(36).substr(2, 6).toUpperCase();
+        return 'IMP-' + year + '-' + random;
+      },
+      
+      toggleEditMode(sectionName) {
+        if (!this.editMode[sectionName]) {
+          this.backupSectionValues(sectionName);
+        }
+        this.editMode[sectionName] = !this.editMode[sectionName];
+      },
+      
+      backupSectionValues(sectionName) {
+        const fields = this.getSectionFields(sectionName);
+        this.originalValues[sectionName] = {};
+        fields.forEach(field => {
+          this.originalValues[sectionName][field] = this[field];
+        });
+      },
+      
+      getSectionFields(sectionName) {
+        const sectionMap = {
+          'carDetails': ['changingVehicle', 'vrmLookupMode', 'vrm', 'vehicleType', 'vehicleMake', 'vehicleModel', 'vehicleYear', 'vehicleDoors', 'vehicleFuelType', 'vehicleTransmission', 'vehicleColour', 'carMake', 'alarm', 'tracking', 'isImport', 'driverSide', 'seats', 'modifications', 'selectedModifications'],
+          'carValue': ['marketValue'],
+          'carUsageSection': ['whenBought', 'carUsage', 'annualMileage'],
+          'carStorage': ['daytimeStorage', 'nighttimeStorage', 'keptAtHome'],
+          'aboutYou': ['customerName', 'title', 'firstName', 'surname', 'dob', 'relationshipStatus'],
+          'household': ['changingAddress', 'addressLookupMode', 'houseNumber', 'lookupPostcode', 'addressLine1', 'addressLine2', 'addressLine3', 'townCity', 'homeAddress', 'city', 'county', 'postcode', 'homeowner', 'childrenUnder16', 'livedInUKSinceBirth'],
+          'employment': ['employmentStatus', 'occupation', 'industry'],
+          'licence': ['licenceType', 'yearsHeld', 'additionalQualifications', 'dvlaConditions', 'dvlaConditionType', 'insuranceDenied', 'nonMotoringConvictions'],
+          'claims': ['claimsLast5Years', 'hasDetailedClaims', 'claimIncidentType', 'claimFault', 'claimDriver', 'claimInjuries', 'claimDay', 'claimMonth', 'claimYear', 'claimDamageType', 'claimAgainstPolicy', 'claimNCDaffected'],
+          'convictions': ['motoringConvictionsLast5Years', 'hasDetailedConvictions', 'convictionLocation', 'convictionType', 'convictionCode', 'convictionDay', 'convictionMonth', 'convictionYear', 'convictionPenaltyPoints', 'convictionPointsAmount', 'convictionFine', 'convictionFineAmount', 'convictionBan', 'convictionBanMonths'],
+          'carOwner': ['mainDriver', 'registeredKeeper', 'legalOwner'],
+          'cover': ['coverType', 'voluntaryExcess', 'policyStartDate'],
+          'ncd': ['noClaimsYears', 'noClaimsSource', 'protectedNoClaimsDiscount'],
+          'contact': ['email', 'phoneNumber', 'canProvidersContact']
+        };
+        return sectionMap[sectionName] || [];
+      },
+      
+      async saveSection(sectionName) {
+        this.savingField[sectionName] = true;
+
+        if (sectionName === 'aboutYou') {
+          this.customerName = `${this.title} ${this.firstName} ${this.surname}`;
+        }
+
+        if (sectionName === 'household') {
+          this.homeAddress = this.addressLine1 || this.homeAddress;
+          this.city = this.townCity || this.city;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        const policyData = this.getPolicyData();
+        localStorage.setItem('policy_temp_' + this.policyRef, JSON.stringify(policyData));
+        
+        this.savingField[sectionName] = false;
+        this.savedField[sectionName] = true;
+        this.editMode[sectionName] = false;
+        
+        setTimeout(() => {
+          this.savedField[sectionName] = false;
+        }, 3000);
+      },
+      
+      cancelEdit(sectionName) {
+        const fields = this.getSectionFields(sectionName);
+        if (this.originalValues[sectionName]) {
+          fields.forEach(field => {
+            this[field] = this.originalValues[sectionName][field];
+          });
+        }
+        this.editMode[sectionName] = false;
+      },
+      
+      getPolicyData() {
+        return {
+          policyRef: this.policyRef,
+          status: this.status,
+          quoteReceived: this.quoteReceived,
+          orderReceived: this.orderReceived,
+          policyStart: this.policyStart,
+          policyEnd: this.policyEnd,
+          policyPrice: this.policyPrice,
+          carMake: this.carMake,
+          alarm: this.alarm,
+          tracking: this.tracking,
+          isImport: this.isImport,
+          driverSide: this.driverSide,
+          seats: this.seats,
+          modifications: this.modifications,
+          marketValue: this.marketValue,
+          whenBought: this.whenBought,
+          carUsage: this.carUsage,
+          annualMileage: this.annualMileage,
+          daytimeStorage: this.daytimeStorage,
+          nighttimeStorage: this.nighttimeStorage,
+          keptAtHome: this.keptAtHome,
+          numCarsHousehold: this.numCarsHousehold,
+          useOtherVehicles: this.useOtherVehicles,
+          customerName: this.customerName,
+          dob: this.dob,
+          relationshipStatus: this.relationshipStatus,
+          homeAddress: this.homeAddress,
+          city: this.city,
+          county: this.county,
+          postcode: this.postcode,
+          homeowner: this.homeowner,
+          childrenUnder16: this.childrenUnder16,
+          livedInUKSinceBirth: this.livedInUKSinceBirth,
+          employmentStatus: this.employmentStatus,
+          occupation: this.occupation,
+          industry: this.industry,
+          licenceType: this.licenceType,
+          yearsHeld: this.yearsHeld,
+          additionalQualifications: this.additionalQualifications,
+          dvlaConditions: this.dvlaConditions,
+          insuranceDenied: this.insuranceDenied,
+          nonMotoringConvictions: this.nonMotoringConvictions,
+          claimsLast5Years: this.claimsLast5Years,
+          motoringConvictionsLast5Years: this.motoringConvictionsLast5Years,
+          mainDriver: this.mainDriver,
+          registeredKeeper: this.registeredKeeper,
+          legalOwner: this.legalOwner,
+          coverType: this.coverType,
+          voluntaryExcess: this.voluntaryExcess,
+          policyStartDate: this.policyStartDate,
+          noClaimsYears: this.noClaimsYears,
+          noClaimsSource: this.noClaimsSource,
+          protectedNoClaimsDiscount: this.protectedNoClaimsDiscount,
+          email: this.email,
+          phoneNumber: this.phoneNumber,
+          canProvidersContact: this.canProvidersContact,
+          dvlaConditionType: this.dvlaConditionType,
+          hasDetailedClaims: this.hasDetailedClaims,
+          claimIncidentType: this.claimIncidentType,
+          claimFault: this.claimFault,
+          claimDriver: this.claimDriver,
+          claimInjuries: this.claimInjuries,
+          claimDay: this.claimDay,
+          claimMonth: this.claimMonth,
+          claimYear: this.claimYear,
+          claimDamageType: this.claimDamageType,
+          claimAgainstPolicy: this.claimAgainstPolicy,
+          claimNCDaffected: this.claimNCDaffected,
+          hasDetailedConvictions: this.hasDetailedConvictions,
+          convictionLocation: this.convictionLocation,
+          convictionType: this.convictionType,
+          convictionCode: this.convictionCode,
+          convictionDay: this.convictionDay,
+          convictionMonth: this.convictionMonth,
+          convictionYear: this.convictionYear,
+          convictionPenaltyPoints: this.convictionPenaltyPoints,
+          convictionPointsAmount: this.convictionPointsAmount,
+          convictionFine: this.convictionFine,
+          convictionFineAmount: this.convictionFineAmount,
+          convictionBan: this.convictionBan,
+          convictionBanMonths: this.convictionBanMonths
+        };
+      },
+
+      getDaysUntilPolicyStart() {
+        const start = new Date(this.policyStart);
+        const today = new Date();
+        const diffTime = start - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      },
+
+      getDaysUntilPolicyEnd() {
+        const end = new Date(this.policyEnd);
+        const today = new Date();
+        const diffTime = end - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      },
+
+      getDaysSinceQuoteReceived() {
+        const quote = new Date(this.quoteReceived);
+        const today = new Date();
+        const diffTime = today - quote;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      },
+
+      getDaysSinceOrderReceived() {
+        const order = new Date(this.orderReceived);
+        const today = new Date();
+        const diffTime = today - order;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      },
+      
+      downloadAllPDFs() {
+        const pdfs = [
+          'data/pdfs/policy-certificate.pdf',
+          'data/pdfs/insurance-schedule.pdf',
+          'data/pdfs/terms-conditions.pdf',
+          'data/pdfs/proof-of-insurance.pdf'
+        ];
+        
+        pdfs.forEach((pdf, index) => {
+          setTimeout(() => {
+            const link = document.createElement('a');
+            link.href = pdf;
+            link.download = pdf.split('/').pop();
+            link.click();
+          }, index * 200);
+        });
+      },
+      
+      printPolicy() {
+        window.print();
+      }
+    }"
+    x-init="
+      darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
+      $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div
+        class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto"
+      >
+        <!-- Small Device Overlay Start -->
+        <include src="./partials/overlay.html" />
+        <!-- Small Device Overlay End -->
+
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+            <!-- Breadcrumb Start -->
+            <div x-data="{ pageName: 'Policy Details' }">
+              <include src="./partials/breadcrumb.html" />
+            </div>
+            <!-- Breadcrumb End -->
+
+            <!-- Page Content Start -->
+            <div class="space-y-5 sm:space-y-6">
+              <!-- Policy Header -->
+              <include src="./partials/impound-view/policy-header.html" />
+              
+              <!-- Documents Section -->
+              <include src="./partials/impound-view/documents-section.html" />
+              
+              <!-- Car Details Section -->
+              <include src="./partials/impound-view/car-details-section.html" />
+              
+              <!-- Customer Details Section -->
+              <include src="./partials/impound-view/customer-details-section.html" />
+              
+              <!-- Policy Details Section -->
+              <include src="./partials/impound-view/policy-details-section.html" />
+              
+              <!-- Contact Section -->
+              <include src="./partials/impound-view/contact-section.html" />
+            </div>
+            <!-- Page Content End -->
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+  </body>
+</html>
