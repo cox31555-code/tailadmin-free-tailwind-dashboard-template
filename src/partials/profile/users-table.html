@@ -1,0 +1,394 @@
+<div
+  x-data="{
+    searchQuery: '',
+    filterRole: 'all',
+    sortColumn: 'name',
+    sortDirection: 'asc',
+    handleSort(column) {
+      if (this.sortColumn === column) {
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortColumn = column;
+        this.sortDirection = 'asc';
+      }
+    }
+  }"
+  class="overflow-visible rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]"
+>
+  <!-- Table Header -->
+  <div class="flex flex-col gap-4 px-5 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-800">
+    <!-- Title and Action Row -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+          All Users
+        </h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          Manage user accounts and permissions
+        </p>
+      </div>
+      <button
+        @click="isCreateUserModal = true"
+        class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Add User
+      </button>
+    </div>
+
+    <!-- Search and Filter Row -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <!-- Search -->
+      <div class="flex-1 max-w-md">
+        <input
+          x-model="searchQuery"
+          type="text"
+          placeholder="Search by name or email..."
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-800 placeholder:text-gray-500 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500 dark:hover:border-gray-600 dark:focus:border-brand-600"
+        />
+      </div>
+
+      <!-- Filter and Export -->
+      <div class="flex items-center gap-2">
+        <!-- Role Filter -->
+        <select
+          x-model="filterRole"
+          class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300 dark:hover:border-gray-600 dark:focus:border-brand-600"
+        >
+          <option value="all">All Roles</option>
+          <option value="admin">Admin</option>
+          <option value="support">Support</option>
+          <option value="basic">Basic</option>
+        </select>
+
+        <!-- Export Button -->
+        <button
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 whitespace-nowrap"
+        >
+          <svg
+            class="stroke-current fill-none"
+            width="16"
+            height="16"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 13V17C4 17.5304 4.21071 18.0391 4.58579 18.4142C4.96086 18.7893 5.46957 19 6 19H14C14.5304 19 15.0391 18.7893 15.4142 18.4142C15.7893 18.0391 16 17.5304 16 17V13M7 10L10 13M10 13L13 10M10 13V3"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="max-w-full overflow-x-auto">
+    <table class="min-w-full table-auto">
+      <thead class="bg-gray-50 dark:bg-[#010a1b]">
+        <tr class="border-b-2 border-gray-200 dark:border-gray-800">
+          <!-- Name -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('name')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Name</p>
+              <span x-show="sortColumn === 'name'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Email -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('email')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Email</p>
+              <span x-show="sortColumn === 'email'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Role -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('role')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Role</p>
+              <span x-show="sortColumn === 'role'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Status -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('status')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Status</p>
+              <span x-show="sortColumn === 'status'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Last Active -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('lastActive')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Last Active</p>
+              <span x-show="sortColumn === 'lastActive'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Actions -->
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Actions</p>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-[#030e21]">
+        <!-- User 1 -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">
+                JD
+              </div>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">John Doe</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">john.doe@example.com</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <span class="inline-flex rounded-full bg-purple-50 px-3 py-1 text-theme-xs font-medium text-purple-600 dark:bg-purple-500/15 dark:text-purple-400">Admin</span>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-green-500"></span>
+              <span class="text-gray-600 text-theme-sm dark:text-gray-400">Active</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">2 hours ago</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition
+                class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown z-50">
+                <button @click="editUser('John Doe', 'john.doe@example.com', 'Admin')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">Edit</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-white/[0.03]">Reset Password</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Delete</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- User 2 -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-500 text-sm font-semibold text-white">
+                SJ
+              </div>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Sarah Johnson</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">sarah.johnson@example.com</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Support</span>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-green-500"></span>
+              <span class="text-gray-600 text-theme-sm dark:text-gray-400">Active</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">5 minutes ago</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition
+                class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown z-50">
+                <button @click="editUser('Sarah Johnson', 'sarah.johnson@example.com', 'Support')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">Edit</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-white/[0.03]">Reset Password</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Delete</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- User 3 -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-orange-500 text-sm font-semibold text-white">
+                MC
+              </div>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Michael Chen</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">michael.chen@example.com</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <span class="inline-flex rounded-full bg-gray-50 px-3 py-1 text-theme-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">Basic</span>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-gray-400"></span>
+              <span class="text-gray-600 text-theme-sm dark:text-gray-400">Offline</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">1 day ago</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition
+                class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown z-50">
+                <button @click="editUser('Michael Chen', 'michael.chen@example.com', 'Basic')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">Edit</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-white/[0.03]">Reset Password</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Delete</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- User 4 -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-pink-500 text-sm font-semibold text-white">
+                ER
+              </div>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Emily Rodriguez</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">emily.rodriguez@example.com</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Support</span>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-green-500"></span>
+              <span class="text-gray-600 text-theme-sm dark:text-gray-400">Active</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">30 minutes ago</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition
+                class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown z-50">
+                <button @click="editUser('Emily Rodriguez', 'emily.rodriguez@example.com', 'Support')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">Edit</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-white/[0.03]">Reset Password</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Delete</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- User 5 -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-sm font-semibold text-white">
+                DP
+              </div>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">David Park</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">david.park@example.com</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <span class="inline-flex rounded-full bg-gray-50 px-3 py-1 text-theme-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">Basic</span>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-gray-400"></span>
+              <span class="text-gray-600 text-theme-sm dark:text-gray-400">Offline</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">3 days ago</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition
+                class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown z-50">
+                <button @click="editUser('David Park', 'david.park@example.com', 'Basic')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">Edit</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-white/[0.03]">Reset Password</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Delete</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 px-5 py-4 dark:border-gray-800 sm:px-6">
+    <p class="text-sm text-gray-500 dark:text-gray-400">
+      Showing <span class="font-medium">1-5</span> of <span class="font-medium">24</span> users
+    </p>
+    <div class="flex items-center gap-1">
+      <button class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+        Prev
+      </button>
+      <button class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500 text-theme-sm font-medium text-white">
+        1
+      </button>
+      <button class="flex h-9 w-9 items-center justify-center rounded-lg text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+        2
+      </button>
+      <button class="flex h-9 w-9 items-center justify-center rounded-lg text-theme-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+        3
+      </button>
+      <button class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+        Next
+      </button>
+    </div>
+  </div>
+</div>
