@@ -79,16 +79,13 @@
                 </span>
               </div>
               
-              <!-- Name -->
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">First Name</p>
-                  <p class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="selectedMessage?.firstName || 'N/A'"></p>
-                </div>
-                <div>
-                  <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Surname</p>
-                  <p class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="selectedMessage?.surname || 'N/A'"></p>
-                </div>
+              <!-- Full Name -->
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Full Name</p>
+                <p class="text-base font-semibold text-gray-800 dark:text-white/90">
+                  <span x-text="selectedMessage?.firstName"></span>
+                  <span x-text="selectedMessage?.surname"></span>
+                </p>
               </div>
 
               <!-- Email -->
