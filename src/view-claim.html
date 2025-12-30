@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <include src="./partials/critical-dark-mode.html"></include>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+      View Claim | TailAdmin - Tailwind CSS Admin Dashboard Template
+    </title>
+  </head>
+  <body
+    x-data="{
+      page: 'viewClaim',
+      isLoading: false,
+      darkMode: true,
+      stickyMenu: false,
+      sidebarToggle: false,
+      scrollTop: false,
+      
+      // Claim data
+      claimRef: 'CLM-DEV001',
+      claimType: 'Accident',
+      submittedDate: '27 December 2025',
+      lastUpdated: '30 December 2025',
+      
+      // Timeline data
+      timelineItems: [
+        { 
+          id: 1,
+          status: 'Claim submitted successfully',
+          date: '27 Dec 2025',
+          time: '06:36',
+          color: 'blue',
+          completed: true
+        },
+        {
+          id: 2,
+          status: 'Documents received and under review',
+          date: '27 Dec 2025',
+          time: '08:36',
+          color: 'gray',
+          completed: true
+        },
+        {
+          id: 3,
+          status: 'Claim status: Pending',
+          date: '30 Dec 2025',
+          time: '06:36',
+          color: 'yellow',
+          completed: true
+        },
+        {
+          id: 4,
+          status: 'Claim review completed',
+          date: '30 Dec 2025',
+          time: '10:36',
+          color: 'green',
+          completed: true
+        }
+      ],
+      
+      // Edit mode for timeline
+      editingTimeline: false,
+      editingTimelineItem: null,
+      newTimelineStatus: '',
+      newTimelineColor: 'blue',
+      
+      // Claim form data
+      claimReason: 'Accident',
+      incidentDescription: 'Minor collision at junction while turning right. The other vehicle failed to stop at the red light and collided with the passenger side of my vehicle.',
+      incidentDate: '25 December 2025',
+      takeResponsibility: 'No',
+      responsibilityDetails: 'Other driver ran red light and failed to yield right of way. I had the green light and was proceeding through the intersection when the collision occurred.',
+      
+      // Policy & Vehicle
+      policyNo: 'LC-ANNUAL-001',
+      policyholderFirstName: 'Dev',
+      policyholderLastName: 'User',
+      claimantName: 'Dev User',
+      email: 'dev@limitlesscover.co.uk',
+      vehicleLocation: 'Home address - 123 Main Street, Aberdeen',
+      vehicleDrivable: 'No',
+      
+      // Third Party
+      thirdPartyName: 'John Smith',
+      thirdPartyPhone: '07700 900123',
+      thirdPartyPostcode: 'AB10 1AB',
+      thirdPartyAddress: '45 High Street, Aberdeen',
+      thirdPartyVehicleReg: 'CD22TEST',
+      thirdPartyVehicleMake: 'Ford',
+      thirdPartyVehicleModel: 'Focus',
+      thirdPartyDamage: 'Front bumper damage and broken headlight',
+      
+      // Methods
+      getColorClasses(color) {
+        const colors = {
+          blue: 'bg-blue-500 dark:bg-blue-400',
+          gray: 'bg-gray-400 dark:bg-gray-500',
+          yellow: 'bg-yellow-500 dark:bg-yellow-400',
+          green: 'bg-green-500 dark:bg-green-400',
+          red: 'bg-red-500 dark:bg-red-400',
+          purple: 'bg-purple-500 dark:bg-purple-400',
+          orange: 'bg-orange-500 dark:bg-orange-400'
+        };
+        return colors[color] || colors.blue;
+      },
+      
+      addTimelineItem() {
+        if (!this.newTimelineStatus.trim()) return;
+        
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
+        
+        this.timelineItems.push({
+          id: this.timelineItems.length + 1,
+          status: this.newTimelineStatus,
+          date: dateStr,
+          time: timeStr,
+          color: this.newTimelineColor,
+          completed: true
+        });
+        
+        this.newTimelineStatus = '';
+        this.newTimelineColor = 'blue';
+        this.editingTimeline = false;
+      },
+      
+      editTimelineItem(item) {
+        this.editingTimelineItem = item.id;
+      },
+      
+      saveTimelineItem(item) {
+        this.editingTimelineItem = null;
+      },
+      
+      deleteTimelineItem(itemId) {
+        this.timelineItems = this.timelineItems.filter(item => item.id !== itemId);
+      }
+    }"
+    x-init="
+      darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
+      $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
+      
+      // Load claim data from URL params
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get('ref');
+      if (ref) {
+        claimRef = ref;
+      }
+    "
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div
+        class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto"
+      >
+        <!-- Small Device Overlay Start -->
+        <include src="./partials/overlay.html" />
+        <!-- Small Device Overlay End -->
+
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+            <!-- Breadcrumb Start -->
+            <div x-data="{ pageName: 'View Claim' }">
+              <include src="./partials/breadcrumb.html" />
+            </div>
+            <!-- Breadcrumb End -->
+
+            <div class="space-y-5 sm:space-y-6">
+              <!-- Claim Header -->
+              <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-2">
+                  <h1 class="text-2xl font-bold text-brand-600 dark:text-brand-400" x-text="`Claim Reference: ${claimRef}`"></h1>
+                  <button 
+                    onclick="window.history.back()"
+                    class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                  >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back
+                  </button>
+                </div>
+                <p class="text-theme-sm text-gray-500 dark:text-gray-400">
+                  Submitted on <span x-text="submittedDate"></span> • Last updated <span x-text="lastUpdated"></span>
+                </p>
+              </div>
+
+              <!-- Timeline Section -->
+              <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-xl font-semibold text-brand-600 dark:text-brand-400">Claim Activity Timeline</h3>
+                  <button
+                    @click="editingTimeline = !editingTimeline"
+                    class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-theme-sm font-medium text-white hover:bg-brand-600"
+                  >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add Status
+                  </button>
+                </div>
+
+                <!-- Add Timeline Item Form -->
+                <div x-show="editingTimeline" x-transition class="mb-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30">
+                  <h4 class="text-theme-sm font-semibold text-gray-800 dark:text-white/90 mb-4">Add New Timeline Status</h4>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="sm:col-span-2">
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status Message</label>
+                      <input
+                        type="text"
+                        x-model="newTimelineStatus"
+                        placeholder="Enter status message..."
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 placeholder:text-gray-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      />
+                    </div>
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status Color</label>
+                      <div class="flex items-center gap-2">
+                        <template x-for="color in ['blue', 'gray', 'yellow', 'green', 'red', 'purple', 'orange']" :key="color">
+                          <button
+                            @click="newTimelineColor = color"
+                            :class="[
+                              'w-8 h-8 rounded-full border-2 transition-all',
+                              newTimelineColor === color ? 'border-gray-800 dark:border-white scale-110' : 'border-transparent',
+                              getColorClasses(color)
+                            ]"
+                          ></button>
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 mt-4">
+                    <button
+                      @click="addTimelineItem"
+                      class="rounded-lg bg-brand-500 px-4 py-2 text-theme-sm font-medium text-white hover:bg-brand-600"
+                    >
+                      Add Status
+                    </button>
+                    <button
+                      @click="editingTimeline = false; newTimelineStatus = ''; newTimelineColor = 'blue'"
+                      class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Timeline Items -->
+                <div class="space-y-6">
+                  <template x-for="(item, index) in timelineItems" :key="item.id">
+                    <div class="relative flex gap-4">
+                      <!-- Timeline dot and line -->
+                      <div class="relative flex flex-col items-center">
+                        <div 
+                          :class="['w-3 h-3 rounded-full', getColorClasses(item.color)]"
+                        ></div>
+                        <div 
+                          x-show="index < timelineItems.length - 1"
+                          class="w-0.5 h-full bg-gray-200 dark:bg-gray-700 mt-2"
+                        ></div>
+                      </div>
+
+                      <!-- Timeline content -->
+                      <div class="flex-1 pb-8">
+                        <div class="flex items-start justify-between gap-4">
+                          <div class="flex-1">
+                            <h4 
+                              class="text-theme-sm font-semibold text-gray-800 dark:text-white/90 mb-2"
+                              x-text="item.status"
+                            ></h4>
+                            <div class="flex items-center gap-4 text-theme-xs text-gray-500 dark:text-gray-400">
+                              <div class="flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span x-text="item.date"></span>
+                              </div>
+                              <div class="flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span x-text="item.time"></span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- Edit/Delete actions -->
+                          <div class="flex items-center gap-2">
+                            <button
+                              @click="deleteTimelineItem(item.id)"
+                              class="p-2 rounded-lg text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                              title="Delete"
+                            >
+                              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Claim Details Sections -->
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+                <!-- Claim Type & Incident Details -->
+                <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                  <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">Claim Type & Incident Details</h3>
+                  
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Claim Reason *</label>
+                      <input
+                        type="text"
+                        x-model="claimReason"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Incident Description *</label>
+                      <textarea
+                        x-model="incidentDescription"
+                        rows="4"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date of Incident *</label>
+                      <input
+                        type="text"
+                        x-model="incidentDate"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Do you take responsibility? *</label>
+                      <input
+                        type="text"
+                        x-model="takeResponsibility"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">If not, please give details</label>
+                      <textarea
+                        x-model="responsibilityDetails"
+                        rows="3"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Policy & Vehicle Information -->
+                <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                  <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">Policy & Vehicle Information</h3>
+                  
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Policy Number *</label>
+                      <input
+                        type="text"
+                        x-model="policyNo"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name *</label>
+                        <input
+                          type="text"
+                          x-model="policyholderFirstName"
+                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name *</label>
+                        <input
+                          type="text"
+                          x-model="policyholderLastName"
+                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Your Name (if not policyholder)</label>
+                      <input
+                        type="text"
+                        x-model="claimantName"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                      <input
+                        type="email"
+                        x-model="email"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Where is the vehicle currently? *</label>
+                      <input
+                        type="text"
+                        x-model="vehicleLocation"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Is the vehicle drivable? *</label>
+                      <input
+                        type="text"
+                        x-model="vehicleDrivable"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Third Party Details -->
+              <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5 sm:p-6">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">Third Party Details & Vehicle</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Name *</label>
+                    <input
+                      type="text"
+                      x-model="thirdPartyName"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Phone *</label>
+                    <input
+                      type="text"
+                      x-model="thirdPartyPhone"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Postcode *</label>
+                    <input
+                      type="text"
+                      x-model="thirdPartyPostcode"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Third Party Address *</label>
+                    <input
+                      type="text"
+                      x-model="thirdPartyAddress"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle Registration *</label>
+                    <input
+                      type="text"
+                      x-model="thirdPartyVehicleReg"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle Make *</label>
+                    <input
+                      type="text"
+                      x-model="thirdPartyVehicleMake"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vehicle Model *</label>
+                    <input
+                      type="text"
+                      x-model="thirdPartyVehicleModel"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                    />
+                  </div>
+
+                  <div class="md:col-span-2">
+                    <label class="block text-theme-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Damage to Third Party Vehicle *</label>
+                    <textarea
+                      x-model="thirdPartyDamage"
+                      rows="3"
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm text-gray-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex items-center justify-end gap-3">
+                <button
+                  onclick="window.history.back()"
+                  class="rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="rounded-lg bg-brand-500 px-6 py-2.5 text-theme-sm font-medium text-white hover:bg-brand-600"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+  </body>
+</html>
