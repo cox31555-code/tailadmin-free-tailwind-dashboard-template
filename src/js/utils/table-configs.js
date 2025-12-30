@@ -71,7 +71,7 @@ export const temporaryTableConfig = {
 export const impoundTableConfig = {
   tableType: 'impound',
   csvFilename: 'impound-policies.csv',
-  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Lot Number', 'Policy Start', 'Policy End'],
+  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Impound Reason', 'Policy Start', 'Policy End'],
 
   columns: {
     defaultSort: 'name',
@@ -81,7 +81,7 @@ export const impoundTableConfig = {
       { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
       { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
       { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
-      { sortKey: 'lotnumber', sortType: 'text', dataKey: 'lotNumber', exportable: true },
+      { sortKey: 'reason', sortType: 'text', dataKey: 'reason', exportable: true },
       { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
       { sortKey: 'policyend', sortType: 'date', dataKey: 'policyEnd', hasProgressBar: true, exportable: true },
       { sortKey: null, exportable: false } // Actions column
