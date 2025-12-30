@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <include src="./partials/critical-dark-mode.html"></include>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Customer Details | Limitless Dashboard</title>
+  </head>
+  <body
+    x-data="{
+      page: 'customerView',
+      isLoading: false,
+      darkMode: true,
+      stickyMenu: false,
+      sidebarToggle: false,
+      scrollTop: false,
+      
+      // Customer data - can be populated from URL params
+      customerId: new URLSearchParams(window.location.search).get('id') || 'james.wilson@example.com',
+      customerName: 'James Wilson',
+      customerEmail: 'james.wilson@example.com',
+      customerPhone: '+44-7123-456789',
+      customerAddress: '123 Oak Street, London, UK',
+      customerPostcode: 'SW1A 1AA',
+      customerJoinDate: 'Jan 15, 2024',
+      customerStatus: 'Active',
+      customerNotes: 'Premium customer with excellent payment history.',
+      
+      // Stats
+      totalPolicies: 5,
+      activePolicies: 3,
+      totalSpent: '£3,842.50',
+      lastActivity: '2 days ago',
+      
+      // Edit mode
+      editMode: {},
+      
+      // Policy history
+      policies: [
+        { id: 1, ref: 'LC-ANNUAL-001', type: 'Annual', vehicle: 'Toyota Camry', status: 'Active', startDate: 'Jan 15, 2024', endDate: 'Jan 15, 2025', price: '£1,247.50', paymentStatus: 'Paid' },
+        { id: 2, ref: 'LC-TEMP-045', type: 'Temporary', vehicle: 'Toyota Camry', status: 'Expired', startDate: 'Mar 10, 2024', endDate: 'Mar 17, 2024', price: '£89.00', paymentStatus: 'Paid' },
+        { id: 3, ref: 'LC-ANNUAL-089', type: 'Annual', vehicle: 'BMW X5', status: 'Active', startDate: 'Jun 20, 2024', endDate: 'Jun 20, 2025', price: '£1,856.00', paymentStatus: 'Paid' },
+        { id: 4, ref: 'LC-TEMP-112', type: 'Temporary', vehicle: 'Mercedes C-Class', status: 'Expired', startDate: 'Aug 05, 2024', endDate: 'Aug 12, 2024', price: '£125.00', paymentStatus: 'Paid' },
+        { id: 5, ref: 'LC-IMPOUND-034', type: 'Impound', vehicle: 'Toyota Camry', status: 'Active', startDate: 'Nov 12, 2024', endDate: 'Dec 12, 2024', price: '£525.00', paymentStatus: 'Pending' }
+      ],
+      
+      // Activity timeline
+      activities: [
+        { id: 1, type: 'policy_created', description: 'Created new impound policy', date: 'Nov 12, 2024', time: '14:23', icon: 'document' },
+        { id: 2, type: 'payment', description: 'Payment received - £1,856.00', date: 'Jun 20, 2024', time: '10:15', icon: 'payment' },
+        { id: 3, type: 'policy_created', description: 'Created new annual policy', date: 'Jun 20, 2024', time: '09:45', icon: 'document' },
+        { id: 4, type: 'policy_expired', description: 'Temporary policy expired', date: 'Mar 17, 2024', time: '23:59', icon: 'expire' },
+        { id: 5, type: 'payment', description: 'Payment received - £89.00', date: 'Mar 10, 2024', time: '11:30', icon: 'payment' },
+        { id: 6, type: 'policy_created', description: 'Created new temporary policy', date: 'Mar 10, 2024', time: '11:15', icon: 'document' },
+        { id: 7, type: 'payment', description: 'Payment received - £1,247.50', date: 'Jan 15, 2024', time: '16:42', icon: 'payment' },
+        { id: 8, type: 'customer_registered', description: 'Customer registered', date: 'Jan 15, 2024', time: '16:20', icon: 'user' }
+      ],
+      
+      // Documents
+      documents: [
+        { id: 1, name: 'Annual Policy Certificate - 2024.pdf', type: 'Policy Document', uploadDate: 'Jan 15, 2024', size: '245 KB' },
+        { id: 2, name: 'Driving License - Front.jpg', type: 'ID Document', uploadDate: 'Jan 15, 2024', size: '1.2 MB' },
+        { id: 3, name: 'Driving License - Back.jpg', type: 'ID Document', uploadDate: 'Jan 15, 2024', size: '1.1 MB' },
+        { id: 4, name: 'Proof of Address.pdf', type: 'Address Proof', uploadDate: 'Jan 15, 2024', size: '892 KB' }
+      ],
+      
+      // Methods
+      toggleEdit(field) {
+        this.editMode[field] = !this.editMode[field];
+      },
+      
+      getStatusColor(status) {
+        return status === 'Active' 
+          ? 'bg-success-50 text-success-700 border-success-200 dark:bg-success-500/15 dark:text-success-400 dark:border-success-500/20'
+          : status === 'Expired'
+          ? 'bg-gray-50 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700'
+          : 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/15 dark:text-orange-400 dark:border-orange-500/20';
+      },
+      
+      getPaymentStatusColor(status) {
+        return status === 'Paid'
+          ? 'bg-success-50 text-success-700 dark:bg-success-500/15 dark:text-success-400'
+          : 'bg-orange-50 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400';
+      },
+      
+      goBack() {
+        window.history.back();
+      }
+    }"
+    x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <!-- Small Device Overlay Start -->
+        <include src="./partials/overlay.html" />
+        <!-- Small Device Overlay End -->
+
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6 2xl:p-10">
+            
+            <!-- Back Button & Header -->
+            <div class="mb-6 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <button
+                  @click="goBack()"
+                  class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+                >
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                  </svg>
+                </button>
+                <div>
+                  <h1 class="text-2xl font-bold text-gray-900 dark:text-white" x-text="customerName"></h1>
+                  <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Customer since <span x-text="customerJoinDate"></span>
+                  </p>
+                </div>
+              </div>
+              
+              <span 
+                :class="getStatusColor(customerStatus)"
+                class="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium"
+              >
+                <div :class="customerStatus === 'Active' ? 'bg-success-500' : 'bg-gray-400'" class="h-2 w-2 rounded-full"></div>
+                <span x-text="customerStatus"></span>
+              </span>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-[#010a1b]">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Policies</p>
+                <h3 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white" x-text="totalPolicies"></h3>
+              </div>
+
+              <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-[#010a1b]">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Policies</p>
+                <h3 class="mt-2 text-3xl font-bold text-success-600 dark:text-success-400" x-text="activePolicies"></h3>
+              </div>
+
+              <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-[#010a1b]">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spent</p>
+                <h3 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white" x-text="totalSpent"></h3>
+              </div>
+
+              <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-[#010a1b]">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Last Activity</p>
+                <h3 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white" x-text="lastActivity"></h3>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <!-- Left Column -->
+              <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Customer Information -->
+                <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]">
+                  <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Customer Information</h2>
+                  </div>
+                  <div class="p-6">
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                      <!-- Name -->
+                      <div>
+                        <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                        <input
+                          type="text"
+                          x-model="customerName"
+                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white"
+                        />
+                      </div>
+
+                      <!-- Email -->
+                      <div>
+                        <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+                        <input
+                          type="email"
+                          x-model="customerEmail"
+                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white"
+                        />
+                      </div>
+
+                      <!-- Phone -->
+                      <div>
+                        <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
+                        <input
+                          type="tel"
+                          x-model="customerPhone"
+                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white"
+                        />
+                      </div>
+
+                      <!-- Postcode -->
+                      <div>
+                        <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Postcode</label>
+                        <input
+                          type="text"
+                          x-model="customerPostcode"
+                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white"
+                        />
+                      </div>
+
+                      <!-- Address -->
+                      <div class="sm:col-span-2">
+                        <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Address</label>
+                        <textarea
+                          x-model="customerAddress"
+                          rows="2"
+                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white"
+                        ></textarea>
+                      </div>
+
+                      <!-- Notes -->
+                      <div class="sm:col-span-2">
+                        <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Internal Notes</label>
+                        <textarea
+                          x-model="customerNotes"
+                          rows="3"
+                          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white"
+                        ></textarea>
+                      </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-3">
+                      <button class="rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600">
+                        Save Changes
+                      </button>
+                      <button class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Policy History -->
+                <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]">
+                  <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Policy History</h2>
+                  </div>
+                  <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto">
+                      <thead class="bg-gray-50 dark:bg-gray-800/50">
+                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                          <th class="px-6 py-3.5 text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">Reference</p>
+                          </th>
+                          <th class="px-6 py-3.5 text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">Type</p>
+                          </th>
+                          <th class="px-6 py-3.5 text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">Vehicle</p>
+                          </th>
+                          <th class="px-6 py-3.5 text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">Period</p>
+                          </th>
+                          <th class="px-6 py-3.5 text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">Price</p>
+                          </th>
+                          <th class="px-6 py-3.5 text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">Status</p>
+                          </th>
+                          <th class="px-6 py-3.5 text-left">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-300">Actions</p>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <template x-for="policy in policies" :key="policy.id">
+                          <tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30">
+                            <td class="px-6 py-4">
+                              <p class="text-sm font-medium text-brand-600 dark:text-brand-400" x-text="policy.ref"></p>
+                            </td>
+                            <td class="px-6 py-3">
+                              <span class="inline-flex rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" x-text="policy.type"></span>
+                            </td>
+                            <td class="px-6 py-3">
+                              <p class="text-sm text-gray-600 dark:text-gray-400" x-text="policy.vehicle"></p>
+                            </td>
+                            <td class="px-6 py-3">
+                              <p class="text-sm text-gray-600 dark:text-gray-400">
+                                <span x-text="policy.startDate"></span> - <span x-text="policy.endDate"></span>
+                              </p>
+                            </td>
+                            <td class="px-6 py-3">
+                              <p class="text-sm font-semibold text-gray-900 dark:text-white" x-text="policy.price"></p>
+                            </td>
+                            <td class="px-6 py-3">
+                              <span 
+                                :class="getStatusColor(policy.status)"
+                                class="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium"
+                              >
+                                <div :class="policy.status === 'Active' ? 'bg-success-500' : 'bg-gray-400'" class="h-1.5 w-1.5 rounded-full"></div>
+                                <span x-text="policy.status"></span>
+                              </span>
+                            </td>
+                            <td class="px-6 py-3">
+                              <button class="text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300">
+                                View
+                              </button>
+                            </td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Right Column -->
+              <div class="space-y-6">
+                
+                <!-- Activity Timeline -->
+                <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]">
+                  <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Activity</h2>
+                  </div>
+                  <div class="p-6">
+                    <div class="space-y-4">
+                      <template x-for="(activity, index) in activities.slice(0, 8)" :key="activity.id">
+                        <div class="relative flex gap-4">
+                          <!-- Timeline line -->
+                          <div class="flex flex-col items-center">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-brand-50 dark:bg-brand-900/30">
+                              <template x-if="activity.icon === 'document'">
+                                <svg class="h-4 w-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                              </template>
+                              <template x-if="activity.icon === 'payment'">
+                                <svg class="h-4 w-4 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                              </template>
+                              <template x-if="activity.icon === 'expire'">
+                                <svg class="h-4 w-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                              </template>
+                              <template x-if="activity.icon === 'user'">
+                                <svg class="h-4 w-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                              </template>
+                            </div>
+                            <div 
+                              x-show="index < activities.slice(0, 8).length - 1"
+                              class="w-px flex-1 bg-gray-200 dark:bg-gray-700 mt-2"
+                            ></div>
+                          </div>
+                          <div class="flex-1 pb-4">
+                            <p class="text-sm font-medium text-gray-900 dark:text-white" x-text="activity.description"></p>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                              <span x-text="activity.date"></span> at <span x-text="activity.time"></span>
+                            </p>
+                          </div>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Documents -->
+                <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]">
+                  <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+                    <div class="flex items-center justify-between">
+                      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Documents</h2>
+                      <button class="text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400">
+                        Upload
+                      </button>
+                    </div>
+                  </div>
+                  <div class="p-6">
+                    <div class="space-y-3">
+                      <template x-for="doc in documents" :key="doc.id">
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                          <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-900/30">
+                            <svg class="h-5 w-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                          </div>
+                          <div class="min-w-0 flex-1">
+                            <p class="truncate text-sm font-medium text-gray-900 dark:text-white" x-text="doc.name"></p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                              <span x-text="doc.size"></span> • <span x-text="doc.uploadDate"></span>
+                            </p>
+                          </div>
+                          <button class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]">
+                  <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h2>
+                  </div>
+                  <div class="p-6">
+                    <div class="space-y-2">
+                      <button class="flex w-full items-center gap-3 rounded-lg border border-gray-200 p-3 text-left transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800/50">
+                        <svg class="h-5 w-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">Create New Policy</span>
+                      </button>
+                      <button class="flex w-full items-center gap-3 rounded-lg border border-gray-200 p-3 text-left transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800/50">
+                        <svg class="h-5 w-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">Send Email</span>
+                      </button>
+                      <button class="flex w-full items-center gap-3 rounded-lg border border-gray-200 p-3 text-left transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800/50">
+                        <svg class="h-5 w-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">Generate Report</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+  </body>
+</html>
