@@ -306,7 +306,12 @@
         // Reinitialize SortableJS for new board
         this.sortableInitialized = false;
         this.$nextTick(() => {
-          this.initSortable();
+          if (typeof window.reinitKanbanSortable === 'function') {
+            window.reinitKanbanSortable(this);
+            this.sortableInitialized = true;
+          } else {
+            this.initSortable();
+          }
         });
 
         // Dispatch event for calendar sync
