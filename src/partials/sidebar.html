@@ -423,10 +423,10 @@
               href="#"
               @click.prevent="selected = (selected === 'Contact' ? '':'Contact')"
               class="menu-item group"
-              :class="(selected === 'Contact') || (page === 'tickets' || page === 'contactForm' || page === 'liveChat' || page === 'phone') ? 'menu-item-active' : 'menu-item-inactive'"
+              :class="(selected === 'Contact') || (page === 'contactForm' || page === 'liveChat' || page === 'phone') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Contact') || (page === 'tickets' || page === 'contactForm' || page === 'liveChat' || page === 'phone') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                :class="(selected === 'Contact') || (page === 'contactForm' || page === 'liveChat' || page === 'phone') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -473,15 +473,6 @@
                 :class="sidebarToggle ? 'lg:hidden' : 'flex'"
                 class="flex flex-col gap-1 mt-2 menu-dropdown pl-9"
               >
-                <li>
-                  <a
-                    href="tickets.html"
-                    class="menu-dropdown-item group"
-                    :class="page === 'tickets' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
-                  >
-                    Tickets
-                  </a>
-                </li>
                 <li>
                   <a
                     href="contact-form.html"
@@ -747,16 +738,15 @@
           </li>
           <!-- Menu Item Promo Codes -->
 
-          <!-- Menu Item Customer -->
+          <!-- Menu Item Customer Data -->
           <li>
             <a
-              href="#"
-              @click.prevent="selected = (selected === 'Customer' ? '':'Customer')"
+              href="customer-data.html"
               class="menu-item group"
-              :class="(selected === 'Customer') || (page === 'customerPortal' || page === 'customerData') ? 'menu-item-active' : 'menu-item-inactive'"
+              :class="page === 'customerData' ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Customer') || (page === 'customerPortal' || page === 'customerData') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                :class="page === 'customerData' ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -773,60 +763,11 @@
                 class="menu-item-text"
                 :class="sidebarToggle ? 'lg:hidden' : ''"
               >
-                Customer
+                Customer Data
               </span>
-
-              <svg
-                class="menu-item-arrow absolute right-2.5 top-1/2 -translate-y-1/2 stroke-current"
-                :class="[(selected === 'Customer') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'lg:hidden' : '' ]"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
-                  stroke=""
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
             </a>
-
-            <!-- Dropdown Menu Start -->
-            <div
-              class="overflow-hidden transform translate"
-              :class="(selected === 'Customer') ? 'block' :'hidden'"
-            >
-              <ul
-                :class="sidebarToggle ? 'lg:hidden' : 'flex'"
-                class="flex flex-col gap-1 mt-2 menu-dropdown pl-9"
-              >
-                <li>
-                  <a
-                    href="customer-portal.html"
-                    class="menu-dropdown-item group"
-                    :class="page === 'customerPortal' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
-                  >
-                    Portal
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="customer-data.html"
-                    class="menu-dropdown-item group"
-                    :class="page === 'customerData' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
-                  >
-                    Customer Data
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <!-- Dropdown Menu End -->
           </li>
-          <!-- Menu Item Customer -->
+          <!-- Menu Item Customer Data -->
 
           <!-- Menu Item Users -->
           <li>
