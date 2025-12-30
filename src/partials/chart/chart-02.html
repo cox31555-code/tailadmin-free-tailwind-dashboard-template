@@ -1,21 +1,51 @@
-<div
-  class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
->
-  <div class="px-5 py-4 sm:px-6 sm:py-5">
-    <div class="flex items-center justify-between">
-      <div>
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Orders by Product Type
-        </h3>
-        <p class="mt-1 text-theme-sm text-gray-500 dark:text-gray-400">
-          Daily order count for Annual, Temporary, and Impound policies
-        </p>
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50 shadow-lg dark:from-gray-900 dark:to-gray-800">
+  <!-- Decorative Elements -->
+  <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-400/10 to-transparent rounded-full -mr-20 -mt-20"></div>
+  <div class="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-brand-400/5 to-transparent rounded-full -ml-16 -mb-16"></div>
+  
+  <div class="relative p-6">
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-brand-500 shadow-lg shadow-blue-500/25">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+            Orders by Product Type
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Daily order count for Annual, Temporary, and Impound policies
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="p-5 border-t border-gray-100 dark:border-gray-800 sm:p-6">
-    <div class="max-w-full overflow-x-auto custom-scrollbar">
-      <div id="chartTwo" class="min-w-[400px]"></div>
+
+    <!-- Legend Pills -->
+    <div class="flex flex-wrap gap-3 mb-6">
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 dark:bg-brand-900/20">
+        <div class="w-2.5 h-2.5 rounded-full bg-brand-500"></div>
+        <span class="text-xs font-medium text-brand-700 dark:text-brand-300">Annual</span>
+      </div>
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/20">
+        <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+        <span class="text-xs font-medium text-green-700 dark:text-green-300">Temporary</span>
+      </div>
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 dark:bg-orange-900/20">
+        <div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div>
+        <span class="text-xs font-medium text-orange-700 dark:text-orange-300">Impound</span>
+      </div>
+    </div>
+
+    <!-- Chart Container -->
+    <div class="relative">
+      <div class="max-w-full overflow-x-auto custom-scrollbar">
+        <div class="min-w-[400px]">
+          <div id="chartTwo" class="h-[350px]"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
