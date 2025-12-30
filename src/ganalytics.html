@@ -276,6 +276,8 @@
 
         if (charts.device) charts.device.destroy();
 
+        const isDarkMode = document.documentElement.classList.contains('dark');
+
         charts.device = new ApexCharts(deviceChartElement, {
           series: data,
           labels: labels,
@@ -284,12 +286,17 @@
             type: "donut",
             height: 320,
             toolbar: { show: false },
+            background: 'transparent',
           },
           colors: ["#0388FF", "#EC4899", "#5edbff", "#F59E0B", "#10B981"],
           plotOptions: {
             pie: { donut: { size: "65%" } },
           },
-          legend: { position: "bottom" },
+          legend: {
+            position: "bottom",
+            labels: { colors: isDarkMode ? '#9ca3af' : '#6b7280' }
+          },
+          theme: { mode: isDarkMode ? 'dark' : 'light' },
         });
 
         charts.device.render();
@@ -304,6 +311,8 @@
 
         if (charts.userType) charts.userType.destroy();
 
+        const isDarkMode = document.documentElement.classList.contains('dark');
+
         charts.userType = new ApexCharts(userTypeChartElement, {
           series: data,
           labels: labels,
@@ -312,12 +321,17 @@
             type: "donut",
             height: 320,
             toolbar: { show: false },
+            background: 'transparent',
           },
           colors: ["#10B981", "#F59E0B"],
           plotOptions: {
             pie: { donut: { size: "65%" } },
           },
-          legend: { position: "bottom" },
+          legend: {
+            position: "bottom",
+            labels: { colors: isDarkMode ? '#9ca3af' : '#6b7280' }
+          },
+          theme: { mode: isDarkMode ? 'dark' : 'light' },
         });
 
         charts.userType.render();
@@ -332,6 +346,8 @@
 
         if (charts.traffic) charts.traffic.destroy();
 
+        const isDarkMode = document.documentElement.classList.contains('dark');
+
         charts.traffic = new ApexCharts(trafficChartElement, {
           series: [{ name: "Sessions", data: data }],
           chart: {
@@ -339,12 +355,23 @@
             type: "bar",
             height: 320,
             toolbar: { show: false },
+            background: 'transparent',
           },
           colors: ["#0388FF"],
-          xaxis: { categories: labels },
-          yaxis: { title: { text: "Sessions" } },
+          xaxis: {
+            categories: labels,
+            labels: { style: { colors: isDarkMode ? '#9ca3af' : '#6b7280' } }
+          },
+          yaxis: {
+            title: { text: "Sessions", style: { color: isDarkMode ? '#9ca3af' : '#6b7280' } },
+            labels: { style: { colors: isDarkMode ? '#9ca3af' : '#6b7280' } }
+          },
           plotOptions: { bar: { columnWidth: "60%", borderRadius: 5 } },
           dataLabels: { enabled: false },
+          theme: { mode: isDarkMode ? 'dark' : 'light' },
+          grid: {
+            borderColor: isDarkMode ? '#374151' : '#e5e7eb',
+          },
         });
 
         charts.traffic.render();
