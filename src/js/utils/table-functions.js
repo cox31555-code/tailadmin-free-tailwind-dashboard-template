@@ -7,6 +7,16 @@ import { getDateRange, parseDateAsLondon } from "./londonTime.js";
  */
 
 /**
+ * Get table element using config selector
+ * @param {Object} config - Table configuration
+ * @returns {HTMLTableElement|null} Table element
+ */
+function getTableElement(config) {
+  const selector = config?.tableSelector || 'table';
+  return document.querySelector(selector);
+}
+
+/**
  * Initialize table with configuration
  * @param {Object} tableConfig - Table configuration object
  */
@@ -23,6 +33,7 @@ export function initializeTable(tableConfig) {
   // Make functions globally available
   window.filterAndSearchTable = filterAndSearchTable;
   window.exportTableToCSV = () => exportTableToCSV(tableConfig);
+  window.exportTableToJSON = () => exportTableToJSON(tableConfig);
   window.getSortValue = getSortValue;
   window.performSort = performSort;
   window.calculatePolicyCounts = calculatePolicyCounts;
