@@ -98,9 +98,110 @@ export const impoundTableConfig = {
   }
 };
 
+// Expired Annual Policies Table Configuration
+export const expiredAnnualTableConfig = {
+  tableType: 'expired-annual',
+  csvFilename: 'expired-annual-policies.csv',
+  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Payment', 'Policy Start', 'Policy End', 'Next Due Date'],
+
+  columns: {
+    defaultSort: 'policyend',
+    paymentIndex: 4,
+    list: [
+      { sortKey: 'name', sortType: 'name', dataKey: 'name.email', isMergedCell: true, exportable: true },
+      { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
+      { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
+      { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
+      { sortKey: 'payment', sortType: 'text', dataKey: 'payment', exportable: true },
+      { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
+      { sortKey: 'policyend', sortType: 'date', dataKey: 'policyEnd', hasProgressBar: false, exportable: true },
+      { sortKey: 'duedate', sortType: 'date', dataKey: 'dueDate', hasProgressBar: false, exportable: true },
+      { sortKey: null, exportable: false }
+    ]
+  },
+
+  dateColumns: {
+    policyEnd: 6,
+    dueDate: 7
+  },
+
+  statusConfig: {
+    removeExpired: false,
+    showOnlyExpired: true,
+    expiringThreshold: 30
+  }
+};
+
+// Expired Temporary Policies Table Configuration
+export const expiredTemporaryTableConfig = {
+  tableType: 'expired-temporary',
+  csvFilename: 'expired-temporary-policies.csv',
+  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Duration', 'Policy Start', 'Policy End'],
+
+  columns: {
+    defaultSort: 'policyend',
+    paymentIndex: undefined,
+    list: [
+      { sortKey: 'name', sortType: 'name', dataKey: 'name.email', isMergedCell: true, exportable: true },
+      { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
+      { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
+      { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
+      { sortKey: 'duration', sortType: 'text', dataKey: 'duration', exportable: true },
+      { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
+      { sortKey: 'policyend', sortType: 'date', dataKey: 'policyEnd', hasProgressBar: false, exportable: true },
+      { sortKey: null, exportable: false }
+    ]
+  },
+
+  dateColumns: {
+    policyEnd: 6
+  },
+
+  statusConfig: {
+    removeExpired: false,
+    showOnlyExpired: true,
+    expiringThreshold: 7
+  }
+};
+
+// Expired Impound Policies Table Configuration
+export const expiredImpoundTableConfig = {
+  tableType: 'expired-impound',
+  csvFilename: 'expired-impound-policies.csv',
+  csvHeaders: ['Customer Name', 'Email', 'Phone', 'Vehicle', 'Price', 'Type', 'Policy Start', 'Policy End'],
+
+  columns: {
+    defaultSort: 'policyend',
+    paymentIndex: undefined,
+    list: [
+      { sortKey: 'name', sortType: 'name', dataKey: 'name.email', isMergedCell: true, exportable: true },
+      { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
+      { sortKey: 'vehicle', sortType: 'text', dataKey: 'vehicle', exportable: true },
+      { sortKey: 'price', sortType: 'price', dataKey: 'price', exportable: true },
+      { sortKey: 'type', sortType: 'text', dataKey: 'type', exportable: true },
+      { sortKey: 'policystart', sortType: 'date', dataKey: 'policyStart', exportable: true },
+      { sortKey: 'policyend', sortType: 'date', dataKey: 'policyEnd', hasProgressBar: false, exportable: true },
+      { sortKey: null, exportable: false }
+    ]
+  },
+
+  dateColumns: {
+    policyEnd: 6
+  },
+
+  statusConfig: {
+    removeExpired: false,
+    showOnlyExpired: true,
+    expiringThreshold: 7
+  }
+};
+
 // Export configurations to window for use in HTML
 if (typeof window !== 'undefined') {
   window.annualTableConfig = annualTableConfig;
   window.temporaryTableConfig = temporaryTableConfig;
   window.impoundTableConfig = impoundTableConfig;
+  window.expiredAnnualTableConfig = expiredAnnualTableConfig;
+  window.expiredTemporaryTableConfig = expiredTemporaryTableConfig;
+  window.expiredImpoundTableConfig = expiredImpoundTableConfig;
 }
