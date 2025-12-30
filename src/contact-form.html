@@ -35,8 +35,8 @@
       'scrollTop': false,
       'contactFormViewModal': false,
       'selectedMessage': null,
-      openMessage(email, message, received) {
-        this.selectedMessage = { email, message, received };
+      openMessage(email, message, received, firstName, surname, phone, policyRef) {
+        this.selectedMessage = { email, message, received, firstName, surname, phone, policyRef };
         this.contactFormViewModal = true;
       }
     }"
