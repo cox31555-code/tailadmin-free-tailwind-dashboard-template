@@ -4,8 +4,10 @@
     filterRole: 'all',
     sortColumn: 'name',
     sortDirection: 'asc',
+    debugMessage: '',
     init() {
       this.updateRoleCounts();
+      console.log('Users table initialized');
     },
     handleSort(column) {
       console.log('Sorting by column:', column);
