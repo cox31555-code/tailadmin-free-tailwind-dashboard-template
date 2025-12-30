@@ -123,4 +123,16 @@
     background: #030e21;
     box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.3);
   }
+
+  /* Ensure dropdown parent has proper stacking context */
+  tbody .actions-column-sticky > div {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Boost dropdown z-index inside sticky cells to appear above other sticky cells */
+  tbody .actions-column-sticky .table-action-dropdown,
+  tbody .actions-column-sticky [x-show="actionsOpen"] {
+    z-index: 9999 !important;
+  }
 }
