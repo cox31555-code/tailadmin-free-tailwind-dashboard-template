@@ -15,6 +15,7 @@ import map01 from "./components/map-01";
 import "./components/calendar-init.js";
 import "./components/image-resize";
 import "./loading-handler.js";
+import "./components/kanban-sortable-init.js";
 
 import {
   getLondonNow,
