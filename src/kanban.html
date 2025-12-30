@@ -422,6 +422,21 @@
         window.dispatchEvent(new CustomEvent('kanban:taskUpdated', { detail: task }));
       },
 
+      handleColumnMoved(detail) {
+        const { oldIndex, newIndex } = detail;
+
+        if (!this.activeBoard || oldIndex === newIndex) return;
+
+        // Reorder columns array
+        const column = this.columns.splice(oldIndex, 1)[0];
+        this.columns.splice(newIndex, 0, column);
+
+        // Save to localStorage
+        this.saveKanbanData();
+
+        console.log(`Column moved from position ${oldIndex} to ${newIndex}`);
+      },
+
       recalculateColumnPositions(columnId) {
         const columnTasks = this.tasks
           .filter(t => t.column === columnId)
