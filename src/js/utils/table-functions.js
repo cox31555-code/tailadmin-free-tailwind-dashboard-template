@@ -171,9 +171,17 @@ function setupTableObserver() {
  * @param {string} filterPayment - Payment filter
  */
 function filterAndSearchTable(searchQuery = '', filterPayment = 'all') {
+  console.log('filterAndSearchTable called:', { searchQuery, filterPayment });
   const config = window.currentTableConfig;
+  if (!config) {
+    console.error('No currentTableConfig found');
+    return;
+  }
   const table = getTableElement(config);
-  if (!table) return;
+  if (!table) {
+    console.error('Table not found for filtering. Config:', config);
+    return;
+  }
 
   const tbody = table.querySelector('tbody');
   const rows = tbody.querySelectorAll('tr');
