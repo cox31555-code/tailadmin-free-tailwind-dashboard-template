@@ -1,3 +1,5 @@
+import { readOrdersData, writeOrdersData } from "./orders-data-store.js";
+
 /**
  * Base Table Utilities
  * Reusable functions for all policy tables (Annual, Temporary, Impound)
@@ -69,11 +71,7 @@ export function createTableState(config) {
       let expiredFound = false;
       
       // Get existing orders to append to
-      let allOrders = [];
-      const ordersDataStr = localStorage.getItem('ordersData');
-      if (ordersDataStr) {
-        allOrders = JSON.parse(ordersDataStr);
-      }
+      let allOrders = readOrdersData();
 
       rows.forEach(row => {
         const policyEndCell = row.querySelectorAll('td')[endDateColumnIndex];
@@ -114,7 +112,7 @@ export function createTableState(config) {
 
       // Save updated orders if we found expired ones
       if (expiredFound) {
-        localStorage.setItem('ordersData', JSON.stringify(allOrders));
+        writeOrdersData(allOrders);
       }
     },
 
