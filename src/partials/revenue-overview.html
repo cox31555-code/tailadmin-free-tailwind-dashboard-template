@@ -1,98 +1,88 @@
 <div class="col-span-12">
-  <div x-data="revenueOverview()" x-init="init()" class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50 shadow-lg dark:from-gray-900 dark:to-gray-800">
-    <!-- Decorative Elements -->
-    <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-success-400/10 to-transparent rounded-full -mr-32 -mt-32 blur-2xl"></div>
-    
-    <div class="relative p-6 md:p-8">
-      <!-- Header -->
-      <div class="flex items-center gap-4 mb-8">
-        <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-success-500 to-success-600 shadow-lg shadow-success-500/25">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">
-            Revenue Overview
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Track your earnings and growth</p>
-        </div>
-      </div>
+  <div x-data="revenueOverview()" x-init="init()" class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]">
+    <div class="px-5 py-4 sm:px-6 sm:py-5">
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Revenue Overview</h2>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Track your earnings and growth</p>
+    </div>
 
+    <div class="border-t border-gray-100 dark:border-gray-800 p-5 sm:p-6">
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
         <!-- Total Revenue Card -->
-        <div class="relative overflow-hidden group">
-          <div class="absolute inset-0 bg-gradient-to-br from-success-400/10 to-transparent rounded-2xl"></div>
-          <div class="relative p-6 rounded-2xl bg-white border border-gray-200 transition-all hover:shadow-lg hover:border-success-300 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-success-600">
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-success-50 dark:bg-success-900/30">
-                <svg class="w-5 h-5 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                </svg>
-              </div>
-              <span class="inline-flex items-center gap-1 rounded-full bg-success-50 px-2.5 py-1 text-xs font-semibold text-success-700 dark:bg-success-900/30 dark:text-success-400">
-                <svg class="w-3 h-3 fill-current" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z" />
-                </svg>
-                +2.5%
-              </span>
-            </div>
-            <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white" x-text="formatCurrency(totalRevenue)">£0.00</h3>
-            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-              <p class="text-xs text-gray-500 dark:text-gray-400">All time earnings</p>
-            </div>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between mb-3">
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
+            <span class="inline-flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
+              <svg
+                class="fill-current"
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z"
+                  fill=""
+                />
+              </svg>
+              +2.5%
+            </span>
           </div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white" x-text="formatCurrency(totalRevenue)">£0.00</h3>
         </div>
 
         <!-- Daily Revenue Card -->
-        <div class="relative overflow-hidden group">
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-transparent rounded-2xl"></div>
-          <div class="relative p-6 rounded-2xl bg-white border border-gray-200 transition-all hover:shadow-lg hover:border-blue-300 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-blue-600">
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30">
-                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-              <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                <svg class="w-3 h-3 fill-current" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z" />
-                </svg>
-                +4.2%
-              </span>
-            </div>
-            <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Daily Revenue</p>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white" x-text="formatCurrency(dailyRevenue)">£0.00</h3>
-            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Today's earnings</p>
-            </div>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between mb-3">
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Daily Revenue</p>
+            <span class="inline-flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
+              <svg
+                class="fill-current"
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z"
+                  fill=""
+                />
+              </svg>
+              +4.2%
+            </span>
           </div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white" x-text="formatCurrency(dailyRevenue)">£0.00</h3>
         </div>
 
         <!-- Weekly Revenue Card -->
-        <div class="relative overflow-hidden group">
-          <div class="absolute inset-0 bg-gradient-to-br from-brand-400/10 to-transparent rounded-2xl"></div>
-          <div class="relative p-6 rounded-2xl bg-white border border-gray-200 transition-all hover:shadow-lg hover:border-brand-300 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-brand-600">
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-brand-50 dark:bg-brand-900/30">
-                <svg class="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-              </div>
-              <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-900/30 dark:text-brand-400">
-                <svg class="w-3 h-3 fill-current" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z" />
-                </svg>
-                +1.8%
-              </span>
-            </div>
-            <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Weekly Revenue</p>
-            <h3 class="text-3xl font-bold text-gray-900 dark:text-white" x-text="formatCurrency(weeklyRevenue)">£0.00</h3>
-            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Last 7 days</p>
-            </div>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between mb-3">
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Weekly Revenue</p>
+            <span class="inline-flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
+              <svg
+                class="fill-current"
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z"
+                  fill=""
+                />
+              </svg>
+              +1.8%
+            </span>
           </div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white" x-text="formatCurrency(weeklyRevenue)">£0.00</h3>
         </div>
       </div>
     </div>
