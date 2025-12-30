@@ -97,8 +97,8 @@
                 <span x-text="promo.status"></span>
               </span>
             </td>
-            <td class="px-5 py-3 sm:px-6 actions-column-sticky">
-              <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+            <td class="px-5 py-3 sm:px-6 actions-column-sticky" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false" :class="actionsOpen && 'dropdown-active'">
+              <div class="relative">
                 <button
                   @click="actionsOpen = !actionsOpen"
                   class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
