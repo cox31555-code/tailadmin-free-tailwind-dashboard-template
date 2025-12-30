@@ -4,120 +4,76 @@
     filterRole: 'all',
     sortColumn: 'name',
     sortDirection: 'asc',
-    debugMessage: '',
     init() {
       this.updateRoleCounts();
-      console.log('Users table initialized');
     },
     handleSort(column) {
-      this.debugMessage = `Sorting by ${column}...`;
-      console.log('handleSort called with column:', column);
-
       if (this.sortColumn === column) {
         this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
       } else {
         this.sortColumn = column;
         this.sortDirection = 'asc';
       }
-
-      console.log('Current sort:', this.sortColumn, this.sortDirection);
-
-      // Use $nextTick to ensure state is updated before sorting
-      this.$nextTick(() => {
-        this.performSort();
-        this.debugMessage = `Sorted by ${column} (${this.sortDirection})`;
-      });
+      this.performSort();
     },
     performSort() {
-      console.log('performSort called');
-      const tbody = this.$el.querySelector('table tbody');
-
-      if (!tbody) {
-        console.error('performSort: tbody not found!');
-        this.debugMessage = 'Error: Table body not found';
-        return;
-      }
-
+      const table = this.$el.querySelector('table');
+      if (!table) return;
+      
+      const tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      
       const rows = Array.from(tbody.querySelectorAll('tr'));
-      console.log('performSort: Found', rows.length, 'rows');
-
-      if (rows.length === 0) {
-        console.error('performSort: No rows found!');
-        this.debugMessage = 'Error: No rows to sort';
-        return;
-      }
-
+      if (rows.length === 0) return;
+      
       const columnIndex = this.getColumnIndex(this.sortColumn);
-      console.log('performSort: Sorting column', this.sortColumn, 'at index', columnIndex);
-
-      // Sort the rows array
+      
       rows.sort((a, b) => {
-        const aCell = a.querySelectorAll('td')[columnIndex];
-        const bCell = b.querySelectorAll('td')[columnIndex];
-
-        if (!aCell || !bCell) {
-          console.error('performSort: Cell not found at index', columnIndex);
-          return 0;
+        const aCells = a.querySelectorAll('td');
+        const bCells = b.querySelectorAll('td');
+        
+        const aCell = aCells[columnIndex];
+        const bCell = bCells[columnIndex];
+        
+        if (!aCell || !bCell) return 0;
+        
+        let aValue = this.getSortValue(aCell, this.sortColumn);
+        let bValue = this.getSortValue(bCell, this.sortColumn);
+        
+        if (this.sortDirection === 'asc') {
+          return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+        } else {
+          return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
         }
-
-        const aValue = this.getSortValue(aCell, this.sortColumn);
-        const bValue = this.getSortValue(bCell, this.sortColumn);
-
-        const result = this.sortDirection === 'asc'
-          ? (aValue < bValue ? -1 : aValue > bValue ? 1 : 0)
-          : (aValue > bValue ? -1 : aValue < bValue ? 1 : 0);
-
-        return result;
       });
-
-      console.log('performSort: Reordering DOM...');
-
-      // Reorder the DOM by appending rows in sorted order
-      rows.forEach((row, index) => {
-        tbody.appendChild(row);
-        console.log(`performSort: Moved row ${index + 1} to position`);
-      });
-
-      console.log('performSort: Complete!');
+      
+      rows.forEach(row => tbody.appendChild(row));
     },
     getSortValue(cell, column) {
-      if (!cell) {
-        console.error('getSortValue: cell is null');
-        return '';
-      }
-
-      let value = '';
-
+      if (!cell) return '';
+      
       if (column === 'name') {
-        // Name is in a <p> tag within a <div> structure
-        const nameP = cell.querySelector('p.font-medium');
-        value = nameP ? nameP.textContent.trim() : cell.textContent.trim();
+        const p = cell.querySelector('p.font-medium');
+        return (p ? p.textContent : cell.textContent).trim().toLowerCase();
       } else if (column === 'email') {
-        // Email is in a <p> tag
-        const emailP = cell.querySelector('p');
-        value = emailP ? emailP.textContent.trim() : cell.textContent.trim();
+        const p = cell.querySelector('p');
+        return (p ? p.textContent : cell.textContent).trim().toLowerCase();
       } else if (column === 'role') {
-        // Role is in a <span> tag
-        const roleSpan = cell.querySelector('span');
-        value = roleSpan ? roleSpan.textContent.trim() : cell.textContent.trim();
-      } else if (column === 'status') {
-        // Status is in a <span> within a flex div
-        const statusSpan = cell.querySelector('span.text-gray-600');
-        value = statusSpan ? statusSpan.textContent.trim() : cell.textContent.trim();
+        const span = cell.querySelector('span');
+        return (span ? span.textContent : cell.textContent).trim().toLowerCase();
       } else {
-        // Default: last active or other columns
-        value = cell.textContent.trim();
+        return cell.textContent.trim().toLowerCase();
       }
-
-      console.log(`getSortValue(${column}):`, value);
-      return value.toLowerCase();
     },
     getColumnIndex(column) {
       const columns = { name: 0, email: 1, role: 2, status: 3, lastActive: 4 };
       return columns[column] || 0;
     },
     filterTable() {
-      const tbody = this.$el.querySelector('table tbody');
+      const table = this.$el.querySelector('table');
+      if (!table) return;
+      
+      const tbody = table.querySelector('tbody');
       if (!tbody) return;
       
       const rows = tbody.querySelectorAll('tr');
@@ -145,11 +101,13 @@
       this.updateRoleCounts();
     },
     updateRoleCounts() {
-      const tbody = this.$el.querySelector('table tbody');
+      const table = this.$el.querySelector('table');
+      if (!table) return;
+      
+      const tbody = table.querySelector('tbody');
       if (!tbody) return;
       
       const rows = tbody.querySelectorAll('tr');
-      
       const counts = { total: 0, admin: 0, support: 0, basic: 0 };
       
       rows.forEach(row => {
@@ -206,8 +164,6 @@
           placeholder="Search by name or email..."
           class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-800 placeholder:text-gray-500 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500 dark:hover:border-gray-600 dark:focus:border-brand-600"
         />
-        <!-- Debug Message -->
-        <p x-show="debugMessage" x-text="debugMessage" class="mt-1 text-xs text-brand-600 dark:text-brand-400"></p>
       </div>
 
       <!-- Filter -->
