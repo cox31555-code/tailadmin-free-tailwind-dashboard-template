@@ -125,7 +125,7 @@ export function createTableState(config) {
         this.policyCounts = { total: this.expiredPolicies.length, active: 0, expiringSoon: 0, nextDue: 0 };
       } else {
         // For active pages, calculate from DOM
-        this.policyCounts = window.calculatePolicyCounts();
+        this.policyCounts = window.calculatePolicyCounts(tableType);
       }
     },
 

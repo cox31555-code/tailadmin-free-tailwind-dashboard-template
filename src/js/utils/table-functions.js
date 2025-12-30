@@ -232,51 +232,71 @@ function getStatus(policyEndDate) {
 /**
  * Calculate policy counts from visible rows
  */
-function calculatePolicyCounts() {
+function calculatePolicyCounts(tableType) {
   const config = window.currentTableConfig;
   const rows = document.querySelectorAll('table tbody tr');
   let total = 0, active = 0, expiringSoon = 0, nextDue = 0;
 
-  rows.forEach(row => {
-    if (row.style.display === 'none') return; // Skip hidden rows
+  // For quotes table, count by type instead of status
+  if (tableType === 'quotes') {
+    rows.forEach(row => {
+      if (row.style.display === 'none') return; // Skip hidden rows
 
-    const cells = row.querySelectorAll('td');
+      total++;
+      const cells = row.querySelectorAll('td');
 
-    // Get policy end date to determine status
-    const policyEndIndex = config.dateColumns.policyEnd;
-    const policyEndCell = cells[policyEndIndex];
-    const dateP = policyEndCell?.querySelector('p:first-child');
-    const policyEndDate = dateP ? dateP.textContent.trim() : '';
-
-    if (policyEndDate) {
-      const status = getStatus(policyEndDate);
-      if (status !== 'Expired') {
-        total++;
-        if (status === 'Active') active++;
-        if (status === 'Expiring Soon') expiringSoon++;
+      // Find the type column (index 4)
+      const typeCell = cells[4];
+      if (typeCell) {
+        const typeText = typeCell.textContent.trim().toLowerCase();
+        if (typeText.includes('annual')) active++;
+        else if (typeText.includes('temporary')) expiringSoon++;
+        else if (typeText.includes('impound')) nextDue++;
       }
-    }
+    });
+  } else {
+    // Original logic for policy tables
+    rows.forEach(row => {
+      if (row.style.display === 'none') return; // Skip hidden rows
 
-    // Count next due payments (if dueDate column exists)
-    if (config.dateColumns.dueDate !== undefined) {
-      const dueDateIndex = config.dateColumns.dueDate;
-      const dueDateCell = cells[dueDateIndex];
-      const dueDateP = dueDateCell?.querySelector('p:first-child');
-      const dueDate = dueDateP ? dueDateP.textContent.trim() : '';
+      const cells = row.querySelectorAll('td');
 
-      if (dueDate && dueDate !== 'N/A') {
-        const due = new Date(dueDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const daysUntilDue = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+      // Get policy end date to determine status
+      const policyEndIndex = config.dateColumns.policyEnd;
+      const policyEndCell = cells[policyEndIndex];
+      const dateP = policyEndCell?.querySelector('p:first-child');
+      const policyEndDate = dateP ? dateP.textContent.trim() : '';
 
-        // Count payments due within next 7 days
-        if (daysUntilDue >= 0 && daysUntilDue <= 7) {
-          nextDue++;
+      if (policyEndDate) {
+        const status = getStatus(policyEndDate);
+        if (status !== 'Expired') {
+          total++;
+          if (status === 'Active') active++;
+          if (status === 'Expiring Soon') expiringSoon++;
         }
       }
-    }
-  });
+
+      // Count next due payments (if dueDate column exists)
+      if (config.dateColumns.dueDate !== undefined) {
+        const dueDateIndex = config.dateColumns.dueDate;
+        const dueDateCell = cells[dueDateIndex];
+        const dueDateP = dueDateCell?.querySelector('p:first-child');
+        const dueDate = dueDateP ? dueDateP.textContent.trim() : '';
+
+        if (dueDate && dueDate !== 'N/A') {
+          const due = new Date(dueDate);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const daysUntilDue = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+
+          // Count payments due within next 7 days
+          if (daysUntilDue >= 0 && daysUntilDue <= 7) {
+            nextDue++;
+          }
+        }
+      }
+    });
+  }
 
   return { total, active, expiringSoon, nextDue };
 }
