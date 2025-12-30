@@ -1,13 +1,13 @@
 <script>
-  // Initialize Temporary Table Configuration
-  if (typeof window.temporaryTableConfig !== 'undefined') {
-    window.tableConfig = window.temporaryTableConfig;
-    window.initializeTable(window.temporaryTableConfig);
+  // Initialize Expired Temporary Table Configuration
+  if (typeof window.expiredTemporaryTableConfig !== 'undefined') {
+    window.tableConfig = window.expiredTemporaryTableConfig;
+    window.initializeTable(window.expiredTemporaryTableConfig);
   }
 </script>
 
 <div
-  x-data="createTableState(window.temporaryTableConfig)"
+  x-data="createTableState(window.expiredTemporaryTableConfig)"
   @click.outside="filterPanelOpen = false"
   class="overflow-visible rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]"
 >
