@@ -595,7 +595,10 @@ function getSortValue(cell, columnName) {
  */
 function performSort(columnName, direction) {
   const config = window.currentTableConfig;
-  const tbody = document.querySelector('table tbody');
+  const table = getTableElement(config);
+  if (!table) return;
+
+  const tbody = table.querySelector('tbody');
   const rows = Array.from(tbody.querySelectorAll('tr'));
 
   const columnIndex = config.columns.list.findIndex(col => col.sortKey === columnName);
@@ -615,6 +618,19 @@ function performSort(columnName, direction) {
 
   // Re-append rows in sorted order
   rows.forEach(row => tbody.appendChild(row));
+
+  // Reapply pagination after sorting (clamp page if needed)
+  const alpineEl = document.querySelector(`[x-data*="createTableState"]`);
+  if (alpineEl && alpineEl._x_dataStack) {
+    const alpineData = alpineEl._x_dataStack[0];
+    if (alpineData) {
+      // Clamp current page to valid range
+      if (alpineData.currentPage > alpineData.totalPages) {
+        alpineData.currentPage = alpineData.totalPages;
+      }
+      alpineData.applyPagination();
+    }
+  }
 }
 
 // Initialize when DOM is ready
