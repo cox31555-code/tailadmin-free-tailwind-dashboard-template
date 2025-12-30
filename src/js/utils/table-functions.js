@@ -633,6 +633,11 @@ function performSort(columnName, direction) {
   }
 }
 
+// Expose initializeTable to window for use in HTML
+if (typeof window !== 'undefined') {
+  window.initializeTable = initializeTable;
+}
+
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
