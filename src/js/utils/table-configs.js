@@ -227,14 +227,13 @@ export const quotesTableConfig = {
 export const contactFormTableConfig = {
   tableType: 'contactForm',
   csvFilename: 'contact-form-submissions.csv',
-  csvHeaders: ['First Name', 'Surname', 'Email', 'Phone Number', 'Policy Reference', 'Type', 'Date Received', 'Time Received', 'Message'],
+  csvHeaders: ['Name', 'Email', 'Phone Number', 'Policy Reference', 'Type', 'Date Received', 'Time Received', 'Message'],
 
   columns: {
     defaultSort: 'date',
     paymentIndex: undefined,
     list: [
-      { sortKey: 'firstname', sortType: 'text', dataKey: 'firstName', exportable: true },
-      { sortKey: 'surname', sortType: 'text', dataKey: 'surname', exportable: true },
+      { sortKey: 'name', sortType: 'text', dataKey: 'name', exportable: true },
       { sortKey: 'email', sortType: 'text', dataKey: 'email', exportable: true },
       { sortKey: 'phone', sortType: 'text', dataKey: 'phone', exportable: true },
       { sortKey: 'policyref', sortType: 'text', dataKey: 'policyRef', exportable: true },
