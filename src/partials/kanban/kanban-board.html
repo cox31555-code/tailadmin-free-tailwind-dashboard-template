@@ -161,7 +161,7 @@
               <div class="flex items-center gap-1">
                 <button
                   x-show="bulkMode"
-                  @click="selectAllInColumn(column.id)"
+                  @click.stop="selectAllInColumn(column.id)"
                   class="px-2 py-1 text-xs font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-brand-900/20 rounded transition-colors"
                   title="Select all tasks in this column"
                 >
@@ -169,7 +169,7 @@
                 </button>
                 <button
                   x-show="!bulkMode"
-                  @click="openAddTaskModal(column.id)"
+                  @click.stop="openAddTaskModal(column.id)"
                   class="p-1 text-gray-400 hover:text-brand-500 dark:hover:text-brand-400"
                   title="Add task to this column"
                 >
@@ -177,8 +177,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                   </svg>
                 </button>
-                <button 
-                  @click="openColumnModal(column.id)"
+                <button
+                  @click.stop="openColumnModal(column.id)"
                   class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                   title="Edit column"
                 >
