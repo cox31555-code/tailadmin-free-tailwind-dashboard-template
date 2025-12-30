@@ -1,5 +1,6 @@
 import { readOrdersData, writeOrdersData } from "./orders-data-store.js";
 import { getDateRange, parseDateAsLondon } from "./londonTime.js";
+import { allTableConfigs } from "./table-configs.js";
 
 /**
  * Shared Table Functions
@@ -17,10 +18,23 @@ function getTableElement(config) {
 }
 
 /**
+ * Track initialized tables to avoid duplicate work
+ */
+const initializedTables = new Set();
+
+/**
  * Initialize table with configuration
  * @param {Object} tableConfig - Table configuration object
  */
 export function initializeTable(tableConfig) {
+  if (!tableConfig) return;
+
+  const selector = tableConfig.tableSelector || 'table';
+  if (initializedTables.has(selector)) {
+    return;
+  }
+  initializedTables.add(selector);
+
   // Store table config globally (used by all table functions)
   window.currentTableConfig = tableConfig;
 
@@ -659,7 +673,7 @@ if (typeof window !== 'undefined') {
   window.exportTableToCSV = () => {
     const config = window.currentTableConfig;
     if (!config) {
-      console.error('No table configuration found. Call initializeTable first.');
+      console.error('No table configuration found. Ensure initializeTable runs.');
       return;
     }
     exportTableToCSV(config);
@@ -667,7 +681,7 @@ if (typeof window !== 'undefined') {
   window.exportTableToJSON = () => {
     const config = window.currentTableConfig;
     if (!config) {
-      console.error('No table configuration found. Call initializeTable first.');
+      console.error('No table configuration found. Ensure initializeTable runs.');
       return;
     }
     exportTableToJSON(config);
@@ -678,15 +692,34 @@ if (typeof window !== 'undefined') {
   window.extractRowData = extractRowData;
 }
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    if (window.tableConfig) {
-      initializeTable(window.tableConfig);
+function findMatchingTableConfig() {
+  const pendingConfig = window.tableConfig;
+  if (pendingConfig?.tableSelector && document.querySelector(pendingConfig.tableSelector)) {
+    return pendingConfig;
+  }
+
+  for (const config of allTableConfigs) {
+    if (config?.tableSelector && document.querySelector(config.tableSelector)) {
+      return config;
     }
-  });
-} else {
-  if (window.tableConfig) {
-    initializeTable(window.tableConfig);
+  }
+
+  return null;
+}
+
+function bootstrapActiveTable() {
+  const config = findMatchingTableConfig();
+  if (!config) {
+    return;
+  }
+  initializeTable(config);
+}
+
+// Initialize when DOM is ready
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrapActiveTable, { once: true });
+  } else {
+    bootstrapActiveTable();
   }
 }
