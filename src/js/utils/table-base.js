@@ -116,6 +116,17 @@ export function createTableState(config) {
 
     // Initialization
     init() {
+      // Initialize data attributes on all rows
+      const table = document.querySelector(config.tableSelector || 'table');
+      const allRows = table?.querySelectorAll('tbody tr') || [];
+      allRows.forEach(row => {
+        row.dataset.filteredOut = row.dataset.filteredOut || 'false';
+        row.dataset.pagedOut = row.dataset.pagedOut || 'false';
+      });
+
+      // Cache rows to avoid repeated queries
+      this._tableRows = Array.from(allRows);
+
       // If we are on an expired-only page, load data from localStorage
       if (statusConfig.showOnlyExpired) {
         this.loadExpiredPolicies();
@@ -125,13 +136,18 @@ export function createTableState(config) {
           this.removeExpiredPolicies();
         }
       }
-      
+
       // Initialize stats on page load
       this.updatePolicyCounts();
-      
+
       // Listen for stats updates from filter/search
       document.addEventListener('update-stats', (e) => {
         this.policyCounts = e.detail;
+      });
+
+      // Apply initial pagination after Alpine finishes rendering
+      this.$nextTick(() => {
+        this.applyPagination();
       });
     },
 
