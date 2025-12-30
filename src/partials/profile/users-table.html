@@ -10,15 +10,23 @@
       console.log('Users table initialized');
     },
     handleSort(column) {
-      console.log('Sorting by column:', column);
+      this.debugMessage = `Sorting by ${column}...`;
+      console.log('handleSort called with column:', column);
+
       if (this.sortColumn === column) {
         this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
       } else {
         this.sortColumn = column;
         this.sortDirection = 'asc';
       }
-      console.log('Sort direction:', this.sortDirection);
-      this.performSort();
+
+      console.log('Current sort:', this.sortColumn, this.sortDirection);
+
+      // Use $nextTick to ensure state is updated before sorting
+      this.$nextTick(() => {
+        this.performSort();
+        this.debugMessage = `Sorted by ${column} (${this.sortDirection})`;
+      });
     },
     performSort() {
       const tbody = this.$el.querySelector('table tbody');
