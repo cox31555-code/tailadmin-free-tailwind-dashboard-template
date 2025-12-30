@@ -583,8 +583,16 @@
     cursor: grabbing !important;
   }
 
+  .column-drag [data-column-drag-handle] {
+    cursor: grabbing !important;
+  }
+
   .column-chosen {
     box-shadow: 0 0 0 3px #3b82f6;
+  }
+
+  .column-chosen [data-column-drag-handle] {
+    cursor: grabbing !important;
   }
 
   .dark .column-ghost {
@@ -595,5 +603,14 @@
   /* Column transitions */
   [data-columns-container] > div {
     transition: transform 0.25s ease;
+  }
+
+  /* Ensure drag handle shows grab cursor */
+  [data-column-drag-handle] {
+    cursor: grab !important;
+  }
+
+  [data-column-drag-handle]:active {
+    cursor: grabbing !important;
   }
 </style>
