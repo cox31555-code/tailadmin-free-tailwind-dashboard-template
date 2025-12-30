@@ -162,3 +162,7 @@ export function reinitKanbanSortable(alpineComponent) {
   // Reinitialize both
   initKanbanSortable(alpineComponent);
 }
+
+// Expose globally for use in HTML Alpine components
+window.initKanbanSortable = initKanbanSortable;
+window.reinitKanbanSortable = reinitKanbanSortable;
