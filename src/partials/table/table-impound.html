@@ -346,20 +346,20 @@
             <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">£220.00</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
-            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Jan 17, 2026</p>
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">Dec 26, 2025</p>
           </td>
           <td class="px-5 py-3 sm:px-6">
             <div class="flex flex-col gap-1.5">
               <p class="text-gray-800 text-theme-sm font-medium dark:text-white/90">Jan 25, 2026</p>
               <div class="flex items-center gap-2">
                 <div class="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     class="h-full rounded-full transition-all duration-300"
                     :class="getPolicyEndColor('Jan 25, 2026')"
-                    :style="`width: ${getPolicyProgress('Jan 17, 2026', 'Jan 25, 2026')}%`"
+                    :style="`width: ${getPolicyProgress('Dec 26, 2025', 'Jan 25, 2026')}%`"
                   ></div>
                 </div>
-                <span 
+                <span
                   class="text-theme-xs font-medium whitespace-nowrap"
                   :class="getPolicyEndTextColor('Jan 25, 2026')"
                   x-text="getDaysRemaining('Jan 25, 2026')"
