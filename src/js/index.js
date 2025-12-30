@@ -53,6 +53,9 @@ window.londonTime = {
   getEndOfDay
 };
 
+// Expose table utilities globally
+window.createTableState = createTableState;
+
 /**
  * Shared utility function to parse dates in "Mon DD, YYYY" format in London timezone
  */
