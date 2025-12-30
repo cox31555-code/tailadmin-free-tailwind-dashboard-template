@@ -154,63 +154,36 @@ export function createTableState(config) {
     // Load expired policies from localStorage
     loadExpiredPolicies() {
       const allOrders = readOrdersData();
-      // Filter for orders matching this table type (e.g. 'expired-annual')
-      this.expiredPolicies = allOrders.filter((order) => order.type === tableType);
+      const remaining = allOrders.filter((order) => order.type !== tableType);
+      if (remaining.length !== allOrders.length) {
+        writeOrdersData(remaining);
+      }
 
-      // Update stats based on loaded data
-      this.policyCounts.total = this.expiredPolicies.length;
+      this.expiredPolicies = [];
+      this.policyCounts.total = 0;
     },
 
-    // Remove expired policies from DOM and save to localStorage
+    // Remove expired policies from DOM without persisting separate records
     removeExpiredPolicies() {
       const rows = document.querySelectorAll('table tbody tr');
       const endDateColumnIndex = dateColumns.policyEnd;
-      let expiredFound = false;
-      
-      // Get existing orders to append to
-      let allOrders = readOrdersData();
+      if (endDateColumnIndex === undefined) return;
 
       rows.forEach(row => {
         const policyEndCell = row.querySelectorAll('td')[endDateColumnIndex];
         const dateP = policyEndCell?.querySelector('p:first-child');
         const policyEndDate = dateP ? dateP.textContent.trim() : '';
-        
+
         if (policyEndDate) {
           const endDate = new Date(policyEndDate);
           const today = new Date();
           today.setHours(0, 0, 0, 0);
-          
+
           if (endDate < today) {
-            // Policy is expired. 
-            // 1. Extract data
-            if (window.extractRowData) {
-              const orderData = window.extractRowData(row, config);
-              // Set type to expired version (e.g. 'annual' -> 'expired-annual')
-              orderData.type = `expired-${tableType}`;
-              
-              // Check if already exists to avoid duplicates (optional but good)
-              const exists = allOrders.some(o => 
-                o.type === orderData.type && 
-                o.name === orderData.name && 
-                o.email === orderData.email
-              );
-              
-              if (!exists) {
-                allOrders.push(orderData);
-                expiredFound = true;
-              }
-            }
-            
-            // 2. Remove from DOM
-            row.remove(); 
+            row.remove();
           }
         }
       });
-
-      // Save updated orders if we found expired ones
-      if (expiredFound) {
-        writeOrdersData(allOrders);
-      }
     },
 
     // Update policy counts
