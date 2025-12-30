@@ -113,6 +113,9 @@
   .max-w-full.overflow-x-auto {
     overflow-x: auto;
     overflow-y: visible !important;
+    /* Add padding to accommodate dropdowns */
+    padding-bottom: 180px;
+    margin-bottom: -180px;
   }
 
   /* Inner table-scroller must also allow vertical overflow */
