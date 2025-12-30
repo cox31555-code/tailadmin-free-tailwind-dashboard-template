@@ -89,11 +89,14 @@ function initColumnDragging(alpineComponent) {
   const columnsContainer = document.querySelector('[data-columns-container]');
 
   if (!columnsContainer) {
-    console.warn('No columns container found for column reordering');
+    console.warn('❌ No columns container found for column reordering');
     return;
   }
 
-  new Sortable(columnsContainer, {
+  const dragHandles = document.querySelectorAll('[data-column-drag-handle]');
+  console.log(`🔍 Found ${dragHandles.length} column drag handles`);
+
+  const sortable = new Sortable(columnsContainer, {
     animation: 200,
     handle: '[data-column-drag-handle]', // Only allow dragging from the handle
     ghostClass: 'column-ghost',
@@ -104,9 +107,15 @@ function initColumnDragging(alpineComponent) {
     delay: 50,
     delayOnTouchOnly: true,
 
+    onStart: (evt) => {
+      console.log('🎯 Column drag started');
+    },
+
     onEnd: (evt) => {
       const oldIndex = evt.oldIndex;
       const newIndex = evt.newIndex;
+
+      console.log(`📦 Column moved from ${oldIndex} to ${newIndex}`);
 
       if (oldIndex !== newIndex) {
         // Dispatch event to Alpine component
@@ -117,7 +126,7 @@ function initColumnDragging(alpineComponent) {
     }
   });
 
-  console.log('SortableJS initialized for column reordering');
+  console.log('✅ SortableJS initialized for column reordering', sortable);
 }
 
 /**
