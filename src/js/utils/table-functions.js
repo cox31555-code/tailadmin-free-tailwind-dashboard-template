@@ -400,7 +400,7 @@ function calculatePolicyCounts(tableType) {
     let propertyDamage = 0, bodilyInjury = 0, urgent = 0;
 
     rows.forEach(row => {
-      if (row.style.display === 'none') return; // Skip hidden rows
+      if (row.dataset.filteredOut === 'true') return; // Skip filtered rows
 
       total++;
       const cells = row.querySelectorAll('td');
@@ -436,7 +436,7 @@ function calculatePolicyCounts(tableType) {
     const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
 
     rows.forEach(row => {
-      if (row.style.display === 'none') return; // Skip hidden rows
+      if (row.dataset.filteredOut === 'true') return; // Skip filtered rows
 
       total++;
       const cells = row.querySelectorAll('td');
@@ -473,7 +473,7 @@ function calculatePolicyCounts(tableType) {
   // For quotes table, count by type instead of status
   if (tableType === 'quotes') {
     rows.forEach(row => {
-      if (row.style.display === 'none') return; // Skip hidden rows
+      if (row.dataset.filteredOut === 'true') return; // Skip filtered rows
 
       total++;
       const cells = row.querySelectorAll('td');
@@ -490,7 +490,7 @@ function calculatePolicyCounts(tableType) {
   } else if (tableType === 'contactForm') {
     // For contact form, count by message type
     rows.forEach(row => {
-      if (row.style.display === 'none') return; // Skip hidden rows
+      if (row.dataset.filteredOut === 'true') return; // Skip filtered rows
 
       total++;
       const cells = row.querySelectorAll('td');
@@ -508,7 +508,7 @@ function calculatePolicyCounts(tableType) {
   } else {
     // Original logic for policy tables
     rows.forEach(row => {
-      if (row.style.display === 'none') return; // Skip hidden rows
+      if (row.dataset.filteredOut === 'true') return; // Skip filtered rows
 
       const cells = row.querySelectorAll('td');
 
