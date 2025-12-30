@@ -406,7 +406,29 @@
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
       },
-      
+
+      getPolicyDuration() {
+        const start = new Date(this.policyStart);
+        const end = new Date(this.policyEnd);
+        const diffTime = end - start;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+          return '1 day';
+        } else if (diffDays < 7) {
+          return diffDays + ' days';
+        } else if (diffDays < 30) {
+          const weeks = Math.floor(diffDays / 7);
+          return weeks === 1 ? '1 week' : weeks + ' weeks';
+        } else if (diffDays < 365) {
+          const months = Math.floor(diffDays / 30);
+          return months === 1 ? '1 month' : months + ' months';
+        } else {
+          const years = Math.floor(diffDays / 365);
+          return years === 1 ? '1 year' : years + ' years';
+        }
+      },
+
       downloadAllPDFs() {
         const pdfs = [
           'data/pdfs/policy-certificate.pdf',
