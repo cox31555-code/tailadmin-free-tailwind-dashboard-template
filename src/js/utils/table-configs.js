@@ -283,19 +283,6 @@ export const contactFormTableConfig = {
   }
 };
 
-export const allTableConfigs = [
-  annualTableConfig,
-  temporaryTableConfig,
-  impoundTableConfig,
-  expiredAnnualTableConfig,
-  expiredTemporaryTableConfig,
-  expiredImpoundTableConfig,
-  quotesTableConfig,
-  contactFormTableConfig,
-  pendingClaimsTableConfig,
-  completedClaimsTableConfig,
-];
-
 // Pending Claims Table Configuration
 export const pendingClaimsTableConfig = {
   tableSelector: '#pendingClaimsTable',
