@@ -7,28 +7,43 @@
 }
 
 .table-scroller::-webkit-scrollbar-track {
-  background: rgba(75, 85, 99, 0.1);
+  background: rgba(226, 232, 240, 0.5);
   border-radius: 6px;
   margin: 0 10px;
 }
 
 .table-scroller::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.7);
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
   border-radius: 6px;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(226, 232, 240, 0.3);
 }
 
 .table-scroller::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.95);
+  background: linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%);
+  border-color: rgba(226, 232, 240, 0.5);
+  transform: scaleY(1.05);
 }
 
 .table-scroller {
   scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.7) rgba(75, 85, 99, 0.1);
+  scrollbar-color: #3B82F6 rgba(226, 232, 240, 0.5);
 }
 
 .dark .table-scroller::-webkit-scrollbar-track {
-  background: rgba(31, 41, 55, 0.1);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.dark .table-scroller::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #60A5FA 0%, #3B82F6 100%);
+  border: 2px solid rgba(30, 41, 59, 0.5);
+}
+
+.dark .table-scroller::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  border-color: rgba(51, 65, 85, 0.7);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
 }
 
 /* Action dropdown z-index fix - ensures dropdowns appear above pagination */
