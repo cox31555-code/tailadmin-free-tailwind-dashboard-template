@@ -1,0 +1,21 @@
+<div x-data="ordersCounter()" x-init="init()">
+  <div class="grid grid-cols-3 gap-4">
+    <!-- Today -->
+    <div class="text-center">
+      <p class="mb-2 text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Today</p>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white" x-text="formatNumber(todayCount)">0</p>
+    </div>
+    
+    <!-- Last 7 Days -->
+    <div class="text-center">
+      <p class="mb-2 text-xs font-medium text-gray-500 uppercase dark:text-gray-400">7 Days</p>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white" x-text="formatNumber(last7DaysCount)">0</p>
+    </div>
+    
+    <!-- Past 30 Days -->
+    <div class="text-center">
+      <p class="mb-2 text-xs font-medium text-gray-500 uppercase dark:text-gray-400">30 Days</p>
+      <p class="text-2xl font-bold text-blue-500 dark:text-blue-400" x-text="formatNumber(past30DaysCount)">0</p>
+    </div>
+  </div>
+</div>
