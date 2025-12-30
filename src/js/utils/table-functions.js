@@ -151,8 +151,9 @@ function storeTableData() {
     // Only extract data if the row is part of the current table structure and has cells
     if (row.querySelectorAll("td").length === 0) return;
 
-    // Constrain persisted rows to the last N days where configured, but never mutate the DOM
+    // Constrain rows to the last N days where configured to keep datasets current
     if (!isRowWithinRecentRange(row, config, recentRange)) {
+      row.remove();
       return;
     }
 
