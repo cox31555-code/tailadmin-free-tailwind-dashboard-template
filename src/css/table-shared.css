@@ -110,7 +110,8 @@
 /* Sticky Actions Column for Tablet and Mobile */
 @media (max-width: 1024px) {
   /* Allow outer wrapper to overflow vertically for dropdowns */
-  .max-w-full.overflow-x-auto {
+  .max-w-full.overflow-x-auto,
+  .table-scroller.overflow-x-auto {
     overflow-x: auto;
     overflow-y: visible !important;
     /* Add padding to accommodate dropdowns */
