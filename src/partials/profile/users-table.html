@@ -1,0 +1,397 @@
+<div
+  x-data="{
+    searchQuery: '',
+    filterRole: 'all',
+    sortColumn: 'name',
+    sortDirection: 'asc',
+    init() {
+      this.updateRoleCounts();
+    },
+    handleSort(column) {
+      if (this.sortColumn === column) {
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortColumn = column;
+        this.sortDirection = 'asc';
+      }
+      this.performSort();
+    },
+    performSort() {
+      const table = this.$el.querySelector('table');
+      if (!table) return;
+      
+      const tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      if (rows.length === 0) return;
+      
+      const columnIndex = this.getColumnIndex(this.sortColumn);
+      
+      rows.sort((a, b) => {
+        const aCells = a.querySelectorAll('td');
+        const bCells = b.querySelectorAll('td');
+        
+        const aCell = aCells[columnIndex];
+        const bCell = bCells[columnIndex];
+        
+        if (!aCell || !bCell) return 0;
+        
+        let aValue = this.getSortValue(aCell, this.sortColumn);
+        let bValue = this.getSortValue(bCell, this.sortColumn);
+        
+        if (this.sortDirection === 'asc') {
+          return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+        } else {
+          return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+        }
+      });
+      
+      rows.forEach(row => tbody.appendChild(row));
+    },
+    getSortValue(cell, column) {
+      if (!cell) return '';
+      
+      if (column === 'name') {
+        const p = cell.querySelector('p.font-medium');
+        return (p ? p.textContent : cell.textContent).trim().toLowerCase();
+      } else if (column === 'email') {
+        const p = cell.querySelector('p');
+        return (p ? p.textContent : cell.textContent).trim().toLowerCase();
+      } else if (column === 'role') {
+        const span = cell.querySelector('span');
+        return (span ? span.textContent : cell.textContent).trim().toLowerCase();
+      } else {
+        return cell.textContent.trim().toLowerCase();
+      }
+    },
+    getColumnIndex(column) {
+      const columns = { name: 0, email: 1, role: 2, status: 3, lastActive: 4 };
+      return columns[column] || 0;
+    },
+    filterTable() {
+      const table = this.$el.querySelector('table');
+      if (!table) return;
+      
+      const tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      
+      const rows = tbody.querySelectorAll('tr');
+      
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        let matchesSearch = true;
+        let matchesRole = true;
+        
+        if (this.searchQuery) {
+          const nameText = cells[0]?.textContent.toLowerCase() || '';
+          const emailText = cells[1]?.textContent.toLowerCase() || '';
+          matchesSearch = nameText.includes(this.searchQuery.toLowerCase()) || 
+                         emailText.includes(this.searchQuery.toLowerCase());
+        }
+        
+        if (this.filterRole !== 'all') {
+          const roleText = cells[2]?.textContent.trim().toLowerCase() || '';
+          matchesRole = roleText === this.filterRole.toLowerCase();
+        }
+        
+        row.style.display = matchesSearch && matchesRole ? '' : 'none';
+      });
+      
+      this.updateRoleCounts();
+    },
+    updateRoleCounts() {
+      const table = this.$el.querySelector('table');
+      if (!table) return;
+      
+      const tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      
+      const rows = tbody.querySelectorAll('tr');
+      const counts = { total: 0, admin: 0, support: 0, basic: 0 };
+      
+      rows.forEach(row => {
+        if (row.style.display === 'none') return;
+        
+        counts.total++;
+        const cells = row.querySelectorAll('td');
+        const roleCell = cells[2];
+        if (roleCell) {
+          const roleText = roleCell.textContent.trim().toLowerCase();
+          if (roleText.includes('admin')) counts.admin++;
+          else if (roleText.includes('support')) counts.support++;
+          else if (roleText.includes('basic')) counts.basic++;
+        }
+      });
+      
+      const event = new CustomEvent('update-user-counts', { detail: counts });
+      document.dispatchEvent(event);
+    }
+  }"
+  class="overflow-visible rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]"
+>
+  <!-- Table Header -->
+  <div class="flex flex-col gap-4 px-5 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-800">
+    <!-- Title and Action Row -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+          All Users
+        </h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          Manage user accounts and permissions
+        </p>
+      </div>
+      <button
+        @click="isCreateUserModal = true"
+        class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Add User
+      </button>
+    </div>
+
+    <!-- Search and Filter Row -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <!-- Search -->
+      <div class="flex-1 max-w-md">
+        <input
+          x-model="searchQuery"
+          @input="filterTable()"
+          type="text"
+          placeholder="Search by name or email..."
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-theme-sm font-medium text-gray-800 placeholder:text-gray-500 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#010a1b] dark:text-gray-300 dark:placeholder:text-gray-500 dark:hover:border-gray-600 dark:focus:border-brand-600"
+        />
+      </div>
+
+      <!-- Filter -->
+      <div class="flex items-center gap-2">
+        <!-- Role Filter -->
+        <select
+          x-model="filterRole"
+          @change="filterTable()"
+          class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:border-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-300 dark:hover:border-gray-600 dark:focus:border-brand-600"
+        >
+          <option value="all">All Roles</option>
+          <option value="admin">Admin</option>
+          <option value="support">Support</option>
+          <option value="basic">Basic</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="max-w-full overflow-x-auto custom-scrollbar">
+    <table class="min-w-full table-auto">
+      <thead class="bg-gray-50 dark:bg-[#010a1b]">
+        <tr class="border-b-2 border-gray-200 dark:border-gray-800">
+          <!-- Name -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('name')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Name</p>
+              <span x-show="sortColumn === 'name'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Email -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('email')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Email</p>
+              <span x-show="sortColumn === 'email'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Role -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('role')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Role</p>
+              <span x-show="sortColumn === 'role'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Status -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('status')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Status</p>
+              <span x-show="sortColumn === 'status'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Last Active -->
+          <th class="px-5 py-3.5 text-left sm:px-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/[0.03] transition-colors" @click="handleSort('lastActive')">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Last Active</p>
+              <span x-show="sortColumn === 'lastActive'" class="text-gray-600 dark:text-gray-300">
+                <span x-show="sortDirection === 'asc'">↑</span>
+                <span x-show="sortDirection === 'desc'">↓</span>
+              </span>
+            </div>
+          </th>
+          <!-- Actions -->
+          <th class="px-5 py-3.5 text-left sm:px-6">
+            <p class="font-semibold text-gray-600 text-theme-xs uppercase tracking-wider dark:text-gray-300">Actions</p>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-[#010a1b]">
+        <!-- User 1 - Admin -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">
+                JD
+              </div>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">John Doe</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">john.doe@example.com</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <span class="inline-flex rounded-full bg-purple-50 px-3 py-1 text-theme-xs font-medium text-purple-600 dark:bg-purple-500/15 dark:text-purple-400">Admin</span>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-green-500"></span>
+              <span class="text-gray-600 text-theme-sm dark:text-gray-400">Active</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">2 hours ago</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition
+                class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown z-50">
+                <button @click="editUser('John Doe', 'john.doe@example.com', 'Admin')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-brand-500/10 first:rounded-t-lg">Edit</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-500/10">Reset Password</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-error-500/10 last:rounded-b-lg">Delete</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- User 2 - Support -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-500 text-sm font-semibold text-white">
+                SJ
+              </div>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Sarah Johnson</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">sarah.johnson@example.com</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-theme-xs font-medium text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">Support</span>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-green-500"></span>
+              <span class="text-gray-600 text-theme-sm dark:text-gray-400">Active</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">5 minutes ago</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition
+                class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown z-50">
+                <button @click="editUser('Sarah Johnson', 'sarah.johnson@example.com', 'Support')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">Edit</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-white/[0.03]">Reset Password</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Delete</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- User 3 - Basic -->
+        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+          <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-orange-500 text-sm font-semibold text-white">
+                MC
+              </div>
+              <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">Michael Chen</p>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">michael.chen@example.com</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <span class="inline-flex rounded-full bg-gray-50 px-3 py-1 text-theme-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">Basic</span>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-gray-400"></span>
+              <span class="text-gray-600 text-theme-sm dark:text-gray-400">Offline</span>
+            </div>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <p class="text-gray-500 text-theme-sm dark:text-gray-400">1 day ago</p>
+          </td>
+          <td class="px-5 py-3 sm:px-6">
+            <div class="relative" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+              <button @click="actionsOpen = !actionsOpen" class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Actions
+                <svg class="h-4 w-4 transition-transform" :class="actionsOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div x-show="actionsOpen" x-transition
+                class="absolute right-0 top-full mt-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-[#0c192c] table-action-dropdown z-50">
+                <button @click="editUser('Michael Chen', 'michael.chen@example.com', 'Basic')" class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-white/[0.03] first:rounded-t-lg">Edit</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-white/[0.03]">Reset Password</button>
+                <button class="block w-full px-4 py-2.5 text-left text-theme-sm font-medium text-error-600 hover:bg-error-50 dark:text-error-400 dark:hover:bg-white/[0.03] last:rounded-b-lg">Delete</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 px-5 py-4 dark:border-gray-800 sm:px-6">
+    <p class="text-sm text-gray-500 dark:text-gray-400">
+      Showing <span class="font-medium">1-3</span> of <span class="font-medium">3</span> users
+    </p>
+    <div class="flex items-center gap-1">
+      <button class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+        Prev
+      </button>
+      <button class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500 text-theme-sm font-medium text-white">
+        1
+      </button>
+      <button class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+        Next
+      </button>
+    </div>
+  </div>
+</div>

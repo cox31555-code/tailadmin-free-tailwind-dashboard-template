@@ -1,0 +1,96 @@
+<div class="col-span-12">
+  <div x-data="revenueOverview()" x-init="init()" class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-[#010a1b]">
+    <div class="px-5 py-4 sm:px-6 sm:py-5">
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Revenue Overview</h2>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Track your earnings and growth</p>
+    </div>
+
+    <div class="border-t border-gray-100 dark:border-gray-800 p-5 sm:p-6">
+      <div class="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
+        <!-- Total Revenue Card -->
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-5 dark:border-gray-800 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+            <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 leading-tight">Total Revenue</p>
+            <span
+              class="inline-flex items-center gap-0.5 sm:gap-1 rounded-full px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium whitespace-nowrap"
+              :class="trendBadgeClasses(totalTrend)"
+            >
+              <svg
+                class="fill-current transition-transform w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0"
+                :class="trendIconClasses(totalTrend)"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z"
+                  fill=""
+                />
+              </svg>
+              <span x-text="formatTrend(totalTrend)">0%</span>
+            </span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-tight" x-text="formatCurrency(totalRevenue)">£0.00</h3>
+        </div>
+
+        <!-- Daily Revenue Card -->
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-5 dark:border-gray-800 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+            <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 leading-tight">Daily Revenue</p>
+            <span
+              class="inline-flex items-center gap-0.5 sm:gap-1 rounded-full px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium whitespace-nowrap"
+              :class="trendBadgeClasses(dailyTrend)"
+            >
+              <svg
+                class="fill-current transition-transform w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0"
+                :class="trendIconClasses(dailyTrend)"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z"
+                  fill=""
+                />
+              </svg>
+              <span x-text="formatTrend(dailyTrend)">0%</span>
+            </span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-tight" x-text="formatCurrency(dailyRevenue)">£0.00</h3>
+        </div>
+
+        <!-- Weekly Revenue Card -->
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-5 dark:border-gray-800 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+            <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 leading-tight">Weekly Revenue</p>
+            <span
+              class="inline-flex items-center gap-0.5 sm:gap-1 rounded-full px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium whitespace-nowrap"
+              :class="trendBadgeClasses(weeklyTrend)"
+            >
+              <svg
+                class="fill-current transition-transform w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0"
+                :class="trendIconClasses(weeklyTrend)"
+                viewBox="0 0 12 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.56462 1.62393C5.70193 1.47072 5.90135 1.37432 6.12329 1.37432C6.1236 1.37432 6.12391 1.37432 6.12422 1.37432C6.31631 1.37415 6.50845 1.44731 6.65505 1.59381L9.65514 4.5918C9.94814 4.88459 9.94831 5.35947 9.65552 5.65246C9.36273 5.94546 8.88785 5.94562 8.59486 5.65283L6.87329 3.93247L6.87329 10.125C6.87329 10.5392 6.53751 10.875 6.12329 10.875C5.70908 10.875 5.37329 10.5392 5.37329 10.125L5.37329 3.93578L3.65516 5.65282C3.36218 5.94562 2.8873 5.94547 2.5945 5.65248C2.3017 5.35949 2.30185 4.88462 2.59484 4.59182L5.56462 1.62393Z"
+                  fill=""
+                />
+              </svg>
+              <span x-text="formatTrend(weeklyTrend)">0%</span>
+            </span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white leading-tight" x-text="formatCurrency(weeklyRevenue)">£0.00</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

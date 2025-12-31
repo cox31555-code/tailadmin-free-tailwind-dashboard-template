@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <include src="./partials/critical-dark-mode.html"></include>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Phone | TailAdmin - Tailwind CSS Admin Dashboard Template</title>
+  </head>
+  <body
+    x-data="{ page: 'phone', 'isLoading': false, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div
+        class="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto"
+      >
+        <!-- Small Device Overlay Start -->
+        <include src="./partials/overlay.html" />
+        <!-- Small Device Overlay End -->
+
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+            <!-- Breadcrumb Start -->
+            <div x-data="{ pageName: `Phone`}">
+              <include src="./partials/breadcrumb.html" />
+            </div>
+            <!-- Breadcrumb End -->
+
+            <!-- Phone Container -->
+            <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] overflow-hidden" style="height: calc(100vh - 100px);">
+              <iframe
+                id="voiceOIPFrame"
+                src="https://my.lovevoip.co.uk/voicemail-inbox"
+                style="width: 100%; height: 100%; border: none;"
+                allow="microphone; camera; geolocation; payment"
+                sandbox="allow-same-origin allow-forms allow-popups allow-scripts allow-storage allow-top-navigation allow-modals"
+              ></iframe>
+            </div>
+
+            <script>
+              // VoiceOIP Session Manager
+              const VoiceOIPSessionManager = {
+                STORAGE_KEY: 'voiceoip_session',
+                COOKIE_DOMAIN: '.lovevoip.co.uk',
+
+                // Save session when iframe loads
+                init() {
+                  const iframeElement = document.getElementById('voiceOIPFrame');
+
+                  // Check if there's a saved session
+                  const savedSession = this.getSession();
+                  if (savedSession) {
+                    // Enable cross-domain cookie storage
+                    this.enableCookiePersistence();
+                  }
+
+                  // Listen for storage changes in iframe
+                  window.addEventListener('storage', (e) => {
+                    if (e.key === this.STORAGE_KEY) {
+                      this.saveSession(e.newValue);
+                    }
+                  });
+
+                  // Periodically sync cookies from iframe
+                  setInterval(() => this.syncSession(), 300000); // Every 5 minutes
+                },
+
+                // Save session to localStorage
+                saveSession(sessionData) {
+                  try {
+                    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(sessionData));
+                    // Also set a cookie with longer expiration
+                    const expiryDate = new Date();
+                    expiryDate.setTime(expiryDate.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days
+                    document.cookie = `voiceoip_session=${encodeURIComponent(JSON.stringify(sessionData))}; expires=${expiryDate.toUTCString()}; path=/; SameSite=Lax`;
+                  } catch (e) {
+                    console.error('Failed to save VoiceOIP session:', e);
+                  }
+                },
+
+                // Retrieve saved session
+                getSession() {
+                  try {
+                    // Try localStorage first
+                    const stored = localStorage.getItem(this.STORAGE_KEY);
+                    if (stored) return JSON.parse(stored);
+
+                    // Try cookies
+                    const cookieValue = document.cookie
+                      .split('; ')
+                      .find(row => row.startsWith('voiceoip_session='))
+                      ?.split('=')[1];
+
+                    if (cookieValue) {
+                      return JSON.parse(decodeURIComponent(cookieValue));
+                    }
+                  } catch (e) {
+                    console.error('Failed to retrieve VoiceOIP session:', e);
+                  }
+                  return null;
+                },
+
+                // Clear session
+                clearSession() {
+                  try {
+                    localStorage.removeItem(this.STORAGE_KEY);
+                    document.cookie = `voiceoip_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                  } catch (e) {
+                    console.error('Failed to clear VoiceOIP session:', e);
+                  }
+                },
+
+                // Enable cross-domain cookie persistence
+                enableCookiePersistence() {
+                  // Set SameSite=Lax to allow cross-site cookie access
+                  const session = this.getSession();
+                  if (session) {
+                    const expiryDate = new Date();
+                    expiryDate.setTime(expiryDate.getTime() + (30 * 24 * 60 * 60 * 1000));
+                    document.cookie = `voiceoip_authenticated=true; expires=${expiryDate.toUTCString()}; path=/; domain=.lovevoip.co.uk; SameSite=None; Secure`;
+                  }
+                },
+
+                // Sync session periodically
+                syncSession() {
+                  try {
+                    const iframe = document.getElementById('voiceOIPFrame');
+                    if (iframe && iframe.contentWindow) {
+                      iframe.contentWindow.postMessage({
+                        type: 'SYNC_SESSION',
+                        session: this.getSession()
+                      }, 'https://my.lovevoip.co.uk');
+                    }
+                  } catch (e) {
+                    console.error('Failed to sync VoiceOIP session:', e);
+                  }
+                },
+
+                // Listen for messages from iframe
+                listenForMessages() {
+                  window.addEventListener('message', (event) => {
+                    if (event.origin !== 'https://my.lovevoip.co.uk') return;
+
+                    if (event.data.type === 'LOGIN_SUCCESS') {
+                      this.saveSession(event.data.session);
+                    } else if (event.data.type === 'LOGOUT') {
+                      this.clearSession();
+                    }
+                  });
+                }
+              };
+
+              // Initialize on page load
+              VoiceOIPSessionManager.init();
+              VoiceOIPSessionManager.listenForMessages();
+
+              // Auto-refresh iframe periodically to maintain session
+              setInterval(() => {
+                const iframe = document.getElementById('voiceOIPFrame');
+                if (iframe) {
+                  iframe.src = iframe.src; // Reload iframe
+                }
+              }, 60 * 60 * 1000); // Every hour
+            </script>
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<script>
+  // CRITICAL: Synchronous dark mode initialization BEFORE any rendering
+  // Prevents white flash by applying dark class before content renders
+  (function() {
+    // 1. IMMEDIATE: Apply dark class synchronously from localStorage
+    try {
+      var isDark = JSON.parse(localStorage.getItem('darkMode') ?? 'true');
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) {
+      // Fallback to dark mode if localStorage fails
+      document.documentElement.classList.add('dark');
+    }
+
+    // 2. Add transition class after initial render
+    document.documentElement.classList.add('theme-transition');
+
+    // 3. Listen for storage changes from OTHER TABS
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'darkMode') {
+        var isDark = JSON.parse(e.newValue ?? 'true');
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+    });
+
+    // 4. Watch for class mutations and sync back to localStorage
+    // This handles direct class manipulation and ensures localStorage is always in sync
+    try {
+      new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            var hasDarkClass = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', JSON.stringify(hasDarkClass));
+          }
+        });
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    } catch (e) {
+      // MutationObserver not supported, fallback already handled
+    }
+  })();
+</script>

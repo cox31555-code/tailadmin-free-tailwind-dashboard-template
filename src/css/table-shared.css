@@ -1,0 +1,166 @@
+.table-scroller {
+  position: relative;
+}
+
+.table-scroller::-webkit-scrollbar {
+  height: 12px;
+}
+
+.table-scroller::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.5);
+  border-radius: 6px;
+  margin: 0 10px;
+}
+
+.table-scroller::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(226, 232, 240, 0.3);
+}
+
+.table-scroller::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%);
+  border-color: rgba(226, 232, 240, 0.5);
+  transform: scaleY(1.05);
+}
+
+.table-scroller {
+  scrollbar-width: thin;
+  scrollbar-color: #3B82F6 rgba(226, 232, 240, 0.5);
+}
+
+.dark .table-scroller::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.dark .table-scroller::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #60A5FA 0%, #3B82F6 100%);
+  border: 2px solid rgba(30, 41, 59, 0.5);
+}
+
+.dark .table-scroller::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  border-color: rgba(51, 65, 85, 0.7);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Action dropdown z-index fix - ensures dropdowns appear above pagination */
+.table-action-dropdown {
+  z-index: var(--z-index-50) !important;
+}
+
+/* Pagination scrollbar styling */
+.pagination-scroller::-webkit-scrollbar {
+  height: 8px;
+}
+
+.pagination-scroller::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 4px;
+  margin: 0 8px;
+}
+
+.pagination-scroller::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.pagination-scroller::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%);
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.5);
+}
+
+.pagination-scroller {
+  scrollbar-width: thin;
+  scrollbar-color: #3B82F6 rgba(226, 232, 240, 0.3);
+}
+
+.dark .pagination-scroller::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.dark .pagination-scroller::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #60A5FA 0%, #3B82F6 100%);
+}
+
+.dark .pagination-scroller::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+.table-scroller {
+  height: 1200px;
+}
+
+@media (max-width: 1024px) {
+  .table-scroller {
+    height: 1000px;
+  }
+}
+
+@media (max-width: 640px) {
+  .table-scroller {
+    height: 945px;
+  }
+}
+
+/* Sticky Actions Column for Tablet and Mobile */
+@media (max-width: 1024px) {
+  /* Allow outer wrapper to overflow vertically for dropdowns */
+  .max-w-full.overflow-x-auto,
+  .table-scroller.overflow-x-auto {
+    overflow-x: auto;
+    overflow-y: visible !important;
+    /* Add padding to accommodate dropdowns */
+    padding-bottom: 180px;
+    margin-bottom: -180px;
+  }
+
+  /* Inner table-scroller must also allow vertical overflow */
+  .table-scroller {
+    overflow-y: visible !important;
+  }
+
+  /* Table, tbody, and rows must allow overflow */
+  .table-scroller table,
+  .table-scroller tbody,
+  .table-scroller tr {
+    overflow: visible !important;
+  }
+
+  /* Make Actions cells sticky on tablet and mobile (not headers) */
+  tbody .actions-column-sticky {
+    position: sticky !important;
+    right: 0;
+    z-index: 10;
+    background: white;
+    box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.08);
+    min-width: 140px;
+    overflow: visible !important;
+  }
+
+  /* Boost z-index when dropdown is active (Alpine class binding) */
+  tbody .actions-column-sticky.dropdown-active {
+    z-index: 99999 !important;
+  }
+
+  /* Keep sticky cell above adjacent rows while interacting with the dropdown */
+  tbody .actions-column-sticky:focus-within {
+    z-index: 99999 !important;
+  }
+
+  .dark tbody .actions-column-sticky {
+    background: #030e21;
+    box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Dropdown parent must allow overflow */
+  tbody .actions-column-sticky > div {
+    overflow: visible !important;
+    position: relative;
+  }
+
+}

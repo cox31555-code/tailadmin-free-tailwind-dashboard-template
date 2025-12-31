@@ -1,0 +1,266 @@
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="p-5 sm:p-6">
+    <!-- Header Row -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 pb-6 border-b border-gray-100 dark:border-gray-800">
+      <!-- Left: Reference & Status -->
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <h1 class="text-2xl font-bold text-gray-800 dark:text-white/90" x-text="policyRef"></h1>
+          <span 
+            class="inline-flex rounded-full px-3 py-1 text-xs font-medium"
+            :class="{
+              'bg-green-50 text-green-600 border border-green-200 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20': status === 'Active',
+              'bg-orange-50 text-orange-600 border border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20': status === 'Expiring Soon',
+              'bg-red-50 text-red-600 border border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20': status === 'Expired'
+            }"
+            x-text="status">
+          </span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Annual Insurance Policy</p>
+        <a href="annual.html" class="inline-flex items-center gap-1 text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 mt-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Annual Policies
+        </a>
+      </div>
+      
+      <!-- Right: Action Buttons -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <button 
+          @click="printPolicy()"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Print
+        </button>
+        
+        <button 
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          Email
+        </button>
+        
+        <button 
+          @click="downloadAllPDFs()"
+          class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-3 py-2 text-sm font-medium text-white hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Download All
+        </button>
+        
+        <button 
+          class="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-700 dark:bg-[#0c192c] dark:text-red-400 dark:hover:bg-red-900/10">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+          Delete
+        </button>
+      </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4">
+      <!-- Quote Received -->
+      <div class="p-4 rounded-lg" style="background-color: #010a1b;">
+        <p class="text-xs font-medium text-gray-400 mb-1">Quote Received</p>
+        <p class="text-base font-semibold text-white/90 mb-1" x-text="new Date(quoteReceived).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></p>
+        <p class="text-xs text-gray-500" x-text="getDaysSinceQuoteReceived() + ' days ago'"></p>
+      </div>
+
+      <!-- Order Received -->
+      <div class="p-4 rounded-lg" style="background-color: #010a1b;">
+        <p class="text-xs font-medium text-gray-400 mb-1">Order Received</p>
+        <p class="text-base font-semibold text-white/90 mb-1" x-text="new Date(orderReceived).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></p>
+        <p class="text-xs text-gray-500" x-text="getDaysSinceOrderReceived() + ' days ago'"></p>
+      </div>
+
+      <!-- Policy Start -->
+      <div class="p-4 rounded-lg" style="background-color: #010a1b;">
+        <p class="text-xs font-medium text-gray-400 mb-1">Policy Start</p>
+        <p class="text-base font-semibold text-white/90 mb-1" x-text="new Date(policyStart).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></p>
+        <p class="text-xs"
+           :class="getDaysUntilPolicyStart() > 0 ? 'text-blue-400' : 'text-gray-500'"
+           x-text="getDaysUntilPolicyStart() > 0 ? getDaysUntilPolicyStart() + ' days away' : 'Started'"></p>
+      </div>
+
+      <!-- Policy End -->
+      <div class="p-4 rounded-lg" style="background-color: #010a1b;">
+        <p class="text-xs font-medium text-gray-400 mb-1">Policy End</p>
+        <p class="text-base font-semibold text-white/90 mb-1" x-text="new Date(policyEnd).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></p>
+        <p class="text-xs"
+           :class="getDaysUntilPolicyEnd() < 30 ? 'text-orange-400' : (getDaysUntilPolicyEnd() < 0 ? 'text-red-400' : 'text-gray-500')"
+           x-text="getDaysUntilPolicyEnd() > 0 ? getDaysUntilPolicyEnd() + ' days left' : 'Expired'"></p>
+      </div>
+
+      <!-- Next Payment Due (Monthly only) -->
+      <div x-show="paymentType === 'Monthly'" class="p-4 rounded-lg" style="background-color: #010a1b;">
+        <p class="text-xs font-medium text-gray-400 mb-1">Next Payment</p>
+        <template x-if="getNextDuePayment()">
+          <div>
+            <p class="text-base font-semibold text-white/90 mb-1" x-text="getNextDuePayment().amount"></p>
+            <p class="text-xs"
+               :class="getNextDuePayment().daysUntil <= 7 ? 'text-orange-400' : (getNextDuePayment().daysUntil < 0 ? 'text-red-400' : 'text-gray-500')"
+               x-text="getNextDuePayment().daysUntil > 0 ? 'Due in ' + getNextDuePayment().daysUntil + ' days' : (getNextDuePayment().daysUntil === 0 ? 'Due today' : 'Overdue')"></p>
+          </div>
+        </template>
+        <template x-if="!getNextDuePayment()">
+          <p class="text-sm text-green-400">All paid ✓</p>
+        </template>
+      </div>
+
+      <!-- Total Price -->
+      <div class="p-4 rounded-lg" style="background-color: #010a1b;">
+        <p class="text-xs font-medium text-gray-400 mb-1">Total Price</p>
+        <p class="text-base font-semibold text-white/90" x-text="policyPrice"></p>
+      </div>
+
+      <!-- Payment Type -->
+      <div class="p-4 rounded-lg" style="background-color: #010a1b;">
+        <p class="text-xs font-medium text-gray-400 mb-1">Payment Type</p>
+        <p class="text-base font-semibold text-white/90" x-text="paymentType"></p>
+      </div>
+    </div>
+
+    <!-- Monthly Payment Schedule (Collapsible) -->
+    <div x-show="paymentType === 'Monthly'" class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
+      <!-- Header with Expand Button -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <h3 class="text-sm font-semibold text-gray-800 dark:text-white/90">Payment Schedule</h3>
+          <span class="text-xs text-gray-500 dark:text-gray-400" x-text="getPaidPaymentsCount() + ' of ' + monthlyPayments.length + ' paid'"></span>
+        </div>
+        <button 
+          @click="togglePaymentSchedule()"
+          class="inline-flex items-center gap-1 text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300">
+          <span x-text="paymentScheduleExpanded ? 'Collapse' : 'Expand'"></span>
+          <svg class="w-4 h-4 transition-transform" :class="paymentScheduleExpanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Compact Summary (when collapsed) -->
+      <div x-show="!paymentScheduleExpanded" class="space-y-2">
+        <!-- Deposit Summary -->
+        <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/30">
+          <div class="flex items-center gap-3">
+            <div class="flex-shrink-0">
+              <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Deposit</p>
+              <p class="text-xs text-gray-500 dark:text-gray-500" x-text="new Date(policyStart).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></p>
+            </div>
+          </div>
+          <span class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="depositAmount"></span>
+        </div>
+        
+        <!-- Monthly Summary -->
+        <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/30">
+          <div>
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Monthly Installments</p>
+            <p class="text-xs text-gray-500 dark:text-gray-500" x-text="getPaidPaymentsCount() + ' of ' + monthlyPayments.length + ' completed'"></p>
+          </div>
+          <span class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="monthlyAmount + ' each'"></span>
+        </div>
+      </div>
+
+      <!-- Full Payment List (when expanded) -->
+      <div x-show="paymentScheduleExpanded" class="space-y-3" x-collapse>
+        <!-- Deposit -->
+        <div class="p-3 rounded-lg" :class="depositPaid ? 'bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800' : 'bg-gray-50 dark:bg-gray-800/30'">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3 flex-1">
+              <input 
+                type="checkbox" 
+                x-model="depositPaid" 
+                :disabled="!editMode['payments']"
+                class="w-4 h-4 text-brand-500 border-gray-300 rounded focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Deposit (Initial Payment)</span>
+                  <span x-show="depositPaid" class="text-xs text-green-600 dark:text-green-400">✓ Paid</span>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-500 mt-0.5" x-text="new Date(policyStart).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></p>
+              </div>
+            </div>
+            <span class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="depositAmount"></span>
+          </div>
+        </div>
+
+        <!-- Monthly Payments Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <template x-for="(payment, index) in monthlyPayments" :key="index">
+            <div class="p-3 rounded-lg" :class="payment.paid ? 'bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800' : 'bg-gray-50 dark:bg-gray-800/30 border border-gray-200 dark:border-gray-700'">
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div class="flex items-center gap-2">
+                  <input 
+                    type="checkbox" 
+                    x-model="payment.paid" 
+                    :disabled="!editMode['payments']"
+                    class="w-4 h-4 mt-0.5 text-brand-500 border-gray-300 rounded focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <div>
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300" x-text="'Payment ' + (index + 1)"></span>
+                    <span x-show="payment.paid" class="ml-1 text-xs text-green-600 dark:text-green-400">✓</span>
+                  </div>
+                </div>
+                <span class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="payment.amount"></span>
+              </div>
+              <div class="text-xs text-gray-500 dark:text-gray-500" x-text="new Date(payment.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Edit/Save Controls -->
+        <div class="flex items-center gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
+          <template x-if="!editMode['payments']">
+            <button 
+              @click="toggleEditMode('payments')"
+              class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-3 py-2 text-sm font-medium text-white hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Mark Payments
+            </button>
+          </template>
+          <template x-if="editMode['payments']">
+            <div class="flex items-center gap-2">
+              <button 
+                @click="saveSection('payments')" 
+                :disabled="savingField['payments']"
+                class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-3 py-2 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-brand-600 dark:hover:bg-brand-700">
+                <svg x-show="!savingField['payments']" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <svg x-show="savingField['payments']" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span x-text="savingField['payments'] ? 'Saving...' : 'Save'"></span>
+              </button>
+              <button 
+                @click="cancelEdit('payments')"
+                :disabled="savingField['payments']"
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                Cancel
+              </button>
+            </div>
+          </template>
+          <div x-show="savedField['payments']" class="inline-flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <span>Saved successfully</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

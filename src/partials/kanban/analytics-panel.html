@@ -1,0 +1,103 @@
+<!-- Analytics Panel (collapsible) -->
+<div x-data="{ showAnalytics: false }" class="space-y-4">
+  <button 
+    @click="showAnalytics = !showAnalytics; if (showAnalytics) { setTimeout(() => refreshAnalytics(), 100); }"
+    class="inline-flex items-center gap-2 text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 transition-colors">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    </svg>
+    <span x-text="showAnalytics ? 'Hide Analytics' : 'Show Analytics'"></span>
+  </button>
+  
+  <div 
+    x-show="showAnalytics" 
+    x-collapse
+    class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-bold text-gray-800 dark:text-white/90">Board Analytics</h3>
+      <button
+        @click="refreshAnalytics()"
+        class="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        title="Refresh charts">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Refresh
+      </button>
+    </div>
+    
+    <!-- Charts Container -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Task Distribution Chart -->
+      <div class="bg-gray-50 dark:bg-gray-800/30 rounded-lg p-4">
+        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Task Distribution (Last 30 Days)</h4>
+        <div id="kanbanAnalyticsChart" class="min-h-[360px]"></div>
+      </div>
+      
+      <!-- Cycle Time Chart -->
+      <div class="bg-gray-50 dark:bg-gray-800/30 rounded-lg p-4">
+        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Cycle Time Trend</h4>
+        <div id="cycleTimeChart" class="min-h-[300px]"></div>
+      </div>
+    </div>
+    
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+      <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/30">
+        <p class="text-2xl font-bold text-brand-600 dark:text-brand-400" x-text="activeBoard?.tasks?.length || 0"></p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Total Tasks</p>
+      </div>
+      <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/30">
+        <p class="text-2xl font-bold text-green-600 dark:text-green-400" x-text="(activeBoard?.tasks || []).filter(t => t.column === 'done').length"></p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Completed</p>
+      </div>
+      <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/30">
+        <p class="text-2xl font-bold text-orange-600 dark:text-orange-400" x-text="(activeBoard?.tasks || []).filter(t => t.column === 'in-progress').length"></p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">In Progress</p>
+      </div>
+      <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/30">
+        <p class="text-2xl font-bold text-gray-600 dark:text-gray-400" x-text="(activeBoard?.tasks || []).filter(t => !t.assignee).length"></p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Unassigned</p>
+      </div>
+    </div>
+    
+    <!-- Additional Insights -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+      <div class="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+          <div class="flex-1">
+            <p class="text-xs text-gray-600 dark:text-gray-400">Avg. Tasks/Day</p>
+            <p class="text-lg font-bold text-gray-800 dark:text-white/90" x-text="calculateAvgTasksPerDay()"></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-800">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="flex-1">
+            <p class="text-xs text-gray-600 dark:text-gray-400">High Priority</p>
+            <p class="text-lg font-bold text-gray-800 dark:text-white/90" x-text="(activeBoard?.tasks || []).filter(t => t.priority === 'high').length"></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div class="flex-1">
+            <p class="text-xs text-gray-600 dark:text-gray-400">Overdue Tasks</p>
+            <p class="text-lg font-bold text-gray-800 dark:text-white/90" x-text="calculateOverdueTasks()"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

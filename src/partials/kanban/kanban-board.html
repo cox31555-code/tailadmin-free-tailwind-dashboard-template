@@ -1,0 +1,614 @@
+<div class="space-y-5">
+  <!-- Kanban Header & Controls -->
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+    <!-- Title Row -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white/90">Task Board</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <span x-text="tasks.length"></span> total tasks across
+          <span x-text="columns.length"></span> columns
+          <span x-show="sortableInitialized" class="ml-2 inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700 dark:bg-green-900/20 dark:text-green-400">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            Dragging Enabled
+          </span>
+        </p>
+      </div>
+      
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- Board Selector -->
+        <include src="./board-selector.html" />
+
+        <button
+          @click="openAddTaskModal()"
+          class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Add Task
+        </button>
+
+        <button
+          @click="openColumnModal()"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add Column
+        </button>
+
+        <button
+          @click="toggleBulkMode()"
+          class="inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors"
+          :class="bulkMode ? 'border-brand-500 bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:text-gray-400 dark:hover:bg-white/[0.03]'"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span x-text="bulkMode ? 'Exit Bulk Mode' : 'Bulk Select'"></span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Filters & Search -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+      <!-- Search -->
+      <div class="lg:col-span-2">
+        <div class="relative">
+          <input
+            type="text"
+            x-model="searchQuery"
+            placeholder="Search tasks..."
+            class="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+          />
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Priority Filter -->
+      <div>
+        <select
+          x-model="filterPriority"
+          class="w-full rounded-lg border border-gray-300 bg-white py-2 px-4 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        >
+          <option value="all">All Priorities</option>
+          <option value="high">High Priority</option>
+          <option value="medium">Medium Priority</option>
+          <option value="low">Low Priority</option>
+        </select>
+      </div>
+      
+      <!-- Assignee Filter -->
+      <div>
+        <select
+          x-model="filterAssignee"
+          class="w-full rounded-lg border border-gray-300 bg-white py-2 px-4 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        >
+          <option value="all">All Assignees</option>
+          <template x-for="assignee in getUniqueAssignees()" :key="assignee">
+            <option :value="assignee" x-text="assignee"></option>
+          </template>
+        </select>
+      </div>
+      
+      <!-- Sort By -->
+      <div>
+        <select
+          x-model="sortBy"
+          class="w-full rounded-lg border border-gray-300 bg-white py-2 px-4 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        >
+          <option value="created">Newest First</option>
+          <option value="updated">Recently Updated</option>
+          <option value="dueDate">Due Date</option>
+          <option value="priority">Priority</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Active Filters Display -->
+    <div x-show="searchQuery || filterPriority !== 'all' || filterAssignee !== 'all'" class="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+      <span class="text-xs text-gray-500 dark:text-gray-400">Active filters:</span>
+      <div class="flex flex-wrap gap-2">
+        <span x-show="searchQuery" class="inline-flex items-center gap-1 rounded-full bg-brand-100 px-2 py-1 text-xs text-brand-700 dark:bg-brand-900/20 dark:text-brand-400">
+          Search: <span x-text="searchQuery"></span>
+          <button @click="searchQuery = ''" class="hover:text-brand-900 dark:hover:text-brand-300">×</button>
+        </span>
+        <span x-show="filterPriority !== 'all'" class="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-1 text-xs text-orange-700 dark:bg-orange-900/20 dark:text-orange-400">
+          Priority: <span x-text="filterPriority"></span>
+          <button @click="filterPriority = 'all'" class="hover:text-orange-900 dark:hover:text-orange-300">×</button>
+        </span>
+        <span x-show="filterAssignee !== 'all'" class="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2 py-1 text-xs text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">
+          Assignee: <span x-text="filterAssignee"></span>
+          <button @click="filterAssignee = 'all'" class="hover:text-purple-900 dark:hover:text-purple-300">×</button>
+        </span>
+        <button @click="clearFilters()" class="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 underline">
+          Clear all
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Kanban Columns -->
+  <div class="flex gap-4 overflow-x-auto pb-4 min-h-[600px]" style="scroll-snap-type: x proximity;" data-columns-container>
+    <template x-for="column in columns" :key="column.id">
+      <div
+        class="flex-shrink-0 w-80"
+        style="scroll-snap-align: start;"
+        :data-kanban-column="column.id"
+      >
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] h-full flex flex-col">
+          <!-- Column Header -->
+          <div class="p-4 border-b border-gray-200 dark:border-gray-800" data-column-drag-handle>
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-3 flex-1">
+                <!-- Drag Handle Icon -->
+                <div class="p-1 text-gray-500 dark:text-gray-400">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" />
+                  </svg>
+                </div>
+                <div
+                  class="w-3 h-3 rounded-full"
+                  :style="{ backgroundColor: column.color }"
+                ></div>
+                <h3 class="text-sm font-semibold text-gray-800 dark:text-white/90" x-text="column.name"></h3>
+                <span 
+                  class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium"
+                  :class="column.limit && getTasksForColumn(column.id).length >= column.limit ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'"
+                  x-text="getTasksForColumn(column.id).length"
+                ></span>
+                <span x-show="column.limit" class="text-xs text-gray-400" x-text="'/ ' + column.limit"></span>
+              </div>
+              
+              <div class="flex items-center gap-1">
+                <button
+                  x-show="bulkMode"
+                  @click.stop="selectAllInColumn(column.id)"
+                  class="px-2 py-1 text-xs font-medium text-brand-600 hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-brand-900/20 rounded transition-colors"
+                  title="Select all tasks in this column"
+                >
+                  Select All
+                </button>
+                <button
+                  x-show="!bulkMode"
+                  @click.stop="openAddTaskModal(column.id)"
+                  class="p-1 text-gray-400 hover:text-brand-500 dark:hover:text-brand-400"
+                  title="Add task to this column"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+                <button
+                  @click.stop="openColumnModal(column.id)"
+                  class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  title="Edit column"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Column Content (Tasks) -->
+          <div class="flex-1 p-3 space-y-3 overflow-y-auto custom-scrollbar" data-tasks-container>
+            <template x-for="task in getTasksForColumn(column.id)" :key="task.id">
+              <div
+                :data-task-id="task.id"
+                class="group bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg p-3 cursor-move hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all relative"
+                :class="bulkMode && selectedTasks.includes(task.id) ? 'ring-2 ring-brand-500 dark:ring-brand-400' : ''"
+              >
+                <!-- Bulk Selection Checkbox -->
+                <div x-show="bulkMode" class="absolute top-2 left-2 z-10">
+                  <input
+                    type="checkbox"
+                    :checked="selectedTasks.includes(task.id)"
+                    @change="toggleTaskSelection(task.id)"
+                    @click.stop
+                    class="w-5 h-5 text-brand-500 border-gray-300 rounded focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700 cursor-pointer"
+                  />
+                </div>
+
+                <!-- Task Header -->
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <h4
+                    @click="openTaskDetail(task.id)"
+                    class="text-sm font-medium text-gray-800 dark:text-white/90 flex-1 line-clamp-2 cursor-pointer hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                    x-text="task.title"
+                  ></h4>
+                  <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div x-data="{ showMenu: false }" class="relative">
+                      <button 
+                        @click="showMenu = !showMenu"
+                        class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded"
+                      >
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                        </svg>
+                      </button>
+                      
+                      <div
+                        x-show="showMenu"
+                        @click.away="showMenu = false"
+                        x-transition
+                        class="absolute right-0 mt-1 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 z-10"
+                      >
+                        <button
+                          @click="openTaskDetail(task.id); showMenu = false"
+                          class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 rounded-t-lg"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                          View Details
+                        </button>
+                        <button
+                          @click="openEditTaskModal(task.id); showMenu = false"
+                          class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit
+                        </button>
+                        <button 
+                          @click="duplicateTask(task.id); showMenu = false"
+                          class="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                          Duplicate
+                        </button>
+                        <button 
+                          @click="deleteTask(task.id); showMenu = false"
+                          class="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/10 rounded-b-lg"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Task Description -->
+                <p x-show="task.description" class="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2" x-text="task.description"></p>
+                
+                <!-- Task Labels -->
+                <div x-show="task.labels && task.labels.length > 0" class="flex flex-wrap gap-1 mb-3">
+                  <template x-for="label in task.labels" :key="label">
+                    <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400" x-text="label"></span>
+                  </template>
+                </div>
+                
+                <!-- Task Meta -->
+                <div class="flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-2">
+                    <!-- Priority Badge -->
+                    <span 
+                      class="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium capitalize"
+                      :class="getPriorityColor(task.priority)"
+                      x-text="task.priority"
+                    ></span>
+                    
+                    <!-- Due Date -->
+                    <div x-show="task.dueDate" class="flex items-center gap-1"
+                         :class="{
+                           'text-red-600 dark:text-red-400': getDueDateStatus(task.dueDate) === 'overdue',
+                           'text-orange-600 dark:text-orange-400': getDueDateStatus(task.dueDate) === 'urgent',
+                           'text-yellow-600 dark:text-yellow-500': getDueDateStatus(task.dueDate) === 'soon',
+                           'text-gray-500 dark:text-gray-400': getDueDateStatus(task.dueDate) === 'normal'
+                         }">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span x-text="formatDueDate(task.dueDate)"></span>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-center gap-2">
+                    <!-- Comments -->
+                    <div x-show="task.comments > 0" class="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      <span x-text="task.comments"></span>
+                    </div>
+                    
+                    <!-- Assignee Avatar -->
+                    <img 
+                      x-show="task.assigneeAvatar"
+                      :src="task.assigneeAvatar"
+                      :alt="task.assignee"
+                      :title="task.assignee"
+                      class="w-6 h-6 rounded-full border-2 border-white dark:border-gray-800"
+                    />
+                  </div>
+                </div>
+              </div>
+            </template>
+            
+            <!-- Empty State -->
+            <div x-show="getTasksForColumn(column.id).length === 0" class="flex flex-col items-center justify-center py-8 text-center">
+              <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+              <p class="text-sm text-gray-500 dark:text-gray-400">No tasks</p>
+              <button 
+                @click="openAddTaskModal(column.id)"
+                class="mt-2 text-xs text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300"
+              >
+                + Add a task
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <!-- Bulk Actions Bar -->
+  <div
+    x-show="bulkMode && selectedTasks.length > 0"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 translate-y-4"
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 translate-y-0"
+    x-transition:leave-end="opacity-0 translate-y-4"
+    class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4 shadow-2xl z-50"
+    style="display: none;"
+  >
+    <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span x-text="selectedTasks.length"></span> task<span x-show="selectedTasks.length !== 1">s</span> selected
+          </span>
+        </div>
+        <button
+          @click="selectedTasks = []"
+          class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 underline"
+        >
+          Clear selection
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- Move to Column -->
+        <div x-data="{ showMoveMenu: false }" class="relative">
+          <button
+            @click="showMoveMenu = !showMoveMenu"
+            class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            Move to...
+          </button>
+          <div
+            x-show="showMoveMenu"
+            @click.away="showMoveMenu = false"
+            x-transition
+            class="absolute bottom-full right-0 mb-2 w-48 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 overflow-hidden"
+            style="display: none;"
+          >
+            <template x-for="col in columns" :key="col.id">
+              <button
+                @click="bulkMoveToColumn(col.id); showMoveMenu = false"
+                class="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors text-left"
+              >
+                <div class="w-3 h-3 rounded-full" :style="{ backgroundColor: col.color }"></div>
+                <span x-text="col.name"></span>
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <!-- Assign -->
+        <div x-data="{ showAssignMenu: false, newAssignee: '' }" class="relative">
+          <button
+            @click="showAssignMenu = !showAssignMenu"
+            class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Assign
+          </button>
+          <div
+            x-show="showAssignMenu"
+            @click.away="showAssignMenu = false"
+            x-transition
+            class="absolute bottom-full right-0 mb-2 w-64 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 p-3"
+            style="display: none;"
+          >
+            <div class="flex gap-2">
+              <input
+                type="text"
+                x-model="newAssignee"
+                placeholder="Enter name..."
+                class="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                @keydown.enter="bulkAssign(newAssignee); showAssignMenu = false; newAssignee = ''"
+              />
+              <button
+                @click="bulkAssign(newAssignee); showAssignMenu = false; newAssignee = ''"
+                :disabled="!newAssignee.trim()"
+                class="rounded-lg bg-brand-500 px-3 py-2 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Assign
+              </button>
+            </div>
+            <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Recent assignees:</p>
+              <div class="flex flex-wrap gap-1">
+                <template x-for="assignee in getUniqueAssignees().slice(0, 3)" :key="assignee">
+                  <button
+                    @click="bulkAssign(assignee); showAssignMenu = false"
+                    class="px-2 py-1 text-xs rounded bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                    x-text="assignee"
+                  ></button>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Priority -->
+        <div x-data="{ showPriorityMenu: false }" class="relative">
+          <button
+            @click="showPriorityMenu = !showPriorityMenu"
+            class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+            </svg>
+            Priority
+          </button>
+          <div
+            x-show="showPriorityMenu"
+            @click.away="showPriorityMenu = false"
+            x-transition
+            class="absolute bottom-full right-0 mb-2 w-40 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 overflow-hidden"
+            style="display: none;"
+          >
+            <button
+              @click="bulkSetPriority('high'); showPriorityMenu = false"
+              class="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors text-left"
+            >
+              High
+            </button>
+            <button
+              @click="bulkSetPriority('medium'); showPriorityMenu = false"
+              class="flex items-center gap-2 w-full px-4 py-2 text-sm text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-900/20 transition-colors text-left"
+            >
+              Medium
+            </button>
+            <button
+              @click="bulkSetPriority('low'); showPriorityMenu = false"
+              class="flex items-center gap-2 w-full px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20 transition-colors text-left"
+            >
+              Low
+            </button>
+          </div>
+        </div>
+
+        <!-- Delete -->
+        <button
+          @click="bulkDelete()"
+          class="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+          Delete
+        </button>
+
+        <!-- Cancel -->
+        <button
+          @click="toggleBulkMode()"
+          class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 underline"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SortableJS Styles -->
+<style>
+  /* Ghost element while dragging */
+  .sortable-ghost {
+    opacity: 0.4;
+    background: #e2e8f0 !important;
+    border: 2px dashed #3b82f6 !important;
+  }
+
+  /* Element being dragged */
+  .sortable-drag {
+    opacity: 1 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    transform: rotate(2deg);
+    cursor: grabbing !important;
+  }
+
+  /* Element when first selected */
+  .sortable-chosen {
+    box-shadow: 0 0 0 2px #3b82f6;
+  }
+
+  /* Dark mode ghost */
+  .dark .sortable-ghost {
+    background: #1e293b !important;
+    border-color: #60a5fa !important;
+  }
+
+  /* Dragging class for custom styling */
+  .dragging {
+    opacity: 0.5;
+  }
+
+  /* Smooth transitions */
+  [data-tasks-container] > div {
+    transition: transform 0.2s ease;
+  }
+
+  /* Column dragging styles */
+  .column-ghost {
+    opacity: 0.4;
+    background: #e2e8f0 !important;
+    border: 2px dashed #3b82f6 !important;
+  }
+
+  .column-drag {
+    opacity: 1 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+    transform: rotate(3deg) scale(1.02);
+    cursor: grabbing !important;
+  }
+
+  .column-drag [data-column-drag-handle] {
+    cursor: grabbing !important;
+  }
+
+  .column-chosen {
+    box-shadow: 0 0 0 3px #3b82f6;
+  }
+
+  .column-chosen [data-column-drag-handle] {
+    cursor: grabbing !important;
+  }
+
+  .dark .column-ghost {
+    background: #1e293b !important;
+    border-color: #60a5fa !important;
+  }
+
+  /* Column transitions */
+  [data-columns-container] > div {
+    transition: transform 0.25s ease;
+  }
+
+  /* Ensure drag handle shows grab cursor */
+  [data-column-drag-handle] {
+    cursor: grab !important;
+  }
+
+  [data-column-drag-handle]:active {
+    cursor: grabbing !important;
+  }
+</style>

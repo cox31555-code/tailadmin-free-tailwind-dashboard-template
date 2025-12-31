@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <include src="./partials/critical-dark-mode.html"></include>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
@@ -8,15 +9,27 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-      Blank Page | TailAdmin - Tailwind CSS Admin Dashboard Template
+      Expired Impound | TailAdmin - Tailwind CSS Admin Dashboard Template
     </title>
+    <style>
+      @media (max-width: 640px) {
+        .page-main-content {
+          padding: 0 3px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .page-table-wrapper {
+          padding: 0 3px;
+        }
+      }
+    </style>
   </head>
   <body
-    x-data="{ page: 'blank', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-data="{ page: 'expiredImpound', 'isLoading': false, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
     x-init="
-         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-    :class="{'dark bg-gray-900': darkMode === true}"
   >
     <!-- ===== Preloader Start ===== -->
     <include src="./partials/preloader.html"></include>
@@ -42,30 +55,22 @@
 
         <!-- ===== Main Content Start ===== -->
         <main>
-          <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6">
+          <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6 page-main-content">
             <!-- Breadcrumb Start -->
-            <div x-data="{ pageName: `Blank Page`}">
+            <div x-data="{ pageName: `Expired Policies`}">
               <include src="./partials/breadcrumb.html" />
             </div>
             <!-- Breadcrumb End -->
 
-            <div
-              class="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12"
-            >
-              <div class="mx-auto w-full max-w-[630px] text-center">
-                <h3
-                  class="mb-4 text-theme-xl font-semibold text-gray-800 dark:text-white/90 sm:text-2xl"
-                >
-                  Card Title Here
-                </h3>
-
-                <p
-                  class="text-sm text-gray-500 dark:text-gray-400 sm:text-base"
-                >
-                  Start putting content on grids or panels, you can also use
-                  different combinations of grids. Please check out the
-                  dashboard and other pages
-                </p>
+            <div class="space-y-5 sm:space-y-6">
+              <div
+                class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
+              >
+                <div class="pb-6">
+                  <!-- ====== Expired Impound Policies Table Start -->
+                  <include src="./partials/table/table-expired-impound-only.html" />
+                  <!-- ====== Expired Impound Policies Table End -->
+                </div>
               </div>
             </div>
           </div>

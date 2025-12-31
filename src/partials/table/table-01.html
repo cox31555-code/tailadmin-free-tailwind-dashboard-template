@@ -1,5 +1,5 @@
 <div
-  class="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6"
+  class="overflow-visible rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6"
 >
   <div
     class="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between"
@@ -61,8 +61,8 @@
     </div>
   </div>
 
-  <div class="w-full overflow-x-auto">
-    <table class="min-w-full">
+  <div class="w-full overflow-x-auto table-scroller" id="tableScroller">
+    <table class="min-w-max sm:min-w-full">
       <!-- table header start -->
       <thead>
         <tr class="border-gray-100 border-y dark:border-gray-800">
@@ -83,7 +83,7 @@
                 Category
               </p>
             </div>
-          </th class="py-3">
+          </th>
           <th class="py-3">
             <div class="flex items-center">
               <p

@@ -1,0 +1,353 @@
+<!-- Task Detail Modal -->
+<div
+  x-show="showTaskDetailModal"
+  x-transition:enter="transition ease-out duration-200"
+  x-transition:enter-start="opacity-0"
+  x-transition:enter-end="opacity-100"
+  x-transition:leave="transition ease-in duration-150"
+  x-transition:leave-start="opacity-100"
+  x-transition:leave-end="opacity-0"
+  class="fixed inset-0 z-99999 flex items-center justify-center bg-black/50 px-4"
+  @click.self="showTaskDetailModal = false"
+  style="display: none;"
+>
+  <div
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 scale-95"
+    x-transition:enter-end="opacity-100 scale-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 scale-100"
+    x-transition:leave-end="opacity-0 scale-95"
+    class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+  >
+    <template x-if="viewingTask">
+      <div>
+        <!-- Header -->
+        <div class="flex items-start justify-between mb-6">
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white/90 mb-2" x-text="viewingTask.title"></h2>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium" :class="getPriorityColor(viewingTask.priority)">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" />
+                </svg>
+                <span class="capitalize" x-text="viewingTask.priority"></span>
+              </span>
+              <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300 capitalize">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <span x-text="viewingTask.column.replace('-', ' ')"></span>
+              </span>
+              <template x-if="viewingTask.labels && viewingTask.labels.length > 0">
+                <template x-for="label in viewingTask.labels" :key="label">
+                  <span class="inline-flex items-center rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-700 dark:bg-brand-900/20 dark:text-brand-400" x-text="label"></span>
+                </template>
+              </template>
+            </div>
+          </div>
+          <button
+            @click="showTaskDetailModal = false"
+            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors ml-4"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Task Details Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Main Content (2 columns on large screens) -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Description -->
+            <div>
+              <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+                Description
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap" x-text="viewingTask.description || 'No description provided'"></p>
+            </div>
+            
+            <!-- Comments Section -->
+            <div>
+              <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                Comments
+                <span class="text-xs font-normal text-gray-500 dark:text-gray-400" x-text="`(${(viewingTask.comments || []).length})`"></span>
+              </h3>
+              
+              <!-- Comment Input -->
+              <div class="mb-4">
+                <div class="flex gap-3">
+                  <div class="flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-white text-sm font-medium">
+                      U
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <textarea
+                      x-model="newComment"
+                      rows="3"
+                      placeholder="Add a comment..."
+                      class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                      @keydown.ctrl.enter="addComment()"
+                      @keydown.meta.enter="addComment()"
+                    ></textarea>
+                    <div class="flex items-center justify-between mt-2">
+                      <span class="text-xs text-gray-500 dark:text-gray-400">Ctrl+Enter to submit</span>
+                      <button 
+                        @click="addComment()"
+                        :disabled="!newComment.trim()"
+                        class="rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        Add Comment
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Comments List -->
+              <div class="space-y-4">
+                <template x-for="comment in (viewingTask.comments || [])" :key="comment.id">
+                  <div class="flex gap-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/30 border border-gray-200 dark:border-gray-700">
+                    <div class="flex-shrink-0">
+                      <img 
+                        :src="comment.authorAvatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(comment.author) + '&background=3B82F6&color=fff'" 
+                        :alt="comment.author" 
+                        class="w-8 h-8 rounded-full" 
+                      />
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="comment.author"></span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400" x-text="formatCommentDate(comment.createdAt)"></span>
+                      </div>
+                      <p class="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap" x-text="comment.text"></p>
+                      
+                      <!-- Reactions -->
+                      <div class="flex gap-2 mt-2 flex-wrap">
+                        <template x-for="(count, emoji) in (comment.reactions || {})" :key="emoji">
+                          <button 
+                            class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-white dark:bg-gray-700 text-xs hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 transition-colors"
+                            @click="addReaction(comment.id, emoji)"
+                          >
+                            <span x-text="emoji"></span>
+                            <span class="font-medium" x-text="count"></span>
+                          </button>
+                        </template>
+                        <button 
+                          x-data="{ showPicker: false }"
+                          @click="showPicker = !showPicker"
+                          class="px-2 py-1 rounded-full text-xs text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600 transition-colors relative"
+                        >
+                          <span x-show="!showPicker">😊 +</span>
+                          <div 
+                            x-show="showPicker"
+                            @click.stop
+                            @click.away="showPicker = false"
+                            class="absolute bottom-full left-0 mb-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2 flex gap-1 z-10"
+                          >
+                            <template x-for="emoji in ['👍', '❤️', '😊', '🎉', '🚀', '👏']" :key="emoji">
+                              <button 
+                                @click="addReaction(comment.id, emoji); showPicker = false"
+                                class="text-lg hover:bg-gray-100 dark:hover:bg-gray-700 rounded px-2 py-1"
+                                x-text="emoji"
+                              ></button>
+                            </template>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                
+                <div x-show="!viewingTask.comments || viewingTask.comments.length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                  <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                  <p class="text-sm">No comments yet. Be the first to comment!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Sidebar (1 column on large screens) -->
+          <div class="space-y-4">
+            <!-- Meta Info Card -->
+            <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/30">
+              <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Details</h4>
+              <div class="space-y-3">
+                <div class="flex items-start gap-2">
+                  <svg class="w-4 h-4 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <div class="flex-1">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Assignee</p>
+                    <template x-if="viewingTask.assignee">
+                      <div class="flex items-center gap-2 mt-1">
+                        <img :src="viewingTask.assigneeAvatar" :alt="viewingTask.assignee" class="w-5 h-5 rounded-full" />
+                        <span class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="viewingTask.assignee"></span>
+                      </div>
+                    </template>
+                    <span x-show="!viewingTask.assignee" class="text-sm text-gray-600 dark:text-gray-400">Unassigned</span>
+                  </div>
+                </div>
+                
+                <div class="flex items-start gap-2">
+                  <svg class="w-4 h-4 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <div class="flex-1">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Due Date</p>
+                    <template x-if="viewingTask.dueDate">
+                      <p class="text-sm font-medium text-gray-800 dark:text-white/90 mt-1" x-text="formatDueDate(viewingTask.dueDate)"></p>
+                    </template>
+                    <span x-show="!viewingTask.dueDate" class="text-sm text-gray-600 dark:text-gray-400">No due date</span>
+                  </div>
+                </div>
+                
+                <div class="flex items-start gap-2">
+                  <svg class="w-4 h-4 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div class="flex-1">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Created</p>
+                    <p class="text-sm font-medium text-gray-800 dark:text-white/90 mt-1" x-text="formatCommentDate(viewingTask.createdAt)"></p>
+                  </div>
+                </div>
+                
+                <div class="flex items-start gap-2">
+                  <svg class="w-4 h-4 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <div class="flex-1">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Last Updated</p>
+                    <p class="text-sm font-medium text-gray-800 dark:text-white/90 mt-1" x-text="formatCommentDate(viewingTask.updatedAt)"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Time Tracking -->
+            <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/30">
+              <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Time Tracking
+              </h4>
+
+              <!-- Time Summary -->
+              <div class="flex items-center justify-between mb-3 pb-3 border-b border-gray-200 dark:border-gray-700">
+                <span class="text-sm text-gray-600 dark:text-gray-400">Total Time</span>
+                <span class="text-sm font-bold text-brand-600 dark:text-brand-400" x-text="formatDuration(viewingTask.totalTimeSpent || 0)"></span>
+              </div>
+
+              <div class="flex items-center justify-between mb-3" x-show="viewingTask.estimatedHours">
+                <span class="text-sm text-gray-600 dark:text-gray-400">Estimated</span>
+                <span class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="(viewingTask.estimatedHours || 0) + 'h'"></span>
+              </div>
+
+              <!-- Timer Controls -->
+              <div class="flex gap-2">
+                <button
+                  x-show="!viewingTask.timerRunning"
+                  @click="startTimer(viewingTask.id)"
+                  class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                  </svg>
+                  Start
+                </button>
+
+                <button
+                  x-show="viewingTask.timerRunning"
+                  @click="stopTimer(viewingTask.id)"
+                  class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" />
+                  </svg>
+                  Stop
+                </button>
+              </div>
+
+              <!-- Time Logs -->
+              <div x-show="viewingTask.timeLogs && viewingTask.timeLogs.length > 0" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <h5 class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Recent Sessions</h5>
+                <div class="space-y-2 max-h-32 overflow-y-auto custom-scrollbar">
+                  <template x-for="log in (viewingTask.timeLogs || []).slice(-5).reverse()" :key="log.id">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-gray-600 dark:text-gray-400" x-text="formatCommentDate(log.endedAt)"></span>
+                      <span class="font-medium text-gray-800 dark:text-white/90" x-text="formatDuration(log.duration)"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/30">
+              <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Actions</h4>
+              <div class="space-y-2">
+                <button 
+                  @click="showTaskDetailModal = false; openEditTaskModal(viewingTask.id)"
+                  class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Edit Task
+                </button>
+                
+                <button 
+                  @click="duplicateTask(viewingTask.id); showTaskDetailModal = false"
+                  class="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Duplicate
+                </button>
+                
+                <button 
+                  @click="deleteTask(viewingTask.id); showTaskDetailModal = false"
+                  class="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-800 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+            
+            <!-- Activity Log -->
+            <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/30">
+              <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Activity</h4>
+              <div class="space-y-2">
+                <template x-if="viewingTask.activity && viewingTask.activity.length > 0">
+                  <template x-for="log in viewingTask.activity" :key="log.id">
+                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                      <span class="font-medium" x-text="log.user"></span>
+                      <span x-text="log.type === 'moved' ? ' moved from ' : ' '"></span>
+                      <span class="font-medium" x-text="log.from"></span>
+                      <span x-show="log.type === 'moved'"> to </span>
+                      <span class="font-medium" x-text="log.to"></span>
+                    </div>
+                  </template>
+                </template>
+                <div x-show="!viewingTask.activity || viewingTask.activity.length === 0" class="text-xs text-gray-500 dark:text-gray-400 italic">
+                  No activity yet
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</div>

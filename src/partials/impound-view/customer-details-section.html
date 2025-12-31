@@ -1,0 +1,636 @@
+<!-- About You Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">About You</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['aboutYou']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('aboutYou')"
+        x-show="!editMode['aboutYou']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['aboutYou']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('aboutYou')"
+          :disabled="savingField['aboutYou']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['aboutYou']">Save</span>
+          <span x-show="savingField['aboutYou']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('aboutYou')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <!-- Full name display (view mode) -->
+    <div x-show="!editMode['aboutYou']" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Full name
+      </label>
+      <div class="sm:col-span-2">
+        <p class="text-sm text-gray-800 dark:text-white/90" x-text="customerName"></p>
+      </div>
+    </div>
+
+    <!-- Split name fields (edit mode) -->
+    <div x-show="editMode['aboutYou']" class="space-y-3">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+          Title
+        </label>
+        <div class="sm:col-span-2">
+          <select
+            x-model="title"
+            class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Mr">Mr</option>
+            <option value="Mrs">Mrs</option>
+            <option value="Miss">Miss</option>
+            <option value="Ms">Ms</option>
+            <option value="Dr">Dr</option>
+            <option value="Prof">Prof</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+          First name
+        </label>
+        <div class="sm:col-span-2">
+          <input
+            x-model="firstName"
+            type="text"
+            placeholder="First name"
+            class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+          />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+          Surname
+        </label>
+        <div class="sm:col-span-2">
+          <input
+            x-model="surname"
+            type="text"
+            placeholder="Surname"
+            class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+          />
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Date of birth
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['aboutYou']" class="text-sm text-gray-800 dark:text-white/90" x-text="dob"></p>
+        <input
+          x-show="editMode['aboutYou']"
+          x-model="dob"
+          type="text"
+          placeholder="DD/MM/YYYY"
+          maxlength="10"
+          @input="dob = dob.replace(/[^\d\/]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2').substring(0, 10)"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Relationship status
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['aboutYou']" class="text-sm text-gray-800 dark:text-white/90" x-text="relationshipStatus"></p>
+        <select
+          x-show="editMode['aboutYou']"
+          x-model="relationshipStatus"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Single">Single</option>
+          <option value="Married">Married</option>
+          <option value="Civil Partnership">Civil Partnership</option>
+          <option value="Divorced">Divorced</option>
+          <option value="Widowed">Widowed</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Your Household Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Your Household</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['household']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('household')"
+        x-show="!editMode['household']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['household']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('household')"
+          :disabled="savingField['household']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['household']">Save</span>
+          <span x-show="savingField['household']">Saving...</span>
+        </button>
+        <button
+          @click="cancelEdit('household'); changingAddress = false"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <!-- Address Section -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Home address
+      </label>
+      <div class="sm:col-span-2">
+        <!-- View Mode - Display current address -->
+        <div x-show="!editMode['household']">
+          <p class="text-sm text-gray-800 dark:text-white/90" x-text="homeAddress + ', ' + city"></p>
+          <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="postcode"></p>
+        </div>
+
+        <!-- Edit Mode - Show Current Address with Change Button -->
+        <div x-show="editMode['household'] && !changingAddress" class="space-y-3">
+          <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-white/[0.03]">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="homeAddress + ', ' + city"></p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="postcode"></p>
+              </div>
+              <button
+                @click="changingAddress = true"
+                type="button"
+                class="text-xs text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium whitespace-nowrap ml-2">
+                Change address
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Mode - Address Lookup Interface (only when changing) -->
+        <div x-show="editMode['household'] && changingAddress" class="space-y-4">
+
+          <!-- Postcode Lookup Mode -->
+          <div x-show="addressLookupMode">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">What's your home address?</h3>
+              <button
+                @click="changingAddress = false"
+                type="button"
+                class="text-xs text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                ← Back
+              </button>
+            </div>
+
+            <div class="space-y-3 mb-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">House number or name (optional)</label>
+                <input
+                  x-model="houseNumber"
+                  type="text"
+                  placeholder="e.g. 123 or The Old House"
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Postcode</label>
+                <div class="flex gap-2">
+                  <input
+                    x-model="lookupPostcode"
+                    type="text"
+                    placeholder="e.g. SW1A 1AA"
+                    class="h-10 flex-1 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+                  />
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center rounded-lg bg-brand-500 px-6 py-2 text-sm font-medium text-white hover:bg-brand-600 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 transition-colors whitespace-nowrap">
+                    Find address
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 mb-3">
+              <div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+              <span class="text-xs text-gray-500 dark:text-gray-400">Or</span>
+              <div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+
+            <button
+              @click="addressLookupMode = false"
+              type="button"
+              class="inline-flex items-center justify-center rounded-lg border-2 border-brand-500 px-4 py-2 text-sm font-medium text-brand-500 hover:bg-brand-500/10 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 transition-colors dark:border-brand-400 dark:text-brand-400">
+              Enter the full address yourself
+            </button>
+          </div>
+
+          <!-- Manual Entry Mode -->
+          <div x-show="!addressLookupMode">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">Enter Address Details</h3>
+              <button
+                @click="addressLookupMode = true"
+                type="button"
+                class="text-xs text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium border border-brand-500 dark:border-brand-400 rounded px-2 py-1">
+                Back to postcode lookup
+              </button>
+            </div>
+
+            <p class="text-xs text-gray-600 dark:text-gray-400 mb-4">We use this to help calculate your insurance quote.</p>
+
+            <div class="space-y-3">
+              <!-- Address Line 1 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">
+                  Address line 1 <span class="text-red-500">*</span>
+                </label>
+                <input
+                  x-model="addressLine1"
+                  type="text"
+                  required
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+                />
+              </div>
+
+              <!-- Address Line 2 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Address line 2 (optional)</label>
+                <input
+                  x-model="addressLine2"
+                  type="text"
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+                />
+              </div>
+
+              <!-- Address Line 3 -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Address line 3 (optional)</label>
+                <input
+                  x-model="addressLine3"
+                  type="text"
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+                />
+              </div>
+
+              <!-- Town or City -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">
+                  Town or city <span class="text-red-500">*</span>
+                </label>
+                <input
+                  x-model="townCity"
+                  type="text"
+                  required
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+                />
+              </div>
+
+              <!-- Postcode -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">
+                  Postcode <span class="text-red-500">*</span>
+                </label>
+                <input
+                  x-model="postcode"
+                  type="text"
+                  required
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+                />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Homeowner?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="homeowner"></p>
+        <select
+          x-show="editMode['household']"
+          x-model="homeowner"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Children under 16?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="childrenUnder16"></p>
+        <select
+          x-show="editMode['household']"
+          x-model="childrenUnder16"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Lived in UK since birth?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['household']" class="text-sm text-gray-800 dark:text-white/90" x-text="livedInUKSinceBirth"></p>
+        <select
+          x-show="editMode['household']"
+          x-model="livedInUKSinceBirth"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Your Employment Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Your Employment</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['employment']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('employment')"
+        x-show="!editMode['employment']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['employment']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('employment')"
+          :disabled="savingField['employment']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['employment']">Save</span>
+          <span x-show="savingField['employment']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('employment')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Employment status
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['employment']" class="text-sm text-gray-800 dark:text-white/90" x-text="employmentStatus"></p>
+        <select
+          x-show="editMode['employment']"
+          x-model="employmentStatus"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Employed">Employed</option>
+          <option value="Self-employed">Self-employed</option>
+          <option value="Unemployed">Unemployed</option>
+          <option value="Retired">Retired</option>
+          <option value="Student">Student</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Occupation
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['employment']" class="text-sm text-gray-800 dark:text-white/90" x-text="occupation"></p>
+        <input
+          x-show="editMode['employment']"
+          x-model="occupation"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Industry
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['employment']" class="text-sm text-gray-800 dark:text-white/90" x-text="industry"></p>
+        <input
+          x-show="editMode['employment']"
+          x-model="industry"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Your Licence Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Your Licence</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['licence']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('licence')"
+        x-show="!editMode['licence']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['licence']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('licence')"
+          :disabled="savingField['licence']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['licence']">Save</span>
+          <span x-show="savingField['licence']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('licence')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Licence type
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="licenceType"></p>
+        <input
+          x-show="editMode['licence']"
+          x-model="licenceType"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Years held
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="yearsHeld"></p>
+        <input
+          x-show="editMode['licence']"
+          x-model="yearsHeld"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Additional qualifications?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="additionalQualifications"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="additionalQualifications"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        DVLA conditions?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="dvlaConditions"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="dvlaConditions"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- DVLA Condition Type (shown when DVLA conditions = Yes) -->
+    <div x-show="dvlaConditions === 'Yes'" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        DVLA condition type
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="dvlaConditionType"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="dvlaConditionType"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Please select...">Please select...</option>
+          <option value="DVLA aware - No restrictions">DVLA aware - No restrictions</option>
+          <option value="DVLA aware - 1 year restricted Licence">DVLA aware - 1 year restricted Licence</option>
+          <option value="DVLA aware - 2 year restricted Licence">DVLA aware - 2 year restricted Licence</option>
+          <option value="DVLA aware - 3 year restricted Licence">DVLA aware - 3 year restricted Licence</option>
+          <option value="DVLA aware - 5 year restricted Licence">DVLA aware - 5 year restricted Licence</option>
+          <option value="DVLA unaware">DVLA unaware</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Insurance denied?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="insuranceDenied"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="insuranceDenied"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Non-motoring convictions?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['licence']" class="text-sm text-gray-800 dark:text-white/90" x-text="nonMotoringConvictions"></p>
+        <select
+          x-show="editMode['licence']"
+          x-model="nonMotoringConvictions"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,861 @@
+<!-- Your Car Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <!-- Section Header -->
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Your Car</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['carDetails']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('carDetails')"
+        x-show="!editMode['carDetails']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['carDetails']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('carDetails')"
+          :disabled="savingField['carDetails']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed">
+          <span x-show="!savingField['carDetails']">Save</span>
+          <span x-show="savingField['carDetails']">Saving...</span>
+        </button>
+        <button
+          @click="cancelEdit('carDetails'); changingVehicle = false"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Fields Grid -->
+  <div class="p-5 sm:p-6 space-y-5">
+    <!-- VRM Lookup / Manual Entry -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Vehicle details
+      </label>
+      <div class="sm:col-span-2">
+        <!-- View Mode - Display current vehicle -->
+        <p x-show="!editMode['carDetails']" class="text-sm text-gray-800 dark:text-white/90" x-text="carMake"></p>
+
+        <!-- Edit Mode - Show Current Vehicle with Change Button -->
+        <div x-show="editMode['carDetails'] && !changingVehicle" class="space-y-3">
+          <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-white/[0.03]">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <h4 class="text-sm font-semibold text-gray-800 dark:text-white/90 mb-1" x-text="carMake"></h4>
+                <p class="text-xs text-gray-600 dark:text-gray-400" x-text="'Registration: ' + vrm"></p>
+              </div>
+              <button
+                @click="changingVehicle = true"
+                type="button"
+                class="text-xs text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+                Change vehicle
+              </button>
+            </div>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+              <div>
+                <span class="text-gray-500 dark:text-gray-400">Type:</span>
+                <span class="ml-1 text-gray-800 dark:text-white/90" x-text="vehicleType"></span>
+              </div>
+              <div>
+                <span class="text-gray-500 dark:text-gray-400">Year:</span>
+                <span class="ml-1 text-gray-800 dark:text-white/90" x-text="vehicleYear"></span>
+              </div>
+              <div>
+                <span class="text-gray-500 dark:text-gray-400">Fuel:</span>
+                <span class="ml-1 text-gray-800 dark:text-white/90" x-text="vehicleFuelType"></span>
+              </div>
+              <div>
+                <span class="text-gray-500 dark:text-gray-400">Transmission:</span>
+                <span class="ml-1 text-gray-800 dark:text-white/90" x-text="vehicleTransmission"></span>
+              </div>
+              <div>
+                <span class="text-gray-500 dark:text-gray-400">Doors:</span>
+                <span class="ml-1 text-gray-800 dark:text-white/90" x-text="vehicleDoors"></span>
+              </div>
+              <div>
+                <span class="text-gray-500 dark:text-gray-400">Colour:</span>
+                <span class="ml-1 text-gray-800 dark:text-white/90" x-text="vehicleColour"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Mode - VRM Lookup or Manual Entry (only when changing) -->
+        <div x-show="editMode['carDetails'] && changingVehicle" class="space-y-4">
+
+          <!-- VRM Lookup Mode -->
+          <div x-show="vrmLookupMode">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">What's your car's registration?</h3>
+              <button
+                @click="changingVehicle = false"
+                type="button"
+                class="text-xs text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                ← Back
+              </button>
+            </div>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mb-4">We can only show you quotes for cars registered in the UK.</p>
+
+            <div class="flex gap-2 mb-4">
+              <input
+                x-model="vrm"
+                type="text"
+                placeholder="Enter car registration..."
+                class="h-10 flex-1 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+              />
+              <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg bg-brand-500 px-6 py-2 text-sm font-medium text-white hover:bg-brand-600 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 transition-colors">
+                Find my car
+              </button>
+            </div>
+
+            <div class="flex items-center gap-3 mb-3">
+              <div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+              <span class="text-xs text-gray-500 dark:text-gray-400">Or</span>
+              <div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+
+            <button
+              @click="vrmLookupMode = false"
+              type="button"
+              class="inline-flex items-center justify-center rounded-lg border-2 border-brand-500 px-4 py-2 text-sm font-medium text-brand-500 hover:bg-brand-500/10 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 transition-colors dark:border-brand-400 dark:text-brand-400">
+              Enter make and model
+            </button>
+          </div>
+
+          <!-- Manual Entry Mode -->
+          <div x-show="!vrmLookupMode">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">Enter Vehicle Details</h3>
+              <button
+                @click="vrmLookupMode = true"
+                type="button"
+                class="text-xs text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium border border-brand-500 dark:border-brand-400 rounded px-2 py-1">
+                Back to registration lookup
+              </button>
+            </div>
+
+            <p class="text-xs text-gray-600 dark:text-gray-400 mb-4">Please complete each field in order to unlock the next selection.</p>
+
+            <div class="space-y-3">
+              <!-- Vehicle Type -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Vehicle Type</label>
+                <select
+                  x-model="vehicleType"
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+                  <option value="Car">Car</option>
+                  <option value="Van">Van</option>
+                  <option value="Motorcycle">Motorcycle</option>
+                </select>
+              </div>
+
+              <!-- Make -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Make</label>
+                  <select
+                    x-model="vehicleMake"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+                    <option value="">Select make</option>
+                    <option value="Audi">Audi</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Mercedes">Mercedes</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Volkswagen">Volkswagen</option>
+                  </select>
+                </div>
+
+                <!-- Year -->
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Year</label>
+                  <select
+                    x-model="vehicleYear"
+                    :disabled="!vehicleMake"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select year</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Model -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Model</label>
+                <select
+                  x-model="vehicleModel"
+                  :disabled="!vehicleMake"
+                  class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <option value="">Select model</option>
+                  <option value="Corolla">Corolla</option>
+                  <option value="Camry">Camry</option>
+                  <option value="RAV4">RAV4</option>
+                </select>
+              </div>
+
+              <!-- Doors & Fuel Type -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Doors</label>
+                  <select
+                    x-model="vehicleDoors"
+                    :disabled="!vehicleModel"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select doors</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Fuel Type</label>
+                  <select
+                    x-model="vehicleFuelType"
+                    :disabled="!vehicleModel"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select fuel type</option>
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Electric">Electric</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Transmission & Colour -->
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Transmission</label>
+                  <select
+                    x-model="vehicleTransmission"
+                    :disabled="!vehicleModel"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select transmission</option>
+                    <option value="Manual">Manual</option>
+                    <option value="Automatic">Automatic</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-400 mb-1.5">Colour</label>
+                  <select
+                    x-model="vehicleColour"
+                    :disabled="!vehicleModel"
+                    class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <option value="">Select colour</option>
+                    <option value="Black">Black</option>
+                    <option value="White">White</option>
+                    <option value="Silver">Silver</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Red">Red</option>
+                    <option value="Grey">Grey</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <!-- Alarm -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Alarm
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carDetails']" class="text-sm text-gray-800 dark:text-white/90" x-text="alarm"></p>
+        <select
+          x-show="editMode['carDetails']"
+          x-model="alarm"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Factory Fitted Thatcham Approved Alarm/Immobiliser">Factory Fitted Thatcham Approved Alarm/Immobiliser</option>
+          <option value="Factory Fitted Thatcham Approved Alarm">Factory Fitted Thatcham Approved Alarm</option>
+          <option value="Factory Fitted Non-Thatcham Alarm/Immobiliser">Factory Fitted Non-Thatcham Alarm/Immobiliser</option>
+          <option value="Factory Fitted Non-Thatcham Alarm">Factory Fitted Non-Thatcham Alarm</option>
+          <option value="Factory Fitted">Factory Fitted</option>
+          <option value="None">None</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Tracking Device -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Tracking device
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carDetails']" class="text-sm text-gray-800 dark:text-white/90" x-text="tracking"></p>
+        <select
+          x-show="editMode['carDetails']"
+          x-model="tracking"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Import -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Is it an import?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carDetails']" class="text-sm text-gray-800 dark:text-white/90" x-text="isImport"></p>
+        <select
+          x-show="editMode['carDetails']"
+          x-model="isImport"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Driver Side -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Driver side
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carDetails']" class="text-sm text-gray-800 dark:text-white/90" x-text="driverSide"></p>
+        <select
+          x-show="editMode['carDetails']"
+          x-model="driverSide"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Right Hand">Right Hand</option>
+          <option value="Left Hand">Left Hand</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Number of Seats -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Number of seats
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carDetails']" class="text-sm text-gray-800 dark:text-white/90" x-text="seats"></p>
+        <input
+          x-show="editMode['carDetails']"
+          x-model="seats"
+          type="number"
+          min="2"
+          max="12"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <!-- Modifications -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Any modifications?
+      </label>
+      <div class="sm:col-span-2">
+        <div x-show="!editMode['carDetails']">
+          <p class="text-sm text-gray-800 dark:text-white/90" x-text="modifications"></p>
+          <p x-show="modifications === 'Yes' && selectedModifications.length > 0" class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="selectedModifications.length + ' modification(s) declared'"></p>
+        </div>
+        <select
+          x-show="editMode['carDetails']"
+          x-model="modifications"
+          @change="if (modifications === 'No') selectedModifications = []"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Modification Details (shown when modifications = Yes) -->
+    <div x-show="modifications === 'Yes' && editMode['carDetails']" x-transition class="pl-0 sm:pl-8 border-l-2 border-brand-200 dark:border-brand-800 ml-0 sm:ml-4 space-y-3">
+      <div class="text-sm font-medium text-gray-700 dark:text-gray-400 mb-3">
+        Select all modifications that apply:
+        <span class="ml-2 text-xs text-brand-500 dark:text-brand-400" x-text="'(' + selectedModifications.length + ' selected)'"></span>
+      </div>
+
+      <!-- Engine, Tuning & Performance -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.engine.expanded = !modificationCategories.engine.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Engine, Tuning & Performance</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.engine.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.engine.expanded" x-collapse class="p-4 space-y-2 bg-white dark:bg-transparent">
+          <template x-for="mod in ['ECU remap / engine remap', 'Chip tuning', 'Software tune (Stage 1/2/3)', 'Engine swap', 'Turbocharger added', 'Turbocharger upgraded', 'Supercharger added', 'Supercharger upgraded', 'Hybrid turbo', 'Increased boost pressure', 'Boost controller', 'Intercooler upgrade', 'Air intake / induction kit', 'Cone air filter', 'Cold air intake', 'Throttle body upgrade', 'Fuel injectors upgraded', 'Fuel pump upgraded', 'Forged pistons', 'Forged connecting rods', 'Performance camshaft(s)', 'Oil cooler fitted']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Exhaust & Emissions -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.exhaust.expanded = !modificationCategories.exhaust.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Exhaust & Emissions</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.exhaust.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.exhaust.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Performance exhaust system', 'Cat-back exhaust', 'Sports catalytic converter', 'Decat pipe', 'Exhaust manifold / headers', 'Downpipe', 'Valved exhaust', 'Aftermarket silencer / muffler', 'DPF delete', 'EGR delete', 'AdBlue system modification']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Suspension, Steering & Handling -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.suspension.expanded = !modificationCategories.suspension.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Suspension, Steering & Handling</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.suspension.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.suspension.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Lowering springs', 'Coilover suspension', 'Adjustable suspension', 'Air suspension', 'Uprated dampers / shocks', 'Anti-roll bars', 'Sway bars', 'Strut brace', 'Chassis bracing', 'Polybushes', 'Camber kit', 'Ride height change']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Wheels & Tyres -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.wheels.expanded = !modificationCategories.wheels.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Wheels & Tyres</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.wheels.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.wheels.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Alloy wheels changed', 'Aftermarket wheels', 'Wheel size changed', 'Wheel width changed', 'Wheel spacers', 'Wider tyres fitted', 'Tyre size changed', 'Performance tyres', 'Wheel arch modifications']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Exterior Bodywork & Styling -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.exterior.expanded = !modificationCategories.exterior.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Exterior Bodywork & Styling</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.exterior.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.exterior.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Body kit', 'Front bumper changed', 'Rear bumper changed', 'Side skirts', 'Front splitter', 'Rear diffuser', 'Rear spoiler', 'Rear wing', 'Bonnet / hood replacement', 'Carbon fibre bonnet', 'Vented bonnet', 'Widebody kit', 'Debadging']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Paint, Wrap & Visual Finishes -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.paint.expanded = !modificationCategories.paint.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Paint, Wrap & Visual Finishes</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.paint.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.paint.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Full respray', 'Colour change', 'Vinyl wrap (full)', 'Vinyl wrap (partial)', 'Matte paint finish', 'Satin paint finish', 'Graphics', 'Decals', 'Racing livery', 'Chrome delete']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Lighting & Exterior Electrical -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.lighting.expanded = !modificationCategories.lighting.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Lighting & Exterior Electrical</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.lighting.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.lighting.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Aftermarket headlights', 'Aftermarket tail lights', 'HID conversion', 'LED conversion', 'Daytime running lights (DRL)', 'Underglow lighting', 'Light bars', 'Smoked lights']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Security & Anti-Theft -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.security.expanded = !modificationCategories.security.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Security & Anti-Theft</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.security.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.security.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Aftermarket alarm', 'Aftermarket immobiliser', 'Vehicle tracker', 'Thatcham-approved tracker', 'Ghost immobiliser', 'Kill switch', 'Locking wheel nuts']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Interior Modifications -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.interior.expanded = !modificationCategories.interior.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Interior Modifications</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.interior.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.interior.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Aftermarket seats', 'Bucket seats', 'Rear seats removed', 'Steering wheel changed', 'Roll cage', 'Racing harnesses', 'Interior trim changes']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <!-- Other Categories Combined (for space efficiency) -->
+      <div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <button
+          @click="modificationCategories.other.expanded = !modificationCategories.other.expanded"
+          type="button"
+          class="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors">
+          <span class="text-sm font-medium text-gray-800 dark:text-white/90">Other Modifications</span>
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform" :class="modificationCategories.other.expanded && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="modificationCategories.other.expanded" x-collapse class="p-4 space-y-2">
+          <template x-for="mod in ['Towbar fitted', 'Roof rack', 'LPG conversion', 'Window tinting', 'Dashcam hardwired', 'Parking sensors retrofit', 'Heated seats retrofit', 'Apple CarPlay retrofit', 'Subwoofer installed', 'Factory optional extras not listed on V5C']">
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <input type="checkbox" :value="mod" x-model="selectedModifications" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700">
+              <span x-text="mod"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Car Value Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Car Value</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['carValue']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('carValue')"
+        x-show="!editMode['carValue']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['carValue']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('carValue')"
+          :disabled="savingField['carValue']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['carValue']">Save</span>
+          <span x-show="savingField['carValue']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('carValue')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Current market value
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carValue']" class="text-sm text-gray-800 dark:text-white/90" x-text="'£' + (marketValue ? Number(marketValue).toLocaleString('en-GB') : '0')"></p>
+        <div x-show="editMode['carValue']" class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400 pointer-events-none">£</span>
+          <input
+            x-model="marketValue"
+            type="text"
+            placeholder="0"
+            @input="marketValue = marketValue.replace(/[^\d]/g, '')"
+            class="h-10 w-full rounded-lg border border-gray-300 bg-transparent pl-7 pr-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Car Usage Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Car Usage</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['carUsageSection']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('carUsageSection')"
+        x-show="!editMode['carUsageSection']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['carUsageSection']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('carUsageSection')"
+          :disabled="savingField['carUsageSection']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['carUsageSection']">Save</span>
+          <span x-show="savingField['carUsageSection']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('carUsageSection')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        When bought
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carUsageSection']" class="text-sm text-gray-800 dark:text-white/90" x-text="whenBought"></p>
+        <input
+          x-show="editMode['carUsageSection']"
+          x-model="whenBought"
+          type="text"
+          placeholder="MM/YYYY"
+          maxlength="7"
+          @input="whenBought = whenBought.replace(/[^\d\/]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').substring(0, 7)"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Car usage
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carUsageSection']" class="text-sm text-gray-800 dark:text-white/90" x-text="carUsage"></p>
+        <select
+          x-show="editMode['carUsageSection']"
+          x-model="carUsage"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Social use only">Social use only</option>
+          <option value="Social and commuting">Social and commuting</option>
+          <option value="Social, commuting and business">Social, commuting and business</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Annual mileage
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carUsageSection']" class="text-sm text-gray-800 dark:text-white/90" x-text="annualMileage"></p>
+        <input
+          x-show="editMode['carUsageSection']"
+          x-model="annualMileage"
+          type="number"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Car Storage Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Car Storage</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['carStorage']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('carStorage')"
+        x-show="!editMode['carStorage']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['carStorage']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('carStorage')"
+          :disabled="savingField['carStorage']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['carStorage']">Save</span>
+          <span x-show="savingField['carStorage']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('carStorage')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Daytime storage
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carStorage']" class="text-sm text-gray-800 dark:text-white/90" x-text="daytimeStorage"></p>
+        <select
+          x-show="editMode['carStorage']"
+          x-model="daytimeStorage"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="At home">At home</option>
+          <option value="Office or factory car park">Office or factory car park</option>
+          <option value="Open public car park">Open public car park</option>
+          <option value="Secure public car park">Secure public car park</option>
+          <option value="Street away from home">Street away from home</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Nighttime storage
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carStorage']" class="text-sm text-gray-800 dark:text-white/90" x-text="nighttimeStorage"></p>
+        <select
+          x-show="editMode['carStorage']"
+          x-model="nighttimeStorage"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Drive">Drive</option>
+          <option value="Street outside home">Street outside home</option>
+          <option value="Locked garage">Locked garage</option>
+          <option value="Unlocked garage">Unlocked garage</option>
+          <option value="Street away from home">Street away from home</option>
+          <option value="Locked compound">Locked compound</option>
+          <option value="Public car park">Public car park</option>
+          <option value="Work car park">Work car park</option>
+          <option value="Private property">Private property</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Kept at home address?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carStorage']" class="text-sm text-gray-800 dark:text-white/90" x-text="keptAtHome"></p>
+        <select
+          x-show="editMode['carStorage']"
+          x-model="keptAtHome"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

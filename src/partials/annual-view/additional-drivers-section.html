@@ -1,0 +1,566 @@
+<!-- Additional Drivers Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Additional Drivers</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['additionalDrivers']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('additionalDrivers')"
+        x-show="!editMode['additionalDrivers']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['additionalDrivers']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('additionalDrivers')"
+          :disabled="savingField['additionalDrivers']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['additionalDrivers']">Save</span>
+          <span x-show="savingField['additionalDrivers']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('additionalDrivers')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6">
+    <!-- Has Additional Drivers Toggle -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Do you have additional drivers?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="hasAdditionalDrivers ? 'Yes' : 'No'"></p>
+        <div x-show="editMode['additionalDrivers']" class="flex items-center gap-4">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input 
+              type="radio" 
+              x-model="hasAdditionalDrivers" 
+              :value="true"
+              class="w-4 h-4 text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800"
+            />
+            <span class="text-sm text-gray-700 dark:text-gray-300">Yes</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input 
+              type="radio" 
+              x-model="hasAdditionalDrivers" 
+              :value="false"
+              class="w-4 h-4 text-brand-500 border-gray-300 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800"
+            />
+            <span class="text-sm text-gray-700 dark:text-gray-300">No</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drivers List -->
+    <div x-show="hasAdditionalDrivers">
+      <div class="space-y-8">
+        <template x-for="(driver, driverIndex) in additionalDriversList" :key="driverIndex">
+          <div class="border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-6 bg-gray-50/50 dark:bg-gray-800/30">
+            <!-- Driver Header -->
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90 flex items-center gap-2">
+                <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Driver <span x-text="driverIndex + 1"></span>
+                <span x-show="driver.fullName" class="text-sm font-normal text-gray-500 dark:text-gray-400" x-text="'(' + driver.fullName + ')'"></span>
+              </h3>
+              <button
+                x-show="editMode['additionalDrivers']"
+                @click="removeDriver(driverIndex)"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-error-600 border border-error-200 rounded-lg hover:bg-error-50 dark:border-error-800 dark:text-error-400 dark:hover:bg-error-500/10 transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Remove Driver
+              </button>
+            </div>
+
+            <div class="space-y-6">
+              <!-- About You Section -->
+              <div>
+                <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  About You
+                </h4>
+                <div class="space-y-3 pl-6">
+                  <!-- Full name display (view mode) -->
+                  <div x-show="!editMode['additionalDrivers']" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Full name</label>
+                    <div class="sm:col-span-2">
+                      <p class="text-sm text-gray-800 dark:text-white/90" x-text="driver.fullName"></p>
+                    </div>
+                  </div>
+
+                  <!-- Split name fields (edit mode) -->
+                  <div x-show="editMode['additionalDrivers']" class="space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Title</label>
+                      <div class="sm:col-span-2">
+                        <select x-model="driver.title" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option value="Mr">Mr</option>
+                          <option value="Mrs">Mrs</option>
+                          <option value="Miss">Miss</option>
+                          <option value="Ms">Ms</option>
+                          <option value="Dr">Dr</option>
+                          <option value="Prof">Prof</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">First name</label>
+                      <div class="sm:col-span-2">
+                        <input x-model="driver.firstName" type="text" placeholder="First name" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Surname</label>
+                      <div class="sm:col-span-2">
+                        <input x-model="driver.surname" type="text" placeholder="Surname" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Date of birth</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.dob"></p>
+                      <input x-show="editMode['additionalDrivers']" x-model="driver.dob" type="text" placeholder="DD/MM/YYYY" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Relationship status</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.relationshipStatus"></p>
+                      <select x-show="editMode['additionalDrivers']" x-model="driver.relationshipStatus" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        <option>Single</option>
+                        <option>Married</option>
+                        <option>Civil Partnership</option>
+                        <option>Divorced</option>
+                        <option>Widowed</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Employment Section -->
+              <div>
+                <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Your Employment
+                </h4>
+                <div class="space-y-3 pl-6">
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Employment status</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.employmentStatus"></p>
+                      <select x-show="editMode['additionalDrivers']" x-model="driver.employmentStatus" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        <option>Employed</option>
+                        <option>Self-Employed</option>
+                        <option>Unemployed</option>
+                        <option>Retired</option>
+                        <option>Student</option>
+                        <option>Homemaker</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Occupation</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.occupation"></p>
+                      <input x-show="editMode['additionalDrivers']" x-model="driver.occupation" type="text" placeholder="e.g., Biomedical Scientist" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Industry</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.industry"></p>
+                      <input x-show="editMode['additionalDrivers']" x-model="driver.industry" type="text" placeholder="e.g., Healthcare" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Licence Section -->
+              <div>
+                <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                  Your Licence
+                </h4>
+                <div class="space-y-3 pl-6">
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Licence type</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.licenceType"></p>
+                      <select x-show="editMode['additionalDrivers']" x-model="driver.licenceType" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        <option>Full UK Car Licence</option>
+                        <option>Full UK Motorcycle Licence</option>
+                        <option>Provisional Licence</option>
+                        <option>EU Licence</option>
+                        <option>International Licence</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Years held</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.yearsHeld"></p>
+                      <input x-show="editMode['additionalDrivers']" x-model="driver.yearsHeld" type="text" placeholder="e.g., 4 years" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Additional qualifications?</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.additionalQualifications"></p>
+                      <select x-show="editMode['additionalDrivers']" x-model="driver.additionalQualifications" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        <option>Yes</option>
+                        <option>No</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">DVLA conditions?</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.dvlaConditions"></p>
+                      <select x-show="editMode['additionalDrivers']" x-model="driver.dvlaConditions" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        <option>Yes</option>
+                        <option>No</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Insurance denied?</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.insuranceDenied"></p>
+                      <select x-show="editMode['additionalDrivers']" x-model="driver.insuranceDenied" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        <option>Yes</option>
+                        <option>No</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Non-motoring convictions?</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.nonMotoringConvictions"></p>
+                      <select x-show="editMode['additionalDrivers']" x-model="driver.nonMotoringConvictions" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        <option>Yes</option>
+                        <option>No</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Claims Section -->
+              <div>
+                <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Claims
+                </h4>
+                <div class="space-y-3 pl-6">
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Claims in last 5 years</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.claimsLast5Years"></p>
+                      <select x-show="editMode['additionalDrivers']" x-model="driver.claimsLast5Years" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        <option>None</option>
+                        <option>Yes</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Detailed Claims Fields (shown when claims exist) -->
+                  <div x-show="driver.claimsLast5Years === 'Yes'" class="space-y-3 pl-0 sm:pl-6 border-l-2 border-brand-200 dark:border-brand-800">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Type of incident</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.claimIncidentType"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.claimIncidentType" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Accident</option>
+                          <option>Theft</option>
+                          <option>Other</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Who was at fault?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.claimFault"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.claimFault" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Both parties</option>
+                          <option>Policyholder</option>
+                          <option>Third party</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Who was driving?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.claimDriver"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.claimDriver" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Policyholder</option>
+                          <option>Named driver</option>
+                          <option>Nobody (parked)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Were there any injuries?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.claimInjuries"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.claimInjuries" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">When did the incident happen?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.claimDay + ' / ' + driver.claimMonth + ' / ' + driver.claimYear"></p>
+                        <div x-show="editMode['additionalDrivers']" class="flex gap-2">
+                          <input x-model="driver.claimDay" type="number" min="1" max="31" placeholder="Day" class="h-9 w-20 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <input x-model="driver.claimMonth" type="number" min="1" max="12" placeholder="Month" class="h-9 w-24 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <input x-model="driver.claimYear" type="number" min="1900" max="2099" placeholder="Year" class="h-9 w-28 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">What type of damage?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.claimDamageType"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.claimDamageType" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Damaged - Amount Known</option>
+                          <option>Damaged - Amount Unknown</option>
+                          <option>Total Loss</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Was the claim made against your policy?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.claimAgainstPolicy"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.claimAgainstPolicy" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Was the NCD affected?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.claimNCDaffected"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.claimNCDaffected" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Motoring Convictions Section -->
+              <div>
+                <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  Motoring Convictions
+                </h4>
+                <div class="space-y-3 pl-6">
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Motoring convictions in last 5 years</label>
+                    <div class="sm:col-span-2">
+                      <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.motoringConvictions"></p>
+                      <select x-show="editMode['additionalDrivers']" x-model="driver.motoringConvictions" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        <option>None</option>
+                        <option>Yes</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Detailed Convictions Fields (shown when convictions exist) -->
+                  <div x-show="driver.motoringConvictions === 'Yes'" class="space-y-3 pl-0 sm:pl-6 border-l-2 border-brand-200 dark:border-brand-800">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Where did you get this conviction?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionLocation"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.convictionLocation" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>England, Scotland or Wales (Great Britain)</option>
+                          <option>Northern Ireland</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">What was the conviction type?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionType"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.convictionType" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>DR - Drink</option>
+                          <option>SP - Speed</option>
+                          <option>IN - Insurance</option>
+                          <option>DD - Dangerous Driving</option>
+                          <option>CD - Careless Driving</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">What was the conviction for?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionCode"></p>
+                        <input x-show="editMode['additionalDrivers']" x-model="driver.convictionCode" type="text" placeholder="e.g., DR10 – Driving with alcohol level above limit" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">When did you receive the conviction?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionDay + ' / ' + driver.convictionMonth + ' / ' + driver.convictionYear"></p>
+                        <div x-show="editMode['additionalDrivers']" class="flex gap-2">
+                          <input x-model="driver.convictionDay" type="number" min="1" max="31" placeholder="Day" class="h-9 w-20 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <input x-model="driver.convictionMonth" type="number" min="1" max="12" placeholder="Month" class="h-9 w-24 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <input x-model="driver.convictionYear" type="number" min="1900" max="2099" placeholder="Year" class="h-9 w-28 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Were penalty points given?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionPenaltyPoints"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.convictionPenaltyPoints" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div x-show="driver.convictionPenaltyPoints === 'Yes'" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">How many points?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionPointsAmount"></p>
+                        <input x-show="editMode['additionalDrivers']" x-model="driver.convictionPointsAmount" type="number" min="1" max="12" placeholder="e.g., 12" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Did the conviction result in a fine?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionFine"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.convictionFine" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div x-show="driver.convictionFine === 'Yes'" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">How much were you fined?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionFineAmount"></p>
+                        <input x-show="editMode['additionalDrivers']" x-model="driver.convictionFineAmount" type="text" placeholder="e.g., £121" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">Did the conviction result in a driving ban?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionBan"></p>
+                        <select x-show="editMode['additionalDrivers']" x-model="driver.convictionBan" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                          <option>Yes</option>
+                          <option>No</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div x-show="driver.convictionBan === 'Yes'" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400">How long was the ban (months)?</label>
+                      <div class="sm:col-span-2">
+                        <p x-show="!editMode['additionalDrivers']" class="text-sm text-gray-800 dark:text-white/90" x-text="driver.convictionBanMonths + ' months'"></p>
+                        <input x-show="editMode['additionalDrivers']" x-model="driver.convictionBanMonths" type="number" min="1" placeholder="e.g., 12" class="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Add Driver Button -->
+        <button
+          x-show="editMode['additionalDrivers']"
+          @click="addDriver"
+          class="w-full flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-300 bg-white px-4 py-4 text-sm font-medium text-gray-700 hover:border-brand-500 hover:text-brand-600 hover:bg-brand-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-brand-600 dark:hover:text-brand-400 dark:hover:bg-brand-500/10 transition-all"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add Another Driver
+        </button>
+
+        <!-- Empty State -->
+        <div x-show="additionalDriversList.length === 0" class="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50/50 dark:bg-gray-800/30">
+          <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">No additional drivers added yet</p>
+          <p class="text-xs text-gray-500 dark:text-gray-500">Click "Add Another Driver" to add a driver to this policy</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Additional Drivers Message -->
+    <div x-show="!hasAdditionalDrivers" class="text-center py-8">
+      <svg class="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+      </svg>
+      <p class="text-sm text-gray-500 dark:text-gray-400">No additional drivers on this policy</p>
+    </div>
+  </div>
+</div>

@@ -2,6 +2,7 @@
 layer(base);
 
 @import "tailwindcss";
+@import "./table-shared.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -39,20 +40,20 @@ layer(base);
   --color-current: currentColor;
   --color-transparent: transparent;
   --color-white: #ffffff;
-  --color-black: #101828;
+  --color-black: #020d21;
 
-  --color-brand-25: #f2f7ff;
-  --color-brand-50: #ecf3ff;
-  --color-brand-100: #dde9ff;
-  --color-brand-200: #c2d6ff;
-  --color-brand-300: #9cb9ff;
-  --color-brand-400: #7592ff;
-  --color-brand-500: #465fff;
-  --color-brand-600: #3641f5;
-  --color-brand-700: #2a31d8;
-  --color-brand-800: #252dae;
-  --color-brand-900: #262e89;
-  --color-brand-950: #161950;
+  --color-brand-25: #f0f9ff;
+  --color-brand-50: #ecf8ff;
+  --color-brand-100: #d1f3ff;
+  --color-brand-200: #a3e9ff;
+  --color-brand-300: #5edbff;
+  --color-brand-400: #0388FF;
+  --color-brand-500: var(--color-brand-400);
+  --color-brand-600: #0270cc;
+  --color-brand-700: #0258a0;
+  --color-brand-800: #034078;
+  --color-brand-900: #032855;
+  --color-brand-950: #011833;
 
   --color-blue-light-25: #f5fbff;
   --color-blue-light-50: #f0f9ff;
@@ -67,6 +68,19 @@ layer(base);
   --color-blue-light-900: #0b4a6f;
   --color-blue-light-950: #062c41;
 
+  --color-blue-25: var(--color-gray-50);
+  --color-blue-50: #e0f2fe;
+  --color-blue-100: #b9e6fe;
+  --color-blue-200: #7cd4fd;
+  --color-blue-300: #38bdf8;
+  --color-blue-400: #0ea5e9;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-blue-950: #0c2d6b;
+
   --color-gray-25: #fcfcfd;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f2f4f7;
@@ -76,10 +90,10 @@ layer(base);
   --color-gray-500: #667085;
   --color-gray-600: #475467;
   --color-gray-700: #344054;
-  --color-gray-800: #1d2939;
-  --color-gray-900: #101828;
-  --color-gray-950: #0c111d;
-  --color-gray-dark: #1a2231;
+  --color-gray-800: #0f1e35;
+  --color-gray-900: #020d21;
+  --color-gray-950: #040810;
+  --color-gray-dark: #0c1929;
 
   --color-orange-25: #fffaf5;
   --color-orange-50: #fff6ed;
@@ -135,29 +149,32 @@ layer(base);
 
   --color-theme-pink-500: #ee46bc;
 
-  --color-theme-purple-500: #7a5af8;
+  --color-theme-purple-500: var(--color-brand-500);
 
-  --shadow-theme-md: 0px 4px 8px -2px rgba(16, 24, 40, 0.1),
-    0px 2px 4px -2px rgba(16, 24, 40, 0.06);
-  --shadow-theme-lg: 0px 12px 16px -4px rgba(16, 24, 40, 0.08),
-    0px 4px 6px -2px rgba(16, 24, 40, 0.03);
-  --shadow-theme-sm: 0px 1px 3px 0px rgba(16, 24, 40, 0.1),
-    0px 1px 2px 0px rgba(16, 24, 40, 0.06);
-  --shadow-theme-xs: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
-  --shadow-theme-xl: 0px 20px 24px -4px rgba(16, 24, 40, 0.08),
-    0px 8px 8px -4px rgba(16, 24, 40, 0.03);
-  --shadow-datepicker: -5px 0 0 #262d3c, 5px 0 0 #262d3c;
+  --color-flatpickr-range: #465fff;
+
+  --shadow-theme-md: 0px 4px 8px -2px rgba(2, 13, 33, 0.1),
+    0px 2px 4px -2px rgba(2, 13, 33, 0.06);
+  --shadow-theme-lg: 0px 12px 16px -4px rgba(2, 13, 33, 0.08),
+    0px 4px 6px -2px rgba(2, 13, 33, 0.03);
+  --shadow-theme-sm: 0px 1px 3px 0px rgba(2, 13, 33, 0.1),
+    0px 1px 2px 0px rgba(2, 13, 33, 0.06);
+  --shadow-theme-xs: 0px 1px 2px 0px rgba(2, 13, 33, 0.05);
+  --shadow-theme-xl: 0px 20px 24px -4px rgba(2, 13, 33, 0.08),
+    0px 8px 8px -4px rgba(2, 13, 33, 0.03);
+  --shadow-datepicker: -5px 0 0 #071428, 5px 0 0 #071428;
   --shadow-focus-ring: 0px 0px 0px 4px rgba(70, 95, 255, 0.12);
-  --shadow-slider-navigation: 0px 1px 2px 0px rgba(16, 24, 40, 0.1),
-    0px 1px 3px 0px rgba(16, 24, 40, 0.1);
-  --shadow-tooltip: 0px 4px 6px -2px rgba(16, 24, 40, 0.05),
-    -8px 0px 20px 8px rgba(16, 24, 40, 0.05);
+  --shadow-slider-navigation: 0px 1px 2px 0px rgba(2, 13, 33, 0.1),
+    0px 1px 3px 0px rgba(2, 13, 33, 0.1);
+  --shadow-tooltip: 0px 4px 6px -2px rgba(2, 13, 33, 0.05),
+    -8px 0px 20px 8px rgba(2, 13, 33, 0.05);
 
   --drop-shadow-4xl: 0 35px 35px rgba(0, 0, 0, 0.25),
     0 45px 65px rgba(0, 0, 0, 0.15);
 
   --z-index-1: 1;
   --z-index-9: 9;
+  --z-index-50: 50;
   --z-index-99: 99;
   --z-index-999: 999;
   --z-index-9999: 9999;
@@ -200,11 +217,11 @@ layer(base);
 }
 
 @utility menu-item-icon-active {
-  @apply fill-brand-500 dark:fill-brand-400;
+  @apply fill-brand-500 stroke-brand-500 dark:fill-brand-400 dark:stroke-brand-400;
 }
 
 @utility menu-item-icon-inactive {
-  @apply fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300;
+  @apply fill-gray-500 stroke-gray-500 group-hover:fill-gray-700 group-hover:stroke-gray-700 dark:fill-gray-400 dark:stroke-gray-400 dark:group-hover:fill-gray-300 dark:group-hover:stroke-gray-300;
 }
 
 @utility menu-item-arrow {
@@ -228,7 +245,7 @@ layer(base);
 }
 
 @utility menu-dropdown-item-inactive {
-  @apply text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5;
+  @apply text-gray-700 hover:bg-brand-50 hover:text-brand-600 dark:text-gray-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-400;
 }
 
 @utility menu-dropdown-badge {
@@ -253,27 +270,89 @@ layer(base);
 }
 
 @utility custom-scrollbar {
-  &::-webkit-scrollbar {
-    @apply size-1.5;
-  }
+  scrollbar-width: thin;
+  scrollbar-color: #9CA3AF rgba(226, 232, 240, 0.3);
+}
 
-  &::-webkit-scrollbar-track {
-    @apply rounded-full;
-  }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
 
-  &::-webkit-scrollbar-thumb {
-    @apply bg-gray-200 rounded-full;
-  }
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #9CA3AF 0%, #6B7280 100%);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #6B7280 0%, #4B5563 100%);
+  box-shadow: 0 0 6px rgba(107, 114, 128, 0.4);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #344054;
+  background: linear-gradient(180deg, #4B5563 0%, #374151 100%);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #6B7280 0%, #4B5563 100%);
+  box-shadow: 0 0 8px rgba(107, 114, 128, 0.5);
 }
 
 @layer base {
   body {
     @apply relative text-base font-normal font-outfit z-1 bg-gray-50;
   }
+
+  /* Ensure explicit light mode backgrounds */
+  html:not(.dark) {
+    color-scheme: light;
+    @apply bg-white text-gray-900;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    @apply bg-gray-900 text-white;
+  }
+
+  /* Body background color responds to dark mode on html element */
+  .dark body {
+    @apply bg-gray-900;
+  }
+
+  html:not(.dark) body {
+    @apply bg-gray-50;
+  }
+
+  /* Content area backgrounds */
+  main {
+    @apply bg-white dark:bg-gray-900;
+  }
+}
+
+/* Smooth theme transitions */
+html.theme-transition,
+html.theme-transition * {
+  transition: background-color 200ms, color 200ms, border-color 200ms, box-shadow 200ms;
+}
+
+/* Ensure major content containers have proper backgrounds */
+html.dark main,
+html.dark main {
+  @apply bg-gray-900;
+}
+
+html:not(.dark) main {
+  @apply bg-white;
 }
 
 @layer utilities {
@@ -318,16 +397,52 @@ layer(base);
   display: flex;
 }
 
-.tableCheckbox:checked ~ span span {
-  @apply opacity-100;
+/* Select dropdown styling */
+select {
+  color: var(--color-black) !important;
+  background-color: var(--color-white) !important;
 }
-.tableCheckbox:checked ~ span {
-  @apply border-brand-500 bg-brand-500;
+
+select option {
+  color: var(--color-black) !important;
+  background-color: var(--color-white) !important;
+}
+
+select:disabled {
+  color: var(--color-gray-400) !important;
+  background-color: var(--color-gray-50) !important;
+  opacity: 0.6 !important;
+}
+
+select:disabled option {
+  color: var(--color-gray-400) !important;
+  background-color: var(--color-gray-50) !important;
+}
+
+.dark select {
+  color: var(--color-white) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark select option {
+  color: var(--color-white) !important;
+  background-color: #0f1e35 !important;
+}
+
+.dark select:disabled {
+  color: #667085 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  opacity: 0.5 !important;
+}
+
+.dark select:disabled option {
+  color: #667085 !important;
+  background-color: #0f1e35 !important;
 }
 
 /* third-party libraries CSS */
 .apexcharts-legend-text {
-  @apply text-gray-700! dark:text-gray-400!;
+  @apply pl-5! text-gray-700! dark:text-gray-400!;
 }
 
 .apexcharts-text {
@@ -340,9 +455,6 @@ layer(base);
 
 .apexcharts-tooltip-marker {
   @apply mr-1.5! h-1.5! w-1.5!;
-}
-.apexcharts-legend-text {
-  @apply pl-5! text-gray-700! dark:text-gray-400!;
 }
 .apexcharts-tooltip-series-group {
   @apply p-0!;
@@ -462,8 +574,8 @@ span.flatpickr-weekday,
 }
 .flatpickr-day.inRange {
   box-shadow:
-    -5px 0 0 #f9fafb,
-    5px 0 0 #f9fafb !important;
+    -5px 0 0 var(--color-gray-50),
+    5px 0 0 var(--color-gray-50) !important;
   @apply dark:shadow-datepicker!;
 }
 .flatpickr-day.inRange,
@@ -504,13 +616,13 @@ span.flatpickr-weekday,
 .flatpickr-day.selected.nextMonthDay,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
-  background: #465fff;
+  background: var(--color-flatpickr-range);
   @apply border-brand-500! bg-brand-500! hover:border-brand-500! hover:bg-brand-500!;
 }
 .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
-  box-shadow: -10px 0 0 #465fff;
+  box-shadow: -10px 0 0 var(--color-flatpickr-range);
 }
 
 .flatpickr-months .flatpickr-prev-month svg,
@@ -721,15 +833,6 @@ span.flatpickr-weekday,
   @apply border-brand-500 dark:border-brand-500 border-[6px];
 }
 
-.taskCheckbox:checked ~ .box span {
-  @apply opacity-100;
-}
-.taskCheckbox:checked ~ p {
-  @apply text-gray-400 line-through;
-}
-.taskCheckbox:checked ~ .box {
-  @apply border-brand-500 bg-brand-500 dark:border-brand-500;
-}
 
 .task {
   transition: all 0.2s ease; /* Smooth transition for visual effects */
@@ -737,9 +840,23 @@ span.flatpickr-weekday,
 
 .task.is-dragging {
   border-radius: 0.75rem;
-  box-shadow:
-    0px 1px 3px 0px rgba(16, 24, 40, 0.1),
-    0px 1px 2px 0px rgba(16, 24, 40, 0.06);
+  box-shadow: var(--shadow-theme-sm);
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
+}
+
+/* Mollie Logo Theme Optimization */
+.mollie-logo-fill {
+  fill: #020d21;
+}
+
+.dark .mollie-logo-fill {
+  fill: #ffffff;
+}
+
+/* SVG Menu Icon Styling */
+.svg-menu-icon {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }

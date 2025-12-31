@@ -1,0 +1,579 @@
+<!-- Claims & Convictions Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Claims & Convictions</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['claims']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('claims')"
+        x-show="!editMode['claims']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['claims']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('claims')"
+          :disabled="savingField['claims']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['claims']">Save</span>
+          <span x-show="savingField['claims']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('claims')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Claims in last 5 years
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['claims']" class="text-sm text-gray-800 dark:text-white/90" x-text="claimsLast5Years"></p>
+        <select
+          x-show="editMode['claims']"
+          x-model="claimsLast5Years"
+          @change="hasDetailedClaims = (claimsLast5Years !== 'None')"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="None">None</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Detailed Claims Fields (shown when claims exist) -->
+    <div x-show="claimsLast5Years === 'Yes' || hasDetailedClaims" class="space-y-5 pl-0 sm:pl-8 border-l-2 border-brand-200 dark:border-brand-800 ml-0 sm:ml-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Type of incident</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['claims']" class="text-sm text-gray-800 dark:text-white/90" x-text="claimIncidentType"></p>
+          <select x-show="editMode['claims']" x-model="claimIncidentType" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Accident">Accident</option>
+            <option value="Theft">Theft</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Who was at fault?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['claims']" class="text-sm text-gray-800 dark:text-white/90" x-text="claimFault"></p>
+          <select x-show="editMode['claims']" x-model="claimFault" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Both parties">Both parties</option>
+            <option value="Policyholder">Policyholder</option>
+            <option value="Third party">Third party</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Who was driving?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['claims']" class="text-sm text-gray-800 dark:text-white/90" x-text="claimDriver"></p>
+          <select x-show="editMode['claims']" x-model="claimDriver" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Policyholder">Policyholder</option>
+            <option value="Named driver">Named driver</option>
+            <option value="Nobody">Nobody (parked)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Were there any injuries?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['claims']" class="text-sm text-gray-800 dark:text-white/90" x-text="claimInjuries"></p>
+          <select x-show="editMode['claims']" x-model="claimInjuries" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">When did the incident happen?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['claims']" class="text-sm text-gray-800 dark:text-white/90" x-text="claimDay + '/' + claimMonth + '/' + claimYear"></p>
+          <div x-show="editMode['claims']" class="flex gap-2">
+            <input x-model="claimDay" type="number" min="1" max="31" placeholder="Day" class="h-10 w-20 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <input x-model="claimMonth" type="number" min="1" max="12" placeholder="Month" class="h-10 w-24 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <input x-model="claimYear" type="number" min="1900" max="2099" placeholder="Year" class="h-10 w-24 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">What type of damage?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['claims']" class="text-sm text-gray-800 dark:text-white/90" x-text="claimDamageType"></p>
+          <select x-show="editMode['claims']" x-model="claimDamageType" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Damaged - Amount Known">Damaged - Amount Known</option>
+            <option value="Damaged - Amount Unknown">Damaged - Amount Unknown</option>
+            <option value="Total Loss">Total Loss</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Was the claim made against your policy?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['claims']" class="text-sm text-gray-800 dark:text-white/90" x-text="claimAgainstPolicy"></p>
+          <select x-show="editMode['claims']" x-model="claimAgainstPolicy" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Was the NCD affected?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['claims']" class="text-sm text-gray-800 dark:text-white/90" x-text="claimNCDaffected"></p>
+          <select x-show="editMode['claims']" x-model="claimNCDaffected" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Motoring Convictions Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Motoring Convictions</h2>
+    <div class="flex items-center gap-2">
+      <span
+        x-show="savedField['convictions']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button
+        @click="toggleEditMode('convictions')"
+        x-show="!editMode['convictions']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['convictions']" class="flex items-center gap-2">
+        <button
+          @click="saveSection('convictions')"
+          :disabled="savingField['convictions']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['convictions']">Save</span>
+          <span x-show="savingField['convictions']">Saving...</span>
+        </button>
+        <button
+          @click="cancelEdit('convictions')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Motoring convictions in last 5 years
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="motoringConvictionsLast5Years"></p>
+        <select
+          x-show="editMode['convictions']"
+          x-model="motoringConvictionsLast5Years"
+          @change="hasDetailedConvictions = (motoringConvictionsLast5Years !== 'None')"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="None">None</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Detailed Convictions Fields (shown when convictions exist) -->
+    <div x-show="motoringConvictionsLast5Years === 'Yes' || hasDetailedConvictions" class="space-y-5 pl-0 sm:pl-8 border-l-2 border-brand-200 dark:border-brand-800 ml-0 sm:ml-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Where did you get this conviction?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionLocation"></p>
+          <select x-show="editMode['convictions']" x-model="convictionLocation" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="England, Scotland or Wales (Great Britain)">England, Scotland or Wales (Great Britain)</option>
+            <option value="Northern Ireland">Northern Ireland</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">What was the conviction type?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionType"></p>
+          <select x-show="editMode['convictions']" x-model="convictionType" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="DR - Drink">DR - Drink</option>
+            <option value="SP - Speed">SP - Speed</option>
+            <option value="IN - Insurance">IN - Insurance</option>
+            <option value="DD - Dangerous Driving">DD - Dangerous Driving</option>
+            <option value="CD - Careless Driving">CD - Careless Driving</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">What was the conviction for?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionCode"></p>
+          <input x-show="editMode['convictions']" x-model="convictionCode" type="text" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">When did you receive the conviction?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionDay + '/' + convictionMonth + '/' + convictionYear"></p>
+          <div x-show="editMode['convictions']" class="flex gap-2">
+            <input x-model="convictionDay" type="number" min="1" max="31" placeholder="Day" class="h-10 w-20 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <input x-model="convictionMonth" type="number" min="1" max="12" placeholder="Month" class="h-10 w-24 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <input x-model="convictionYear" type="number" min="1900" max="2099" placeholder="Year" class="h-10 w-24 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Were penalty points given?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionPenaltyPoints"></p>
+          <select x-show="editMode['convictions']" x-model="convictionPenaltyPoints" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div x-show="convictionPenaltyPoints === 'Yes'" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">How many points?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionPointsAmount"></p>
+          <input x-show="editMode['convictions']" x-model="convictionPointsAmount" type="number" min="1" max="11" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Did the conviction result in a fine?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionFine"></p>
+          <select x-show="editMode['convictions']" x-model="convictionFine" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div x-show="convictionFine === 'Yes'" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">How much were you fined?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionFineAmount"></p>
+          <input x-show="editMode['convictions']" x-model="convictionFineAmount" type="text" placeholder="£" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">Did the conviction result in a driving ban?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionBan"></p>
+          <select x-show="editMode['convictions']" x-model="convictionBan" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div x-show="convictionBan === 'Yes'" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-400">How many months were you banned?</label>
+        <div class="sm:col-span-2">
+          <p x-show="!editMode['convictions']" class="text-sm text-gray-800 dark:text-white/90" x-text="convictionBanMonths + ' months'"></p>
+          <input x-show="editMode['convictions']" x-model="convictionBanMonths" type="number" min="0" placeholder="Months" class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Car Owner Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Car Owner</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['carOwner']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('carOwner')"
+        x-show="!editMode['carOwner']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['carOwner']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('carOwner')"
+          :disabled="savingField['carOwner']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['carOwner']">Save</span>
+          <span x-show="savingField['carOwner']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('carOwner')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Main driver
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carOwner']" class="text-sm text-gray-800 dark:text-white/90" x-text="mainDriver"></p>
+        <input
+          x-show="editMode['carOwner']"
+          x-model="mainDriver"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Registered keeper
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carOwner']" class="text-sm text-gray-800 dark:text-white/90" x-text="registeredKeeper"></p>
+        <input
+          x-show="editMode['carOwner']"
+          x-model="registeredKeeper"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Legal owner
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['carOwner']" class="text-sm text-gray-800 dark:text-white/90" x-text="legalOwner"></p>
+        <input
+          x-show="editMode['carOwner']"
+          x-model="legalOwner"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Your Cover Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Your Cover</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['cover']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('cover')"
+        x-show="!editMode['cover']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['cover']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('cover')"
+          :disabled="savingField['cover']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['cover']">Save</span>
+          <span x-show="savingField['cover']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('cover')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Cover type
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['cover']" class="text-sm text-gray-800 dark:text-white/90" x-text="coverType"></p>
+        <select
+          x-show="editMode['cover']"
+          x-model="coverType"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Comprehensive">Comprehensive</option>
+          <option value="Third Party">Third Party</option>
+          <option value="Third Party, Fire & Theft">Third Party, Fire & Theft</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Voluntary excess
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['cover']" class="text-sm text-gray-800 dark:text-white/90" x-text="'£' + (voluntaryExcess ? Number(voluntaryExcess).toLocaleString('en-GB') : '0')"></p>
+        <div x-show="editMode['cover']" class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400 pointer-events-none">£</span>
+          <input
+            x-model="voluntaryExcess"
+            type="text"
+            placeholder="0"
+            @input="voluntaryExcess = voluntaryExcess.replace(/[^\d]/g, '')"
+            class="h-10 w-full rounded-lg border border-gray-300 bg-transparent pl-7 pr-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Policy start date
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['cover']" class="text-sm text-gray-800 dark:text-white/90" x-text="policyStartDate"></p>
+        <input
+          x-show="editMode['cover']"
+          x-model="policyStartDate"
+          type="text"
+          placeholder="DD/MM/YYYY"
+          maxlength="10"
+          @input="policyStartDate = policyStartDate.replace(/[^\d\/]/g, '').replace(/^(\d{2})(\d)/, '$1/$2').replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2').substring(0, 10)"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- No Claims Discount Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">No Claims Discount</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['ncd']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('ncd')"
+        x-show="!editMode['ncd']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['ncd']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('ncd')"
+          :disabled="savingField['ncd']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50">
+          <span x-show="!savingField['ncd']">Save</span>
+          <span x-show="savingField['ncd']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('ncd')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Years of no claims
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['ncd']" class="text-sm text-gray-800 dark:text-white/90" x-text="noClaimsYears"></p>
+        <input
+          x-show="editMode['ncd']"
+          x-model="noClaimsYears"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        No claims source
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['ncd']" class="text-sm text-gray-800 dark:text-white/90" x-text="noClaimsSource"></p>
+        <input
+          x-show="editMode['ncd']"
+          x-model="noClaimsSource"
+          type="text"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Protected no claims discount?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['ncd']" class="text-sm text-gray-800 dark:text-white/90" x-text="protectedNoClaimsDiscount"></p>
+        <select
+          x-show="editMode['ncd']"
+          x-model="protectedNoClaimsDiscount"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

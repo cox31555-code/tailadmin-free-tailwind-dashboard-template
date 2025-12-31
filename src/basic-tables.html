@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <include src="./partials/critical-dark-mode.html"></include>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
@@ -10,13 +11,25 @@
     <title>
       Basic Tables | TailAdmin - Tailwind CSS Admin Dashboard Template
     </title>
+    <style>
+      @media (max-width: 640px) {
+        .page-main-content {
+          padding: 0 10px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .page-table-wrapper {
+          padding: 0 10px;
+        }
+      }
+    </style>
   </head>
   <body
-    x-data="{ page: 'basicTables', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-data="{ page: 'basicTables', 'isLoading': false, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
     x-init="
-         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-    :class="{'dark bg-gray-900': darkMode === true}"
   >
     <!-- ===== Preloader Start ===== -->
     <include src="./partials/preloader.html"></include>
@@ -42,7 +55,7 @@
 
         <!-- ===== Main Content Start ===== -->
         <main>
-          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 page-main-content">
             <!-- Breadcrumb Start -->
             <div x-data="{ pageName: `Basic Tables`}">
               <include src="./partials/breadcrumb.html" />
@@ -61,7 +74,7 @@
                   </h3>
                 </div>
                 <div
-                  class="p-5 border-t border-gray-100 dark:border-gray-800 sm:p-6"
+                  class="p-5 border-t border-gray-100 dark:border-gray-800 sm:p-6 page-table-wrapper"
                 >
                   <!-- ====== Table Six Start -->
                   <include src="./partials/table/table-06.html" />

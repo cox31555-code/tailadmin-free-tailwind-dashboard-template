@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <include src="./partials/critical-dark-mode.html"></include>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Annual Calculator | TailAdmin - Tailwind CSS Admin Dashboard Template</title>
+  </head>
+
+  <body
+    x-data="{
+      page: 'calculator',
+      'isLoading': false,
+      'darkMode': true,
+      'stickyMenu': false,
+      'sidebarToggle': false,
+      'scrollTop': false,
+      basePrice: 250,
+      selectedMultipliers: [],
+      ageMultiplier: '',
+      ageValue: '',
+      vehicleAge: '',
+      vehicleAgeValue: '',
+      engineSize: '',
+      engineSizeValue: '',
+      vehicleWorth: '',
+      vehicleWorthValue: '',
+      noClaimBonus: '',
+      noClaimBonusValue: '',
+      mileage: '',
+      mileageValue: '',
+      modCar: '',
+      modCarValue: '',
+      additionalAge: '',
+      additionalAgeValue: '',
+      location: '',
+      locationValue: '',
+      criminalConviction: '',
+      criminalValue: '',
+      cancelledIns: '',
+      cancelledInsValue: '',
+      carUse: '',
+      carUseValue: '',
+      employment: '',
+      employmentValue: '',
+      editMode: {},
+      savingField: {},
+      savedField: {},
+      toggleEditMode(fieldName) {
+        this.editMode[fieldName] = !this.editMode[fieldName];
+      },
+      async saveFieldValue(fieldName) {
+        this.savingField[fieldName] = true;
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        const data = {
+          basePrice: this.basePrice,
+          ageValue: this.ageValue,
+          vehicleAgeValue: this.vehicleAgeValue,
+          engineSizeValue: this.engineSizeValue,
+          vehicleWorthValue: this.vehicleWorthValue,
+          noClaimBonusValue: this.noClaimBonusValue,
+          mileageValue: this.mileageValue,
+          modCarValue: this.modCarValue,
+          additionalAgeValue: this.additionalAgeValue,
+          locationValue: this.locationValue,
+          criminalValue: this.criminalValue,
+          cancelledInsValue: this.cancelledInsValue,
+          carUseValue: this.carUseValue,
+          employmentValue: this.employmentValue
+        };
+        localStorage.setItem('annualMultipliers', JSON.stringify(data));
+
+        this.savingField[fieldName] = false;
+        this.savedField[fieldName] = true;
+        this.editMode[fieldName] = false;
+
+        setTimeout(() => {
+          this.savedField[fieldName] = false;
+        }, 3000);
+      },
+      loadMultipliers() {
+        const saved = localStorage.getItem('annualMultipliers');
+        if (saved) {
+          const data = JSON.parse(saved);
+          this.basePrice = data.basePrice || 250;
+          this.ageValue = data.ageValue || '';
+          this.vehicleAgeValue = data.vehicleAgeValue || '';
+          this.engineSizeValue = data.engineSizeValue || '';
+          this.vehicleWorthValue = data.vehicleWorthValue || '';
+          this.noClaimBonusValue = data.noClaimBonusValue || '';
+          this.mileageValue = data.mileageValue || '';
+          this.modCarValue = data.modCarValue || '';
+          this.additionalAgeValue = data.additionalAgeValue || '';
+          this.locationValue = data.locationValue || '';
+          this.criminalValue = data.criminalValue || '';
+          this.cancelledInsValue = data.cancelledInsValue || '';
+          this.carUseValue = data.carUseValue || '';
+          this.employmentValue = data.employmentValue || '';
+          this.calculateTotal();
+        }
+      },
+      calculateTotal() {
+        let total = this.basePrice;
+        this.selectedMultipliers = [];
+        let additionTotal = 0;
+
+        const multiplierData = [
+          { name: 'Age Multiplier', value: this.ageValue, isAddition: false },
+          { name: 'Vehicle Age', value: this.vehicleAgeValue, isAddition: false },
+          { name: 'Engine Size', value: this.engineSizeValue, isAddition: false },
+          { name: 'Vehicle Worth', value: this.vehicleWorthValue, isAddition: false },
+          { name: 'No Claims Bonus', value: this.noClaimBonusValue, isAddition: false },
+          { name: 'Mileage', value: this.mileageValue, isAddition: false },
+          { name: 'Modified Car', value: this.modCarValue, isAddition: false },
+          { name: 'Additional Driver Age', value: this.additionalAgeValue, isAddition: false },
+          { name: 'Location', value: this.locationValue, isAddition: false },
+          { name: 'Criminal Convictions', value: this.criminalValue, isAddition: false },
+          { name: 'Cancelled Insurance', value: this.cancelledInsValue, isAddition: false },
+          { name: 'Car Use', value: this.carUseValue, isAddition: true },
+          { name: 'Employment', value: this.employmentValue, isAddition: true }
+        ];
+
+        multiplierData.forEach(m => {
+          if (m.value && parseFloat(m.value) >= 0) {
+            const numValue = parseFloat(m.value);
+            if (m.isAddition) {
+              if (numValue > 0) {
+                this.selectedMultipliers.push(m);
+                additionTotal += numValue;
+              }
+            } else {
+              if (numValue > 0) {
+                this.selectedMultipliers.push(m);
+                total *= numValue;
+              }
+            }
+          }
+        });
+
+        total += additionTotal;
+        return Math.round(total * 100) / 100;
+      }
+    }"
+    x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)));
+         loadMultipliers();"
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <!-- Small Device Overlay Start -->
+        <include src="./partials/overlay.html" />
+        <!-- Small Device Overlay End -->
+
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+            <!-- Breadcrumb Start -->
+            <div x-data="{ pageName: `Annual Calculator`}">
+              <include src="./partials/breadcrumb.html" />
+            </div>
+            <!-- Breadcrumb End -->
+
+            <!-- Back Button -->
+            <div class="mb-6">
+              <a href="calculator.html" class="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Back to Calculator
+              </a>
+            </div>
+
+            <!-- Calculator Card -->
+            <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
+              <div class="mb-8 flex items-center gap-4">
+                <div class="flex items-center justify-center w-14 h-14 rounded-full bg-brand-50 dark:bg-brand-500/10">
+                  <svg class="w-7 h-7 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-2xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-1">
+                    Annual Insurance Multiplier Calculator
+                  </h2>
+                  <p class="text-sm lg:text-base text-gray-600 dark:text-gray-400">
+                    Manage and view all insurance multipliers for annual policies
+                  </p>
+                </div>
+              </div>
+
+              <!-- Base Pricing Section -->
+              <div class="mb-8 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+                <div class="flex items-center justify-between mb-3">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Base Pricing</label>
+                  <button @click="toggleEditMode('basePrice')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                    <span x-show="!editMode['basePrice']">Edit</span>
+                    <span x-show="editMode['basePrice']">Done</span>
+                  </button>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl font-semibold text-gray-800 dark:text-white">£</span>
+                  <input
+                    type="number"
+                    x-model.number="basePrice"
+                    placeholder="250"
+                    :disabled="!editMode['basePrice']"
+                    class="flex-1 h-12 px-4 py-2 text-lg rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
+                </div>
+                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Default base price for annual insurance policies</p>
+              </div>
+
+              <!-- Calculator Grid -->
+              <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+                <!-- Age Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Age Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">AM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['ageValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['ageValue'] && savedField['ageValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['ageValue'] && !savedField['ageValue'] && editMode['ageValue']" @click="saveFieldValue('ageValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['ageValue'] && !savedField['ageValue'] && !editMode['ageValue']" @click="toggleEditMode('ageValue')" :disabled="!ageMultiplier" :class="!ageMultiplier ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="ageMultiplier" @change="ageValue = {'17-20': '1.8','21-25': '1.6','26-35': '1.2','36-50': '1','51+': '0.8'}[ageMultiplier] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="17-20">17-20 years</option>
+                        <option value="21-25">21-25 years</option>
+                        <option value="26-35">26-35 years</option>
+                        <option value="36-50">36-50 years</option>
+                        <option value="51+">51+ years</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="ageValue" @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['ageValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vehicle Damage Multiplier (Vehicle Age Multiplier) -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Vehicle Age Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">VAM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['vehicleAgeValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['vehicleAgeValue'] && savedField['vehicleAgeValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['vehicleAgeValue'] && !savedField['vehicleAgeValue'] && editMode['vehicleAgeValue']" @click="saveFieldValue('vehicleAgeValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['vehicleAgeValue'] && !savedField['vehicleAgeValue'] && !editMode['vehicleAgeValue']" @click="toggleEditMode('vehicleAgeValue')" :disabled="!vehicleAge" :class="!vehicleAge ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="vehicleAge" @change="vehicleAgeValue = {'0-3': '1','4-7': '1','8-12': '1.3','13-19': '1.5','20+': '1.8'}[vehicleAge] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="0-3">0-3 years</option>
+                        <option value="4-7">4-7 years</option>
+                        <option value="8-12">8-12 years</option>
+                        <option value="13-19">13-19 years</option>
+                        <option value="20+">20+ years</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="vehicleAgeValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['vehicleAgeValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Engine Size Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Engine Size Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ESM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['engineSizeValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['engineSizeValue'] && savedField['engineSizeValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['engineSizeValue'] && !savedField['engineSizeValue'] && editMode['engineSizeValue']" @click="saveFieldValue('engineSizeValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['engineSizeValue'] && !savedField['engineSizeValue'] && !editMode['engineSizeValue']" @click="toggleEditMode('engineSizeValue')" :disabled="!engineSize" :class="!engineSize ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="engineSize" @change="engineSizeValue = {'<1.0l': '0.8','1.0l-1.3': '1','1.4l-1.6': '1.1','1.7l-2.0l': '1.5','2.1l-3.0l': '1.8','>3.0l': '2.2'}[engineSize] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="<1.0l">&lt;1.0L</option>
+                        <option value="1.0l-1.3">1.0L-1.3</option>
+                        <option value="1.4l-1.6">1.4L-1.6</option>
+                        <option value="1.7l-2.0l">1.7L-2.0L</option>
+                        <option value="2.1l-3.0l">2.1L-3.0L</option>
+                        <option value=">3.0l">&gt;3.0L</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="engineSizeValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['engineSizeValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vehicle Worth Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Vehicle Worth Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">VWM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['vehicleWorthValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['vehicleWorthValue'] && savedField['vehicleWorthValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['vehicleWorthValue'] && !savedField['vehicleWorthValue'] && editMode['vehicleWorthValue']" @click="saveFieldValue('vehicleWorthValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['vehicleWorthValue'] && !savedField['vehicleWorthValue'] && !editMode['vehicleWorthValue']" @click="toggleEditMode('vehicleWorthValue')" :disabled="!vehicleWorth" :class="!vehicleWorth ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="vehicleWorth" @change="vehicleWorthValue = {'0-5k': '1.2','6-10k': '1.1','11-20k': '1','21-30k': '1.2','31-50k': '1.4','50k+': '1.7'}[vehicleWorth] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="0-5k">£0-5k</option>
+                        <option value="6-10k">£6-10k</option>
+                        <option value="11-20k">£11-20k</option>
+                        <option value="21-30k">£21-30k</option>
+                        <option value="31-50k">£31-50k</option>
+                        <option value="50k+">£50k+</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="vehicleWorthValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['vehicleWorthValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- No Claims Bonus Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">No Claims Bonus Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">NCBM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['noClaimBonusValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['noClaimBonusValue'] && savedField['noClaimBonusValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['noClaimBonusValue'] && !savedField['noClaimBonusValue'] && editMode['noClaimBonusValue']" @click="saveFieldValue('noClaimBonusValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['noClaimBonusValue'] && !savedField['noClaimBonusValue'] && !editMode['noClaimBonusValue']" @click="toggleEditMode('noClaimBonusValue')" :disabled="!noClaimBonus" :class="!noClaimBonus ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="noClaimBonus" @change="noClaimBonusValue = {'0-years': '1.8','1-2-years': '1.6','3-4-years': '1.3','5-plus-years': '1'}[noClaimBonus] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="0-years">0 years (no NCB or recent claims)</option>
+                        <option value="1-2-years">1-2 years</option>
+                        <option value="3-4-years">3-4 years</option>
+                        <option value="5-plus-years">5+ years</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="noClaimBonusValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['noClaimBonusValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Mileage Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Mileage Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">MM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['mileageValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['mileageValue'] && savedField['mileageValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['mileageValue'] && !savedField['mileageValue'] && editMode['mileageValue']" @click="saveFieldValue('mileageValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['mileageValue'] && !savedField['mileageValue'] && !editMode['mileageValue']" @click="toggleEditMode('mileageValue')" :disabled="!mileage" :class="!mileage ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="mileage" @change="mileageValue = {'1-2k': '0.95','3-4k': '1.05','5-9k': '1.1','10k+': '1.15'}[mileage] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="1-2k">1-2k Miles</option>
+                        <option value="3-4k">3-4k Miles</option>
+                        <option value="5-9k">5-9k Miles</option>
+                        <option value="10k+">10k+ Miles</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="mileageValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['mileageValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modified Car Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Modified Car Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">MCM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['modCarValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['modCarValue'] && savedField['modCarValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['modCarValue'] && !savedField['modCarValue'] && editMode['modCarValue']" @click="saveFieldValue('modCarValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['modCarValue'] && !savedField['modCarValue'] && !editMode['modCarValue']" @click="toggleEditMode('modCarValue')" :disabled="!modCar" :class="!modCar ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="modCar" @change="modCarValue = {'no-mods': '1','1-mod': '1.05','2-mods': '1.1','3-mods+': '1.2'}[modCar] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="no-mods">No Mods</option>
+                        <option value="1-mod">1 Mod</option>
+                        <option value="2-mods">2 Mods</option>
+                        <option value="3-mods+">3 Mods+</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="modCarValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['modCarValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Additional Driver Age Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Additional Driver Age Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ADAM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['additionalAgeValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['additionalAgeValue'] && savedField['additionalAgeValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['additionalAgeValue'] && !savedField['additionalAgeValue'] && editMode['additionalAgeValue']" @click="saveFieldValue('additionalAgeValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['additionalAgeValue'] && !savedField['additionalAgeValue'] && !editMode['additionalAgeValue']" @click="toggleEditMode('additionalAgeValue')" :disabled="!additionalAge" :class="!additionalAge ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="additionalAge" @change="additionalAgeValue = {'no-driver': '1','17-21': '1.15','22-30': '1.2','31-45': '1.1','46+': '0.9'}[additionalAge] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="no-driver">No Driver</option>
+                        <option value="17-21">17-21</option>
+                        <option value="22-30">22-30</option>
+                        <option value="31-45">31-45</option>
+                        <option value="46+">46+</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="additionalAgeValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['additionalAgeValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Location Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Location Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">LM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['locationValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['locationValue'] && savedField['locationValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['locationValue'] && !savedField['locationValue'] && editMode['locationValue']" @click="saveFieldValue('locationValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['locationValue'] && !savedField['locationValue'] && !editMode['locationValue']" @click="toggleEditMode('locationValue')" :disabled="!location" :class="!location ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Postcode</label>
+                      <select x-model="location" @change="locationValue = {'hs-bt': '0.9','bn-wa': '0.35','gu-vy': '1','br-vc': '1.05','default': '1'}[location] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="hs-bt">HS-BT</option>
+                        <option value="bn-wa">BN-WA</option>
+                        <option value="gu-vy">GU-VY</option>
+                        <option value="br-vc">BR-VC</option>
+                        <option value="default">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="locationValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['locationValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Criminal Convictions Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Criminal Convictions Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">CCM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['criminalValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['criminalValue'] && savedField['criminalValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['criminalValue'] && !savedField['criminalValue'] && editMode['criminalValue']" @click="saveFieldValue('criminalValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['criminalValue'] && !savedField['criminalValue'] && !editMode['criminalValue']" @click="toggleEditMode('criminalValue')" :disabled="!criminalConviction" :class="!criminalConviction ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="criminalConviction" @change="criminalValue = {'yes': '1.1','no': '1'}[criminalConviction] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="criminalValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['criminalValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cancelled Insurance Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Cancelled Insurance Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">CIM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['cancelledInsValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['cancelledInsValue'] && savedField['cancelledInsValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['cancelledInsValue'] && !savedField['cancelledInsValue'] && editMode['cancelledInsValue']" @click="saveFieldValue('cancelledInsValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['cancelledInsValue'] && !savedField['cancelledInsValue'] && !editMode['cancelledInsValue']" @click="toggleEditMode('cancelledInsValue')" :disabled="!cancelledIns" :class="!cancelledIns ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="cancelledIns" @change="cancelledInsValue = {'yes': '1.1','no': '1'}[cancelledIns] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="cancelledInsValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['cancelledInsValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Car Use Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Car Use Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">CUM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['carUseValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['carUseValue'] && savedField['carUseValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['carUseValue'] && !savedField['carUseValue'] && editMode['carUseValue']" @click="saveFieldValue('carUseValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['carUseValue'] && !savedField['carUseValue'] && !editMode['carUseValue']" @click="toggleEditMode('carUseValue')" :disabled="!carUse" :class="!carUse ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="carUse" @change="carUseValue = {'social': '0','social-commute': '20','social-commute-business': '50'}[carUse] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="social">Social use only</option>
+                        <option value="social-commute">Social and commuting</option>
+                        <option value="social-commute-business">Social commuting business</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="carUseValue"  @input="calculateTotal()" placeholder="0.00" :disabled="!editMode['carUseValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Employment Multiplier -->
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] hover:shadow-md transition-shadow duration-300">
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Employment Multiplier</h3>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">OM</p>
+                    </div>
+                    <div class="flex items-center gap-2 h-5">
+                      <span x-show="savingField['employmentValue']" class="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                        <svg class="animate-spin h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </span>
+                      <span x-show="!savingField['employmentValue'] && savedField['employmentValue']" class="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Saved
+                      </span>
+                      <button x-show="!savingField['employmentValue'] && !savedField['employmentValue'] && editMode['employmentValue']" @click="saveFieldValue('employmentValue')" class="text-xs font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
+                        Save
+                      </button>
+                      <button x-show="!savingField['employmentValue'] && !savedField['employmentValue'] && !editMode['employmentValue']" @click="toggleEditMode('employmentValue')" :disabled="!employment" :class="!employment ? 'opacity-50 cursor-not-allowed text-gray-400' : 'text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300'" class="text-xs font-medium">
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Select Option</label>
+                      <select x-model="employment" @change="employmentValue = {'unemployed': '10','employed': '20','self-employed': '0','student': '30','retired': '0'}[employment] || ''; calculateTotal()" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent">
+                        <option value="">Choose an option</option>
+                        <option value="unemployed">Unemployed</option>
+                        <option value="employed">Employed</option>
+                        <option value="self-employed">Self-Employed</option>
+                        <option value="student">Student</option>
+                        <option value="retired">Retired</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600 dark:text-gray-400 block mb-1.5">Multiplier Value</label>
+                      <input type="text" x-model="employmentValue"  placeholder="0.00" @input="calculateTotal()" :disabled="!editMode['employmentValue']" class="w-full h-9 px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-[#0c192c] dark:text-white dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-0 dark:focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Calculation Summary -->
+              <div class="mt-8 rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+                <h3 class="mb-4 font-semibold text-gray-800 dark:text-white">
+                  Price Calculation
+                </h3>
+
+                <!-- Formula Breakdown -->
+                <div class="mb-4 space-y-2 rounded-lg bg-white p-4 dark:bg-[#0c192c]">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="font-medium text-gray-700 dark:text-gray-300">Base Price:</span>
+                    <span class="text-gray-900 dark:text-white">£<span x-text="basePrice.toFixed(2)"></span></span>
+                  </div>
+
+                  <template x-if="selectedMultipliers.length > 0">
+                    <div class="border-t border-gray-200 pt-2 dark:border-gray-800">
+                      <template x-for="(multiplier, index) in selectedMultipliers" :key="index">
+                        <div class="flex items-center justify-between text-sm">
+                          <span class="text-gray-600 dark:text-gray-400">
+                            <span x-show="multiplier.name === 'Car Use' || multiplier.name === 'Employment'">+ </span>
+                            <span x-show="multiplier.name !== 'Car Use' && multiplier.name !== 'Employment'">× </span>
+                            <span x-text="multiplier.name"></span>:
+                          </span>
+                          <span class="text-gray-900 dark:text-white"><span x-text="parseFloat(multiplier.value).toFixed(2)"></span></span>
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+                </div>
+
+                <!-- Total Price -->
+                <div class="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-[#0c192c]">
+                  <div class="flex items-center justify-between">
+                    <span class="text-lg font-semibold text-gray-800 dark:text-white">
+                      Total Price:
+                    </span>
+                    <span class="text-2xl font-bold text-gray-900 dark:text-white">
+                      £<span x-text="calculateTotal().toFixed(2)"></span>
+                    </span>
+                  </div>
+                  <p class="mt-2 text-xs text-gray-600 dark:text-gray-400" x-show="selectedMultipliers.length === 0">
+                    Select options to calculate price
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+  </body>
+</html>

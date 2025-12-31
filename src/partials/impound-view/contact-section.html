@@ -1,0 +1,91 @@
+<!-- Contact Information Section -->
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="flex items-center justify-between px-5 py-4 sm:px-6 border-b border-gray-100 dark:border-gray-800">
+    <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Contact Information</h2>
+    <div class="flex items-center gap-2">
+      <span 
+        x-show="savedField['contact']"
+        x-transition
+        class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Saved
+      </span>
+      <button 
+        @click="toggleEditMode('contact')"
+        x-show="!editMode['contact']"
+        class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 dark:hover:text-brand-300 font-medium">
+        Edit
+      </button>
+      <div x-show="editMode['contact']" class="flex items-center gap-2">
+        <button 
+          @click="saveSection('contact')"
+          :disabled="savingField['contact']"
+          class="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed">
+          <span x-show="!savingField['contact']">Save</span>
+          <span x-show="savingField['contact']">Saving...</span>
+        </button>
+        <button 
+          @click="cancelEdit('contact')"
+          class="inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="p-5 sm:p-6 space-y-5">
+    <!-- Email Address -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Email address
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['contact']" class="text-sm text-gray-800 dark:text-white/90" x-text="email"></p>
+        <input
+          x-show="editMode['contact']"
+          x-model="email"
+          type="email"
+          placeholder="example@email.com"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+
+    <!-- Phone Number -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Phone number
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['contact']" class="text-sm text-gray-800 dark:text-white/90" x-text="phoneNumber"></p>
+        <input
+          x-show="editMode['contact']"
+          x-model="phoneNumber"
+          type="tel"
+          placeholder="+44 7700 900000"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90"
+        />
+      </div>
+    </div>
+
+    <!-- Can Providers Contact You -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-400">
+        Can providers contact you?
+      </label>
+      <div class="sm:col-span-2">
+        <p x-show="!editMode['contact']" class="text-sm text-gray-800 dark:text-white/90" x-text="canProvidersContact"></p>
+        <select
+          x-show="editMode['contact']"
+          x-model="canProvidersContact"
+          class="h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-hidden dark:border-gray-700 dark:bg-[#0c192c] dark:text-white/90">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,22 +1,20 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <include src="./partials/critical-dark-mode.html"></include>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>
-      eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template
-    </title>
+    <title>Dashboard | Limitless Admin</title>
   </head>
   <body
-    x-data="{ page: 'ecommerce', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-data="{ page: 'ecommerce', 'isLoading': false, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
     x-init="
-         darkMode = JSON.parse(localStorage.getItem('darkMode'));
+         darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-    :class="{'dark bg-gray-900': darkMode === true}"
   >
     <!-- ===== Preloader Start ===== -->
     <include src="./partials/preloader.html"></include>
@@ -29,9 +27,7 @@
       <!-- ===== Sidebar End ===== -->
 
       <!-- ===== Content Area Start ===== -->
-      <div
-        class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto"
-      >
+      <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
         <!-- Small Device Overlay Start -->
         <include src="./partials/overlay.html" />
         <!-- Small Device Overlay End -->
@@ -42,41 +38,60 @@
 
         <!-- ===== Main Content Start ===== -->
         <main>
-          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
-            <div class="grid grid-cols-12 gap-4 md:gap-6">
-              <div class="col-span-12 space-y-6 xl:col-span-7">
-                <!-- Metric Group One -->
-                <include src="./partials/metric-group/metric-group-01.html" />
-                <!-- Metric Group One -->
+          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-8 2xl:p-10">
+            
+            <!-- Page Header -->
+            <div class="mb-6">
+              <h1 class="text-2xl font-bold text-gray-800 dark:text-white md:text-3xl">
+                Dashboard
+              </h1>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Overview of your policy statistics and performance
+              </p>
+            </div>
 
-                <!-- ====== Chart One Start -->
-                <include src="./partials/chart/chart-01.html" />
-                <!-- ====== Chart One End -->
-              </div>
-              <div class="col-span-12 xl:col-span-5">
-                <!-- ====== Chart Two Start -->
-                <include src="./partials/chart/chart-02.html" />
-                <!-- ====== Chart Two End -->
-              </div>
-
-              <div class="col-span-12">
-                <!-- ====== Chart Three Start -->
-                <include src="./partials/chart/chart-03.html" />
-                <!-- ====== Chart Three End -->
-              </div>
-
-              <div class="col-span-12 xl:col-span-5">
-                <!-- ====== Map One Start -->
-                <include src="./partials/map-01.html" />
-                <!-- ====== Map One End -->
+            <!-- Quick Stats Grid -->
+            <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 md:gap-6">
+              <!-- Quotes Card -->
+              <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-[#010a1b]">
+                <h3 class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
+                  Quotes Overview
+                </h3>
+                <include src="./partials/dashboard/quotes-stats.html" />
               </div>
 
-              <div class="col-span-12 xl:col-span-7">
-                <!-- ====== Table One Start -->
-                <include src="./partials/table/table-01.html" />
-                <!-- ====== Table One End -->
+              <!-- Orders Card -->
+              <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-[#010a1b]">
+                <h3 class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
+                  Orders Overview
+                </h3>
+                <include src="./partials/dashboard/orders-stats.html" />
               </div>
             </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 gap-4 mb-6 lg:grid-cols-2 md:gap-6">
+              <!-- Monthly Sales Chart -->
+              <include src="./partials/chart/chart-01.html" />
+              
+              <!-- Orders by Product Type Chart -->
+              <include src="./partials/chart/chart-02.html" />
+            </div>
+
+            <!-- Statistics Chart - Full Width -->
+            <div class="mb-6">
+              <include src="./partials/chart/chart-03.html" />
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="grid grid-cols-1 gap-4 md:gap-6">
+              <!-- Revenue Overview -->
+              <include src="./partials/revenue-overview.html" />
+
+              <!-- Recent Items -->
+              <include src="./partials/recent-items.html" />
+            </div>
+
           </div>
         </main>
         <!-- ===== Main Content End ===== -->

@@ -1,0 +1,123 @@
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div class="p-5 sm:p-6">
+    <!-- Section Header -->
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-white/90">Policy Documents</h2>
+      <button 
+        @click="downloadAllPDFs()"
+        class="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-3 py-2 text-sm font-medium text-white hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Download All
+      </button>
+    </div>
+    
+    <!-- Documents Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- Document Card 1: Policy Certificate -->
+      <div class="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-brand-300 dark:hover:border-brand-700 transition-colors">
+        <div class="flex-shrink-0">
+          <svg class="w-10 h-10 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+            <path d="M14 2v6h6"/>
+            <path d="M10 13h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10 17h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <h3 class="font-medium text-gray-800 dark:text-white/90 text-sm truncate">Policy Certificate</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">PDF • 245 KB • Updated today</p>
+        </div>
+        
+        <a 
+          href="data/pdfs/policy-certificate.pdf" 
+          download
+          class="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:hover:bg-white/[0.03] transition-colors">
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </a>
+      </div>
+      
+      <!-- Document Card 2: Insurance Schedule -->
+      <div class="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-brand-300 dark:hover:border-brand-700 transition-colors">
+        <div class="flex-shrink-0">
+          <svg class="w-10 h-10 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+            <path d="M14 2v6h6"/>
+            <path d="M10 13h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10 17h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <h3 class="font-medium text-gray-800 dark:text-white/90 text-sm truncate">Insurance Schedule</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">PDF • 182 KB • Updated today</p>
+        </div>
+        
+        <a 
+          href="data/pdfs/insurance-schedule.pdf" 
+          download
+          class="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:hover:bg-white/[0.03] transition-colors">
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </a>
+      </div>
+      
+      <!-- Document Card 3: Terms & Conditions -->
+      <div class="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-brand-300 dark:hover:border-brand-700 transition-colors">
+        <div class="flex-shrink-0">
+          <svg class="w-10 h-10 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+            <path d="M14 2v6h6"/>
+            <path d="M10 13h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10 17h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <h3 class="font-medium text-gray-800 dark:text-white/90 text-sm truncate">Terms & Conditions</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">PDF • 523 KB • Updated 2 days ago</p>
+        </div>
+        
+        <a 
+          href="data/pdfs/terms-conditions.pdf" 
+          download
+          class="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:hover:bg-white/[0.03] transition-colors">
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </a>
+      </div>
+      
+      <!-- Document Card 4: Proof of Insurance -->
+      <div class="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-brand-300 dark:hover:border-brand-700 transition-colors">
+        <div class="flex-shrink-0">
+          <svg class="w-10 h-10 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+            <path d="M14 2v6h6"/>
+            <path d="M10 13h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10 17h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <h3 class="font-medium text-gray-800 dark:text-white/90 text-sm truncate">Proof of Insurance</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">PDF • 98 KB • Updated today</p>
+        </div>
+        
+        <a 
+          href="data/pdfs/proof-of-insurance.pdf" 
+          download
+          class="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-[#0c192c] dark:hover:bg-white/[0.03] transition-colors">
+          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

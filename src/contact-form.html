@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <include src="./partials/critical-dark-mode.html"></include>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+      Contact Form | TailAdmin - Tailwind CSS Admin Dashboard Template
+    </title>
+    <style>
+      @media (max-width: 640px) {
+        .page-main-content {
+          padding: 0 10px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .page-table-wrapper {
+          padding: 0 10px;
+        }
+      }
+    </style>
+  </head>
+  <body
+    x-data="{
+      page: 'contactForm',
+      'isLoading': false,
+      'darkMode': true,
+      'stickyMenu': false,
+      'sidebarToggle': false,
+      'scrollTop': false,
+      'contactFormViewModal': false,
+      'selectedMessage': null,
+      openMessage(email, message, received, firstName, surname, phone, policyRef) {
+        this.selectedMessage = { email, message, received, firstName, surname, phone, policyRef };
+        this.contactFormViewModal = true;
+      }
+    }"
+    x-init="
+         darkMode = JSON.parse(localStorage.getItem('darkMode')) ?? true;
+         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div
+        class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
+      >
+        <!-- Small Device Overlay Start -->
+        <include src="./partials/overlay.html" />
+        <!-- Small Device Overlay End -->
+
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6 page-main-content">
+            <!-- Breadcrumb Start -->
+            <div x-data="{ pageName: `Contact Form`}">
+              <include src="./partials/breadcrumb.html" />
+            </div>
+            <!-- Breadcrumb End -->
+
+            <div class="space-y-5 sm:space-y-6">
+              <!-- ====== Contact Form Table Start -->
+              <include src="./partials/table/table-contact-form.html" />
+              <!-- ====== Contact Form Table End -->
+            </div>
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+
+    <!-- Contact Form View Modal -->
+    <include src="./partials/contact-form-view-modal.html" />
+  </body>
+</html>
